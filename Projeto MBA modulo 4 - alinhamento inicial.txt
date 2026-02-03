@@ -1,0 +1,46 @@
+microsserviços:
+    auth - cleber
+    conteudo - igor
+    alunos - Gustavo
+    pagamentos: lucas/rafael
+    bff - fica por último
+
+-----------------------------------------
+.NET 8 em todos os microsserviços
+-----------------------------------------
+estrutura da solution
+    sln
+        src
+            buildingBlocks
+                PlataformaEducacional.Core
+                PlataformaEducacional.MessageBuss
+                PlataformaEducacional.WebApi.Core
+            services
+                auth
+                    PlataformaEducacional.Auth.Api
+                    PlataformaEducacional.Auth.Application
+                    PlataformaEducacional.Auth.Data
+                    PlataformaEducacional.Auth.Domain
+                conteudo
+                    PlataformaEducacional.Auth.Api
+                    PlataformaEducacional.Conteudo.Application
+                    PlataformaEducacional.Conteudo.Data
+                    PlataformaEducacional.Conteudo.Domain
+                alunos
+                    PlataformaEducacional.Auth.Api
+                    PlataformaEducacional.Alunos.Application
+                    PlataformaEducacional.Alunos.Data
+                    PlataformaEducacional.Alunos.Domain                        
+                pagamentos
+                    PlataformaEducacional.Auth.Api
+                    PlataformaEducacional.Pagamentos.Application
+                    PlataformaEducacional.Pagamentos.Data
+                    PlataformaEducacional.Pagamentos.Domain
+                bff
+                    PlataformaEducacional.Bff.Api
+                    ???
+
+
+
+
+
