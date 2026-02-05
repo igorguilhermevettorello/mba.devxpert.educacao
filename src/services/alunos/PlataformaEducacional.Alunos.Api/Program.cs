@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.AddSwagger();
+builder.AddSwagger("Alunos API");
 
 var app = builder.Build();
 
