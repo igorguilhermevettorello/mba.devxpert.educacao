@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using FluentValidation.Results;
 
 namespace PlataformaEducacional.Core.Messages.Integration;
 
