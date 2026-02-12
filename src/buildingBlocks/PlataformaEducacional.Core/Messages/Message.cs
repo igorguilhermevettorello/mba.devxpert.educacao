@@ -1,4 +1,4 @@
-﻿namespace PlataformaEducacional.Core;
+﻿namespace PlataformaEducacional.Core.Messages;
 
 public abstract class Message
 {
