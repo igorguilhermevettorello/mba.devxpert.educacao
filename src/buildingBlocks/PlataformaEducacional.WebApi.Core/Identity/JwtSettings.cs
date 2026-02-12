@@ -1,6 +1,6 @@
 ﻿namespace PlataformaEducacional.WebApi.Core.Identity;
 
-public class AppSettings
+public class JwtSettings
 {
     public string Secret { get; set; } = string.Empty;
     public int ExpiracaoHoras { get; set; } 

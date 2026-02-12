@@ -17,13 +17,13 @@ public class AuthController : MainController
 {
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly AppSettings _appSettings;
+    private readonly JwtSettings _appSettings;
 
     private readonly IMessageBus _bus;
 
     public AuthController(SignInManager<IdentityUser> signInManager,
                           UserManager<IdentityUser> userManager,
-                          IOptions<AppSettings> appSettings,
+                          IOptions<JwtSettings> appSettings,
                           IMessageBus bus)
     {
         _signInManager = signInManager;
