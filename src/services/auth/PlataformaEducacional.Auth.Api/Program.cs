@@ -5,23 +5,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.AddDataContextConfiguration();
-builder.Services.AddApiConfiguration("Auth API");
+builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false);
 builder.Services.AddIdentityConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseApiConfiguration(app.Environment);
+//app.UseApiConfiguration(app.Environment);
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UsarSwagger();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UsarSwagger();
+}
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
-//app.UseAuthConfiguration();
+app.UseAuthentication();
+app.UseAuthorization();
 
-//app.MapControllers();
+app.MapControllers();
 
 app.Run();

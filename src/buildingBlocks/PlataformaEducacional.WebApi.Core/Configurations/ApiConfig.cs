@@ -9,9 +9,9 @@ namespace PlataformaEducacional.WebApi.Core.Configurations;
 
 public static class ApiConfig
 {
-    public static IServiceCollection AddApiConfiguration(this IServiceCollection services, string apiName)
+    public static IServiceCollection AddApiConfiguration(this IServiceCollection services, string apiName, bool authenticationRequired = true)
     {
-        services.AddSwagger(apiName);
+        services.AddSwagger(apiName, authenticationRequired);
 
         services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>
