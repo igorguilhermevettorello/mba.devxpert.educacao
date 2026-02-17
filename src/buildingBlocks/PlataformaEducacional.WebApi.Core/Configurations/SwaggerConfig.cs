@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 namespace PlataformaEducacional.WebApi.Core.Configurations;
 

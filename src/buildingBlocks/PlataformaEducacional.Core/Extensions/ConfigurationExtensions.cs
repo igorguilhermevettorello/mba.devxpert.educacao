@@ -4,8 +4,8 @@ namespace PlataformaEducacional.Core.Extensions;
 
 public static class ConfigurationExtensions
 {
-    public static string? GetMessageQueueConnection(this IConfiguration configuration, string name)
+    public static string GetMessageQueueConnection(this IConfiguration configuration, string name)
     {
-        return configuration?.GetSection("MessageQueueConnection")?[name];
+        return configuration?.GetSection("MessageQueueConnection")?[name] ?? string.Empty;
     }
 }
