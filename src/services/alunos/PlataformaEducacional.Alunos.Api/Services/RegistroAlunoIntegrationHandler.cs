@@ -27,7 +27,7 @@ public class RegistroAlunoIntegrationHandler : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        SetResponder();
+        //SetResponder();
         return Task.CompletedTask;
     }
 
