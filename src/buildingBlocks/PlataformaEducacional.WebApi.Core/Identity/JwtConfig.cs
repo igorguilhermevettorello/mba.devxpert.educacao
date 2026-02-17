@@ -9,13 +9,17 @@ namespace PlataformaEducacional.WebApi.Core.Identity;
 
 public static class JwtConfig
 {
-    public static void AddJwtConfiguration(this IServiceCollection services,
-            IConfiguration configuration)
+    public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         var appSettingsSection = configuration.GetSection("JwtSettings");
         services.Configure<JwtSettings>(appSettingsSection);
 
         var jwSettings = appSettingsSection.Get<JwtSettings>();
+        if (jwSettings == null || string.IsNullOrEmpty(jwSettings.Secret))
+        {
+            throw new InvalidOperationException("JwtSettings or JwtSettings.Secret is not configured properly.");
+        }
+
         var key = Encoding.ASCII.GetBytes(jwSettings.Secret);
 
         services.AddAuthentication(x =>

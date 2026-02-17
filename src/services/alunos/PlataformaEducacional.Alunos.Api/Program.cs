@@ -4,21 +4,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.AddSwagger("Alunos API");
+builder.Services.AddApiConfiguration("Alunos API");
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UsarSwagger();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseApiConfiguration(app.Environment);
 
 app.Run();

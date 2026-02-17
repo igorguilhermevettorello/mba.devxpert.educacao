@@ -1,24 +1,27 @@
+using PlataformaEducacional.Auth.Api.Configurations;
 using PlataformaEducacional.WebApi.Core.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
-builder.AddSwagger("Auth API");
+builder.AddDataContextConfiguration();
+builder.Services.AddApiConfiguration("Auth API");
+builder.Services.AddIdentityConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UsarSwagger();
-}
+app.UseApiConfiguration(app.Environment);
 
-app.UseHttpsRedirection();
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UsarSwagger();
+//}
 
-app.UseAuthorization();
+//app.UseHttpsRedirection();
 
-app.MapControllers();
+//app.UseAuthConfiguration();
+
+//app.MapControllers();
 
 app.Run();
