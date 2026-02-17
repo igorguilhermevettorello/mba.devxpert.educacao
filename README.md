@@ -1,43 +1,43 @@
-# PlataformaEducacional
+ï»¿# PlataformaEducacional
 
-## ?? Sobre o Projeto
+## ğŸ“‹ Sobre o Projeto
 
-**Plataforma Educacional Enterprise** é uma solução de microsserviços desenvolvida em .NET 8 para gerenciamento de uma plataforma educacional completa. O projeto segue os princípios de arquitetura distribuída, implementando padrões como DDD (Domain-Driven Design), CQRS e mensageria assíncrona.
+**Plataforma Educacional Enterprise** Ã© uma soluÃ§Ã£o de microsserviÃ§os desenvolvida em .NET 8 para gerenciamento de uma plataforma educacional completa. O projeto segue os princÃ­pios de arquitetura distribuÃ­da, implementando padrÃµes como DDD (Domain-Driven Design), CQRS e mensageria assÃ­ncrona.
 
-Desenvolvido pelo **Grupo 5 - MBA DevIO** como projeto do Módulo 4.
+Desenvolvido pelo **Grupo 5 - MBA DevIO** como projeto do MÃ³dulo 4.
 
 ---
 
-## ??? Arquitetura da Solução
+## ğŸ—ï¸ Arquitetura da SoluÃ§Ã£o
 
-A solução está organizada em camadas bem definidas, seguindo princípios SOLID e Clean Architecture:
+A soluÃ§Ã£o estÃ¡ organizada em camadas bem definidas, seguindo princÃ­pios SOLID e Clean Architecture:
 
 ```
 PlataformaEducacional/
-??? src/
-?   ??? buildingBlocks/          # Componentes compartilhados
-?   ??? services/                # Microsserviços
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ buildingBlocks/          # Componentes compartilhados
+â”‚   â””â”€â”€ services/                # MicrosserviÃ§os
 ```
 
-### ?? Building Blocks (Componentes Compartilhados)
+### ğŸ§± Building Blocks (Componentes Compartilhados)
 
-Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para todos os microsserviços:
+Conjunto de bibliotecas reutilizÃ¡veis que fornecem funcionalidades comuns para todos os microsserviÃ§os:
 
-| Projeto | Descrição |
+| Projeto | DescriÃ§Ã£o |
 |---------|-----------|
-| **PlataformaEducacional.Core** | Componentes base, entidades, value objects, abstrações de domínio e mensagens de integração |
-| **PlataformaEducacional.MessageBus** | Implementação de mensageria com RabbitMQ usando EasyNetQ e políticas de resiliência com Polly |
-| **PlataformaEducacional.WebApi.Core** | Configurações compartilhadas de API, filtros, middleware, autenticação JWT e Swagger |
+| **PlataformaEducacional.Core** | Componentes base, entidades, value objects, abstraÃ§Ãµes de domÃ­nio e mensagens de integraÃ§Ã£o |
+| **PlataformaEducacional.MessageBus** | ImplementaÃ§Ã£o de mensageria com RabbitMQ usando EasyNetQ e polÃ­ticas de resiliÃªncia com Polly |
+| **PlataformaEducacional.WebApi.Core** | ConfiguraÃ§Ãµes compartilhadas de API, filtros, middleware, autenticaÃ§Ã£o JWT e Swagger |
 
 ---
 
-## ?? Microsserviços
+## ğŸš€ MicrosserviÃ§os
 
-### 1. **Auth API** - Serviço de Autenticação e Autorização
+### 1. **Auth API** - ServiÃ§o de AutenticaÃ§Ã£o e AutorizaÃ§Ã£o
 
-**Responsável**: Cleber
+**ResponsÃ¡vel**: Cleber
 
-**Descrição**: Gerencia autenticação, autorização e identidade de usuários.
+**DescriÃ§Ã£o**: Gerencia autenticaÃ§Ã£o, autorizaÃ§Ã£o e identidade de usuÃ¡rios.
 
 **Tecnologias**:
 - ASP.NET Core 8.0 Web API
@@ -54,11 +54,11 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 
 ---
 
-### 2. **Conteúdo API** - Serviço de Gerenciamento de Conteúdo
+### 2. **ConteÃºdo API** - ServiÃ§o de Gerenciamento de ConteÃºdo
 
-**Responsável**: Igor
+**ResponsÃ¡vel**: Igor
 
-**Descrição**: Gerencia conteúdos educacionais, cursos, aulas e materiais didáticos.
+**DescriÃ§Ã£o**: Gerencia conteÃºdos educacionais, cursos, aulas e materiais didÃ¡ticos.
 
 **Tecnologias**:
 - ASP.NET Core 8.0 Web API
@@ -68,19 +68,19 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 
 **Estrutura**:
 - `PlataformaEducacional.Conteudo.Api` - API REST
-- `PlataformaEducacional.Conteudo.Application` - Casos de uso e lógica de aplicação
+- `PlataformaEducacional.Conteudo.Application` - Casos de uso e lÃ³gica de aplicaÃ§Ã£o
 - `PlataformaEducacional.Conteudo.Data` - Acesso a dados e contexto
-- `PlataformaEducacional.Conteudo.Domain` - Entidades e regras de negócio
+- `PlataformaEducacional.Conteudo.Domain` - Entidades e regras de negÃ³cio
 
 **Porta**: A ser configurada
 
 ---
 
-### 3. **Alunos API** - Serviço de Gerenciamento de Alunos
+### 3. **Alunos API** - ServiÃ§o de Gerenciamento de Alunos
 
-**Responsável**: Gustavo
+**ResponsÃ¡vel**: Gustavo
 
-**Descrição**: Gerencia informações de alunos, matrículas e progresso acadêmico.
+**DescriÃ§Ã£o**: Gerencia informaÃ§Ãµes de alunos, matrÃ­culas e progresso acadÃªmico.
 
 **Tecnologias**:
 - ASP.NET Core 8.0 Web API
@@ -97,11 +97,11 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 
 ---
 
-### 4. **Pagamentos API** - Serviço de Gestão de Pagamentos
+### 4. **Pagamentos API** - ServiÃ§o de GestÃ£o de Pagamentos
 
-**Responsáveis**: Lucas / Rafael
+**ResponsÃ¡veis**: Lucas / Rafael
 
-**Descrição**: Gerencia transações financeiras, pagamentos e cobranças.
+**DescriÃ§Ã£o**: Gerencia transaÃ§Ãµes financeiras, pagamentos e cobranÃ§as.
 
 **Tecnologias**:
 - ASP.NET Core 8.0 Web API
@@ -111,9 +111,9 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 
 **Estrutura**:
 - `PlataformaEducacional.Pagamentos.Api` - API REST
-- `PlataformaEducacional.Pagamentos.Application` - Casos de uso e lógica de aplicação
+- `PlataformaEducacional.Pagamentos.Application` - Casos de uso e lÃ³gica de aplicaÃ§Ã£o
 - `PlataformaEducacional.Pagamentos.Data` - Acesso a dados e contexto
-- `PlataformaEducacional.Pagamentos.Domain` - Entidades e regras de negócio
+- `PlataformaEducacional.Pagamentos.Domain` - Entidades e regras de negÃ³cio
 
 **Porta**: A ser configurada
 
@@ -121,7 +121,7 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 
 ### 5. **BFF API** - Backend for Frontend
 
-**Descrição**: Agrega e orquestra chamadas aos microsserviços, servindo como gateway para o frontend.
+**DescriÃ§Ã£o**: Agrega e orquestra chamadas aos microsserviÃ§os, servindo como gateway para o frontend.
 
 **Tecnologias**:
 - ASP.NET Core 8.0 Web API
@@ -134,11 +134,11 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 
 ---
 
-## ??? Tecnologias e Ferramentas
+## ğŸ› ï¸ Tecnologias e Ferramentas
 
 ### Core Stack
 - **.NET 8.0** - Framework principal
-- **C# 12** - Linguagem de programação
+- **C# 12** - Linguagem de programaÃ§Ã£o
 - **ASP.NET Core** - Framework Web API
 
 ### Banco de Dados
@@ -149,47 +149,47 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para t
 ### Mensageria
 - **RabbitMQ** - Message Broker
 - **EasyNetQ** - Cliente RabbitMQ simplificado
-- **Polly** - Biblioteca de resiliência e retry policies
+- **Polly** - Biblioteca de resiliÃªncia e retry policies
 
-### Segurança
+### SeguranÃ§a
 - **ASP.NET Core Identity** - Gerenciamento de identidade
-- **JWT Bearer** - Autenticação baseada em tokens
+- **JWT Bearer** - AutenticaÃ§Ã£o baseada em tokens
 
-### Padrões e Bibliotecas
-- **MediatR** - Implementação de CQRS e mediator pattern
-- **Swagger/OpenAPI** - Documentação de API
-- **AutoMapper** - Mapeamento de objetos (quando aplicável)
+### PadrÃµes e Bibliotecas
+- **MediatR** - ImplementaÃ§Ã£o de CQRS e mediator pattern
+- **Swagger/OpenAPI** - DocumentaÃ§Ã£o de API
+- **AutoMapper** - Mapeamento de objetos (quando aplicÃ¡vel)
 
 ### Arquitetura
-- **Microsserviços** - Arquitetura distribuída
+- **MicrosserviÃ§os** - Arquitetura distribuÃ­da
 - **DDD** - Domain-Driven Design
 - **CQRS** - Command Query Responsibility Segregation
-- **Event-Driven** - Comunicação assíncrona baseada em eventos
+- **Event-Driven** - ComunicaÃ§Ã£o assÃ­ncrona baseada em eventos
 
 ---
 
-## ?? Configuração do Ambiente
+## âš™ï¸ ConfiguraÃ§Ã£o do Ambiente
 
-### Pré-requisitos
+### PrÃ©-requisitos
 
 Certifique-se de ter os seguintes componentes instalados:
 
-- [ ] [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (versão 8.0 ou superior)
+- [ ] [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (versÃ£o 8.0 ou superior)
 - [ ] [Visual Studio 2022](https://visualstudio.microsoft.com/) (17.8+) ou [Visual Studio Code](https://code.visualstudio.com/)
 - [ ] [SQL Server](https://www.microsoft.com/sql-server/sql-server-downloads) ou SQL Server LocalDB
 - [ ] [RabbitMQ](https://www.rabbitmq.com/download.html) (para mensageria)
 - [ ] [Git](https://git-scm.com/downloads)
 
-### Passo a Passo para Configuração
+### Passo a Passo para ConfiguraÃ§Ã£o
 
-#### 1. Clone o Repositório
+#### 1. Clone o RepositÃ³rio
 
 ```bash
 git clone https://github.com/igorguilhermevettorello/mba.devxpert.educacao.git
 cd mba.devxpert.educacao
 ```
 
-#### 2. Restaurar Dependências
+#### 2. Restaurar DependÃªncias
 
 ```bash
 dotnet restore
@@ -197,7 +197,7 @@ dotnet restore
 
 #### 3. Configurar Banco de Dados
 
-Cada microsserviço possui seu próprio banco de dados. Configure as connection strings nos arquivos `appsettings.json` ou `appsettings.Development.json` de cada API:
+Cada microsserviÃ§o possui seu prÃ³prio banco de dados. Configure as connection strings nos arquivos `appsettings.json` ou `appsettings.Development.json` de cada API:
 
 **Auth API** - `src/services/auth/PlataformaEducacional.Auth.Api/appsettings.json`:
 ```json
@@ -217,7 +217,7 @@ Cada microsserviço possui seu próprio banco de dados. Configure as connection st
 
 #### 4. Configurar RabbitMQ
 
-**Instalação do RabbitMQ (Windows)**:
+**InstalaÃ§Ã£o do RabbitMQ (Windows)**:
 ```bash
 # Usando Chocolatey
 choco install rabbitmq
@@ -225,7 +225,7 @@ choco install rabbitmq
 # Ou baixe diretamente do site oficial
 ```
 
-**Configuração nos microsserviços** - Nos arquivos `appsettings.json`:
+**ConfiguraÃ§Ã£o nos microsserviÃ§os** - Nos arquivos `appsettings.json`:
 ```json
 "MessageQueueConnection": {
   "MessageBus": "host=localhost:5672;publisherConfirms=true;timeout=10"
@@ -234,7 +234,7 @@ choco install rabbitmq
 
 **Iniciar RabbitMQ**:
 ```bash
-# Windows (como serviço)
+# Windows (como serviÃ§o)
 rabbitmq-service start
 
 # Ou via linha de comando
@@ -243,12 +243,12 @@ rabbitmq-server
 
 **Acessar o Management Console**:
 - URL: http://localhost:15672
-- Usuário padrão: `guest`
-- Senha padrão: `guest`
+- UsuÃ¡rio padrÃ£o: `guest`
+- Senha padrÃ£o: `guest`
 
 #### 5. Executar Migrations
 
-Para cada microsserviço que possui camada de dados, execute as migrations:
+Para cada microsserviÃ§o que possui camada de dados, execute as migrations:
 
 **Auth API**:
 ```bash
@@ -262,7 +262,7 @@ cd src/services/alunos/PlataformaEducacional.Alunos.Api
 dotnet ef database update
 ```
 
-> **Nota**: Repita o processo para outros microsserviços conforme necessário.
+> **Nota**: Repita o processo para outros microsserviÃ§os conforme necessÃ¡rio.
 
 #### 6. Configurar JWT
 
@@ -277,11 +277,11 @@ Configure as chaves JWT nos arquivos `appsettings.json`:
 }
 ```
 
-> ?? **Importante**: Em produção, utilize segredos seguros e armazene em Azure Key Vault ou similar.
+> âš ï¸ **Importante**: Em produÃ§Ã£o, utilize segredos seguros e armazene em Azure Key Vault ou similar.
 
-#### 7. Executar os Microsserviços
+#### 7. Executar os MicrosserviÃ§os
 
-Você pode executar cada microsserviço individualmente:
+VocÃª pode executar cada microsserviÃ§o individualmente:
 
 ```bash
 # Auth API
@@ -292,7 +292,7 @@ dotnet run
 cd src/services/alunos/PlataformaEducacional.Alunos.Api
 dotnet run
 
-# Conteúdo API
+# ConteÃºdo API
 cd src/services/conteudo/PlataformaEducacional.Conteudo.Api
 dotnet run
 
@@ -305,23 +305,23 @@ cd src/services/bff/PlataformaEducacional.Bff.Api
 dotnet run
 ```
 
-Ou usar o Visual Studio para executar múltiplos projetos de inicialização simultaneamente.
+Ou usar o Visual Studio para executar mÃºltiplos projetos de inicializaÃ§Ã£o simultaneamente.
 
-#### 8. Acessar a Documentação Swagger
+#### 8. Acessar a DocumentaÃ§Ã£o Swagger
 
-Após iniciar cada API, acesse a documentação Swagger:
+ApÃ³s iniciar cada API, acesse a documentaÃ§Ã£o Swagger:
 
 - **Auth API**: `https://localhost:{porta}/swagger`
 - **Alunos API**: `https://localhost:{porta}/swagger`
-- **Conteúdo API**: `https://localhost:{porta}/swagger`
+- **ConteÃºdo API**: `https://localhost:{porta}/swagger`
 - **Pagamentos API**: `https://localhost:{porta}/swagger`
 - **BFF API**: `https://localhost:{porta}/swagger`
 
 ---
 
-## ?? Build e Deploy
+## ğŸ“¦ Build e Deploy
 
-### Build da Solução
+### Build da SoluÃ§Ã£o
 
 ```bash
 dotnet build
@@ -342,65 +342,65 @@ dotnet publish --configuration Release --output ./publish
 
 ---
 
-## ?? Segurança
+## ğŸ” SeguranÃ§a
 
-- Todos os microsserviços (exceto Auth) utilizam autenticação JWT
-- Tokens são validados com chave simétrica configurada
+- Todos os microsserviÃ§os (exceto Auth) utilizam autenticaÃ§Ã£o JWT
+- Tokens sÃ£o validados com chave simÃ©trica configurada
 - HTTPS habilitado em todos os endpoints
-- Validação de requisições com Data Annotations e FluentValidation
+- ValidaÃ§Ã£o de requisiÃ§Ãµes com Data Annotations e FluentValidation
 
 ---
 
-## ?? Documentação Adicional
+## ğŸ“š DocumentaÃ§Ã£o Adicional
 
 ### Endpoints Principais
 
-A documentação completa dos endpoints está disponível via Swagger em cada microsserviço.
+A documentaÃ§Ã£o completa dos endpoints estÃ¡ disponÃ­vel via Swagger em cada microsserviÃ§o.
 
-### Padrões de Comunicação
+### PadrÃµes de ComunicaÃ§Ã£o
 
-- **Síncrona**: HTTP/REST entre BFF e microsserviços
-- **Assíncrona**: RabbitMQ para eventos de integração
+- **SÃ­ncrona**: HTTP/REST entre BFF e microsserviÃ§os
+- **AssÃ­ncrona**: RabbitMQ para eventos de integraÃ§Ã£o
 
 ---
 
-## ?? Equipe
+## ğŸ‘¥ Equipe
 
 **Grupo 5 - MBA DevIO**
 
 | Membro | Responsabilidade |
 |--------|------------------|
 | Cleber | Auth API |
-| Igor | Conteúdo API |
+| Igor | ConteÃºdo API |
 | Gustavo | Alunos API |
 | Lucas | Pagamentos API |
 | Rafael | Pagamentos API |
 
 ---
 
-## ?? Licença
+## ğŸ“ LicenÃ§a
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto estÃ¡ sob a licenÃ§a MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
-## ?? Contato
+## ğŸ“ Contato
 
 - **Email**: grupo5@mbaDev.io
-- **Repositório**: [GitHub](https://github.com/igorguilhermevettorello/mba.devxpert.educacao)
+- **RepositÃ³rio**: [GitHub](https://github.com/igorguilhermevettorello/mba.devxpert.educacao)
 
 ---
 
-## ?? Status do Projeto
+## ğŸš§ Status do Projeto
 
-?? **Em Desenvolvimento Ativo**
+ğŸŸ¢ **Em Desenvolvimento Ativo**
 
 ---
 
-## ?? Notas de Versão
+## ğŸ“Œ Notas de VersÃ£o
 
-### Versão 1.0.0 (Em desenvolvimento)
-- Implementação inicial dos microsserviços
-- Integração com RabbitMQ
-- Autenticação JWT
-- Documentação Swagger
+### VersÃ£o 1.0.0 (Em desenvolvimento)
+- ImplementaÃ§Ã£o inicial dos microsserviÃ§os
+- IntegraÃ§Ã£o com RabbitMQ
+- AutenticaÃ§Ã£o JWT
+- DocumentaÃ§Ã£o Swagger
