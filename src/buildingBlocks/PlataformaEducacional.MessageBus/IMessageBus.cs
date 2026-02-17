@@ -1,11 +1,12 @@
-﻿using PlataformaEducacional.Core.Messages.Integration;
+﻿using EasyNetQ;
+using PlataformaEducacional.Core.Messages.Integration;
 
 namespace PlataformaEducacional.MessageBus;
 
 public interface IMessageBus : IDisposable
 {
     bool IsConnected { get; }
-    //IAdvancedBus AdvancedBus { get; }
+    IAdvancedBus AdvancedBus { get; }
 
     void Publish<T>(T message) where T : IntegrationEvent;
 

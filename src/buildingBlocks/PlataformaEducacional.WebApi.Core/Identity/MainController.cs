@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace PlataformaEducacional.WebApi.Core.Identity;
 
 [ApiController]
+[Route("[controller]")]
 public class MainController : Controller
 {
     protected ICollection<string> Erros = new List<string>();
