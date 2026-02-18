@@ -28,7 +28,7 @@ public interface IMessageBus : IDisposable
         where TRequest : IntegrationEvent
         where TResponse : ResponseMessage;
 
-    IDisposable RespondAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> responder)
+    Task<IDisposable> RespondAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> responder)
         where TRequest : IntegrationEvent
         where TResponse : ResponseMessage;
 }

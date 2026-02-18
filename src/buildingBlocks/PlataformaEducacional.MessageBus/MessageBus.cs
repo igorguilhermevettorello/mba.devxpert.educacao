@@ -24,53 +24,53 @@ public class MessageBus : IMessageBus
     public void Publish<T>(T message) where T : IntegrationEvent
     {
         TryConnect();
-        _bus.Publish(message);
+        _bus.PubSub.Publish(message);
     }
 
     public async Task PublishAsync<T>(T message) where T : IntegrationEvent
     {
         TryConnect();
-        await _bus.PublishAsync(message);
+        await _bus.PubSub.PublishAsync(message);
     }
 
     public void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class
     {
         TryConnect();
-        _bus.Subscribe(subscriptionId, onMessage);
+        _bus.PubSub.Subscribe(subscriptionId, onMessage);
     }
 
     public void SubscribeAsync<T>(string subscriptionId, Func<T, Task> onMessage) where T : class
     {
         TryConnect();
-        _bus.SubscribeAsync(subscriptionId, onMessage);
+        _bus.PubSub.SubscribeAsync(subscriptionId, onMessage);
     }
 
     public TResponse Request<TRequest, TResponse>(TRequest request) where TRequest : IntegrationEvent
         where TResponse : ResponseMessage
     {
         TryConnect();
-        return _bus.Request<TRequest, TResponse>(request);
+        return _bus.Rpc.Request<TRequest, TResponse>(request);
     }
 
     public async Task<TResponse> RequestAsync<TRequest, TResponse>(TRequest request)
         where TRequest : IntegrationEvent where TResponse : ResponseMessage
     {
         TryConnect();
-        return await _bus.RequestAsync<TRequest, TResponse>(request);
+        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request);
     }
 
     public IDisposable Respond<TRequest, TResponse>(Func<TRequest, TResponse> responder)
         where TRequest : IntegrationEvent where TResponse : ResponseMessage
     {
         TryConnect();
-        return _bus.Respond(responder);
+        return _bus.Rpc.Respond(responder);
     }
 
-    public IDisposable RespondAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> responder)
+    public async Task<IDisposable> RespondAsync<TRequest, TResponse>(Func<TRequest, Task<TResponse>> responder)
         where TRequest : IntegrationEvent where TResponse : ResponseMessage
     {
         TryConnect();
-        return _bus.RespondAsync(responder);
+        return await _bus.Rpc.RespondAsync(responder);
     }
 
     private void TryConnect()
@@ -84,13 +84,14 @@ public class MessageBus : IMessageBus
 
         policy.Execute(() =>
         {
-            _bus = RabbitHutch.CreateBus(_connectionString);
+            _bus = RabbitHutch.CreateBus(_connectionString, s => s.EnableSystemTextJson());
             _advancedBus = _bus.Advanced;
             _advancedBus.Disconnected += OnDisconnect;
         });
     }
 
-    private void OnDisconnect(object s, EventArgs e)
+    // Update the OnDisconnect method signature to match the EventHandler<DisconnectedEventArgs> delegate
+    private void OnDisconnect(object? s, DisconnectedEventArgs e)
     {
         var policy = Policy.Handle<EasyNetQException>()
             .Or<BrokerUnreachableException>()

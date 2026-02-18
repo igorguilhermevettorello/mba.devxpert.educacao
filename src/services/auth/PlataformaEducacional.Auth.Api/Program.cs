@@ -9,6 +9,8 @@ builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false);
 builder.Services.AddIdentityConfiguration(builder.Configuration);
 
+builder.Services.AddMessageBusConfiguration(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
