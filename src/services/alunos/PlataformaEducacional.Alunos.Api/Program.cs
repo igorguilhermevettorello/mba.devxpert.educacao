@@ -1,4 +1,5 @@
 using PlataformaEducacional.Alunos.Api.Configuration;
+using PlataformaEducacional.Alunos.Api.Configuration.Seed;
 using PlataformaEducacional.WebApi.Core.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,4 +19,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseApiConfiguration(app.Environment);
 
+
+app.UseDatabaseMigrationStartData();
 app.Run();
