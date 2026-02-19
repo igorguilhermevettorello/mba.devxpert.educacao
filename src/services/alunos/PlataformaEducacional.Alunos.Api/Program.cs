@@ -19,6 +19,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseApiConfiguration(app.Environment);
 
-
 app.UseDatabaseMigrationStartData();
+
 app.Run();

@@ -41,7 +41,7 @@ public static class DatabaseMigrationStartDataExtension
         if (await context.Alunos.AnyAsync())
             return;
 
-        var aluno = new Aluno(Guid.NewGuid(), "Aluno Teste", "aluno@teste.com", "32009883985");
+        var aluno = new Aluno(Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765"), "Aluno Teste", "aluno.teste@educa.com", "32009883985");
         
         var enderecoCommand = new AdicionarEnderecoCommand(
             "Rua Teste", "123", "Apto 101", "Bairro Teste", "12345678", "Cidade Teste", "SP")

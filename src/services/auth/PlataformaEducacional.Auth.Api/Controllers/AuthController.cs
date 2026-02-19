@@ -15,6 +15,7 @@ namespace PlataformaEducacional.Auth.Api.Controllers;
 [Route("api/identidade")]
 public class AuthController : MainController
 {
+    private readonly ILogger<AuthController> _logger;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly JwtSettings _appSettings;
@@ -24,12 +25,14 @@ public class AuthController : MainController
     public AuthController(SignInManager<IdentityUser> signInManager,
                           UserManager<IdentityUser> userManager,
                           IOptions<JwtSettings> appSettings,
-                          IMessageBus bus)
+                          IMessageBus bus,
+                          ILogger<AuthController> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _appSettings = appSettings.Value;
         _bus = bus;
+        _logger = logger;
     }
 
     [HttpPost("nova-conta")]
@@ -171,8 +174,9 @@ public class AuthController : MainController
         {
             return await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
         }
-        catch
+        catch(Exception ex)
         {
+            _logger.LogError(ex, "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível");
             await _userManager.DeleteAsync(usuario);
             throw;
         }
