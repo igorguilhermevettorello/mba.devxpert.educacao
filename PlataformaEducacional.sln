@@ -37,22 +37,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Aluno
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.Api", "src\services\pagamentos\PlataformaEducacional.Pagamentos.Api\PlataformaEducacional.Pagamentos.Api.csproj", "{ABB56A31-5C66-4566-B93C-21CD2D1A4B81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.Data", "src\services\pagamentos\PlataformaEducacional.Pagamentos.Data\PlataformaEducacional.Pagamentos.Data.csproj", "{9733BA1E-176B-4EB6-A4EE-8BE7046ED1BB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.Application", "src\services\pagamentos\PlataformaEducacional.Pagamentos.Application\PlataformaEducacional.Pagamentos.Application.csproj", "{098AE2DF-EE7D-436A-8C48-CE733A9CDCBE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.Domain", "src\services\pagamentos\PlataformaEducacional.Pagamentos.Domain\PlataformaEducacional.Pagamentos.Domain.csproj", "{DDEDCB61-1666-41E1-84D5-0A1C196CB939}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Bff.Api", "src\services\bff\PlataformaEducacional.Bff.Api\PlataformaEducacional.Bff.Api.csproj", "{10E49B4C-139A-489C-AF73-A0743525DE5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
-	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		global.json = global.json
-		Projeto MBA modulo 4 - alinhamento inicial.txt = Projeto MBA modulo 4 - alinhamento inicial.txt
-		README.md = README.md
-	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.EducaPag", "src\services\pagamentos\PlataformaEducacional.Pagamentos.EducaPag\PlataformaEducacional.Pagamentos.EducaPag.csproj", "{90BBED69-D8E3-4EA9-879C-45F6E9021B54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,22 +89,14 @@ Global
 		{ABB56A31-5C66-4566-B93C-21CD2D1A4B81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABB56A31-5C66-4566-B93C-21CD2D1A4B81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABB56A31-5C66-4566-B93C-21CD2D1A4B81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9733BA1E-176B-4EB6-A4EE-8BE7046ED1BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9733BA1E-176B-4EB6-A4EE-8BE7046ED1BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9733BA1E-176B-4EB6-A4EE-8BE7046ED1BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9733BA1E-176B-4EB6-A4EE-8BE7046ED1BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{098AE2DF-EE7D-436A-8C48-CE733A9CDCBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{098AE2DF-EE7D-436A-8C48-CE733A9CDCBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{098AE2DF-EE7D-436A-8C48-CE733A9CDCBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{098AE2DF-EE7D-436A-8C48-CE733A9CDCBE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDEDCB61-1666-41E1-84D5-0A1C196CB939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDEDCB61-1666-41E1-84D5-0A1C196CB939}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDEDCB61-1666-41E1-84D5-0A1C196CB939}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDEDCB61-1666-41E1-84D5-0A1C196CB939}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10E49B4C-139A-489C-AF73-A0743525DE5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10E49B4C-139A-489C-AF73-A0743525DE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10E49B4C-139A-489C-AF73-A0743525DE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10E49B4C-139A-489C-AF73-A0743525DE5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,10 +117,8 @@ Global
 		{E3F80DDB-D93B-40C8-94C9-57292E4695A8} = {3B502EFE-379E-43C3-83A1-3F5491FAE334}
 		{4F16B5EC-3B09-45E2-B6A1-0459643F1A33} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
 		{ABB56A31-5C66-4566-B93C-21CD2D1A4B81} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
-		{9733BA1E-176B-4EB6-A4EE-8BE7046ED1BB} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
-		{098AE2DF-EE7D-436A-8C48-CE733A9CDCBE} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
-		{DDEDCB61-1666-41E1-84D5-0A1C196CB939} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
 		{10E49B4C-139A-489C-AF73-A0743525DE5E} = {AD32E692-C1E7-4986-A8BB-62A8C47180B9}
+		{90BBED69-D8E3-4EA9-879C-45F6E9021B54} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17631DF5-7B17-4179-996A-7BF900F7D95C}
