@@ -4,7 +4,12 @@ namespace PlataformaEducacional.Alunos.Api.Models;
 
 public class Aluno : Entity, IAggregateRoot
 {
-    protected Aluno() { }
+    private readonly List<Matricula> _matriculas;
+
+    protected Aluno() 
+    { 
+        _matriculas = new List<Matricula>();
+    }
 
     public Aluno(Guid id, string nome, string email, string cpf)
     {
@@ -13,6 +18,7 @@ public class Aluno : Entity, IAggregateRoot
         Email = new Email(email);
         Cpf = new Cpf(cpf);
         Excluido = false;
+        _matriculas = new List<Matricula>();
     }
 
     public string Nome { get; private set; }
@@ -21,6 +27,7 @@ public class Aluno : Entity, IAggregateRoot
     public bool Excluido { get; private set; }
 
     public Endereco Endereco { get; private set; }
+    public IReadOnlyCollection<Matricula> Matriculas => _matriculas;
 
     public void TrocarEmail(string email)
     {
