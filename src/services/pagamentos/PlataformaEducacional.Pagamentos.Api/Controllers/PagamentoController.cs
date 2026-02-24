@@ -1,4 +1,4 @@
-using PlataformaEducacional.WebApi.Core.Identity;
+using PlataformaEducacional.WebApi.Core.Controllers;
 
 namespace PlataformaEducacional.Pagamentos.Api.Controllers
 {
