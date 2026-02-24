@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -179,7 +180,9 @@ public class AuthController : MainController
         {
             _logger.LogError(ex, "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível");
             await _userManager.DeleteAsync(usuario);
-            throw;
+            var validationResult = new ValidationResult();
+            validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure("RabbitMQ", "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível"));
+            return new ResponseMessage(validationResult);
         }
     }
 }
