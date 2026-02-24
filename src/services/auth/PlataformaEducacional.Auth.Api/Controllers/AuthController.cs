@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using PlataformaEducacional.Auth.Api.Models;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
+using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

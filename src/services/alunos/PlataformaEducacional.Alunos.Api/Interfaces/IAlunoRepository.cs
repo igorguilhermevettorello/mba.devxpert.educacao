@@ -1,6 +1,7 @@
-﻿using PlataformaEducacional.Core.Data;
+﻿using PlataformaEducacional.Alunos.Api.Models;
+using PlataformaEducacional.Core.Data;
 
-namespace PlataformaEducacional.Alunos.Api.Models;
+namespace PlataformaEducacional.Alunos.Api.Interfaces;
 
 public interface IAlunoRepository : IRepository<Aluno>
 {

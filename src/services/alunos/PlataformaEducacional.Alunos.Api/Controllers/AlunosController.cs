@@ -2,8 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Alunos.Api.Application.Commands;
-using PlataformaEducacional.Alunos.Api.Models;
-using PlataformaEducacional.WebApi.Core.Identity;
+using PlataformaEducacional.Alunos.Api.Interfaces;
+using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Alunos.Api.Controllers;

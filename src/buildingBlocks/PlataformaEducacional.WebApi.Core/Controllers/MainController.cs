@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace PlataformaEducacional.WebApi.Core.Identity;
+namespace PlataformaEducacional.WebApi.Core.Controllers;
 
 [ApiController]
 [Route("[controller]")]

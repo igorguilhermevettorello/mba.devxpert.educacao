@@ -4,7 +4,7 @@ using PlataformaEducacional.Alunos.Api.Application.Commands;
 using PlataformaEducacional.Alunos.Api.Application.Events;
 using PlataformaEducacional.Alunos.Api.Data;
 using PlataformaEducacional.Alunos.Api.Data.Repository;
-using PlataformaEducacional.Alunos.Api.Models;
+using PlataformaEducacional.Alunos.Api.Interfaces;
 using PlataformaEducacional.Core.Mediator;
 
 namespace PlataformaEducacional.Alunos.Api.Configuration;
