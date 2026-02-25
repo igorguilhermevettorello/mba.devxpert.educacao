@@ -43,6 +43,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.EducaPag", "src\services\pagamentos\PlataformaEducacional.Pagamentos.EducaPag\PlataformaEducacional.Pagamentos.EducaPag.csproj", "{90BBED69-D8E3-4EA9-879C-45F6E9021B54}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pedidos", "pedidos", "{85831DF0-AC02-4344-9B53-821EADFFDC10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.API", "src\services\pedidos\PlataformaEducacional.Pedidos.API\PlataformaEducacional.Pedidos.API.csproj", "{2A9B314C-4C52-43B4-8C08-CF43E3EA5681}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E69B37B7-8487-43D2-8BF5-DEC4A344AACD} = {E69B37B7-8487-43D2-8BF5-DEC4A344AACD}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Domain", "src\services\pedidos\NSE.Pedidos.Domain\PlataformaEducacional.Pedidos.Domain.csproj", "{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Infra", "src\services\pedidos\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Infra.csproj", "{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +108,18 @@ Global
 		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90BBED69-D8E3-4EA9-879C-45F6E9021B54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A9B314C-4C52-43B4-8C08-CF43E3EA5681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A9B314C-4C52-43B4-8C08-CF43E3EA5681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A9B314C-4C52-43B4-8C08-CF43E3EA5681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A9B314C-4C52-43B4-8C08-CF43E3EA5681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +142,10 @@ Global
 		{ABB56A31-5C66-4566-B93C-21CD2D1A4B81} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
 		{10E49B4C-139A-489C-AF73-A0743525DE5E} = {AD32E692-C1E7-4986-A8BB-62A8C47180B9}
 		{90BBED69-D8E3-4EA9-879C-45F6E9021B54} = {47D0DC8B-4ACE-4F9A-B8AC-2F0B610C236E}
+		{85831DF0-AC02-4344-9B53-821EADFFDC10} = {C3BF6112-10CC-47ED-8B33-75D8095ABA30}
+		{2A9B314C-4C52-43B4-8C08-CF43E3EA5681} = {85831DF0-AC02-4344-9B53-821EADFFDC10}
+		{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11} = {85831DF0-AC02-4344-9B53-821EADFFDC10}
+		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF} = {85831DF0-AC02-4344-9B53-821EADFFDC10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17631DF5-7B17-4179-996A-7BF900F7D95C}
