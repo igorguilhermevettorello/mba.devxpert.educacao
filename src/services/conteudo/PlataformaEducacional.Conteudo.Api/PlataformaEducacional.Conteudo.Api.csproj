@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,8 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.23" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.23" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.23" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.23" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.23" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Conteudo.Application\PlataformaEducacional.Conteudo.Application.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Conteudo.Data\PlataformaEducacional.Conteudo.Data.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Conteudo.Domain\PlataformaEducacional.Conteudo.Domain.csproj" />
   </ItemGroup>
 
 </Project>
