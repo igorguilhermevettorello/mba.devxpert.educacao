@@ -1,14 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NetDevPack.Data;
+using PlataformaEducacional.Core.Data;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PlataformaEducacional.Pedidos.Infra.Data.Repository
+namespace PlataformaEducacional.Pedidos.Data.Repository
 {
     public class PedidoRepository : IPedidoRepository
     {

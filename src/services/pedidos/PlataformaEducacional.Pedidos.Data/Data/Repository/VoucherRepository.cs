@@ -1,12 +1,8 @@
-﻿using NetDevPack.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PlataformaEducacional.Core.Data;
 using PlataformaEducacional.Pedidos.Domain.Vouchers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PlataformaEducacional.Pedidos.Infra.Data.Repository
+namespace PlataformaEducacional.Pedidos.Data.Repository
 {
     public class VoucherRepository : IVoucherRepository
     {

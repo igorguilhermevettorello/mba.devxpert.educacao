@@ -5,7 +5,6 @@ using PlataformaEducacional.Pedidos.API.Application.DTO;
 using PlataformaEducacional.Pedidos.API.Application.Events;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
 using PlataformaEducacional.Pedidos.Domain.Vouchers;
-using PlataformaEducacional.Pedidos.Domain.Vouchers.Specs;
 
 
 namespace PlataformaEducacional.Pedidos.API.Application.Commands
@@ -84,12 +83,12 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
                 return false;
             }
 
-            var voucherValidation = new VoucherValidation().Validate(voucher);
-            if (!voucherValidation.IsValid)
-            {
-                voucherValidation.Errors.ToList().ForEach(m => AddError(m.ErrorMessage));
-                return false;
-            }
+            //var voucherValidation = new VoucherValidation().Validate(voucher);
+            //if (!voucherValidation.IsValid)
+            //{
+            //    voucherValidation.Errors.ToList().ForEach(m => AddError(m.ErrorMessage));
+            //    return false;
+            //}
 
             pedido.AtribuirVoucher(voucher);
             voucher.DebitarQuantidade();

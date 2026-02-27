@@ -1,4 +1,5 @@
 ﻿using PlataformaEducacional.MessageBus;
+using PlataformaEducacional.Core.Extensions;
 
 namespace PlataformaEducacional.Pedidos.API.Configuration
 {

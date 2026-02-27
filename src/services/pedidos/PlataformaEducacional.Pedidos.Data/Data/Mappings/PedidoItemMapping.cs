@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlataformaEducacional.Pedidos.Infra.Data.Mappings
+namespace PlataformaEducacional.Pedidos.Data.Mappings
 {
     public class PedidoItemMapping : IEntityTypeConfiguration<PedidoItem>
     {

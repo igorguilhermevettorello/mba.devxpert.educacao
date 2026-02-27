@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
 
-namespace PlataformaEducacional.Pedidos.Infra.Data.Mappings
+namespace PlataformaEducacional.Pedidos.Data.Mappings
 {
     public class PedidoMapping : IEntityTypeConfiguration<Pedido>
     {

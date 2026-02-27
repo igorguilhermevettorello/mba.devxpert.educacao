@@ -52,7 +52,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Domain", "src\services\pedidos\NSE.Pedidos.Domain\PlataformaEducacional.Pedidos.Domain.csproj", "{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Infra", "src\services\pedidos\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Infra.csproj", "{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Data", "src\services\pedidos\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Data.csproj", "{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

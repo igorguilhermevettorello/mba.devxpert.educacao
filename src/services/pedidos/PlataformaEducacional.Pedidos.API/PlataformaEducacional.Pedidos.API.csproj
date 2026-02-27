@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\**" />
+    <Content Remove="Migrations\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.23" />
@@ -24,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
     <ProjectReference Include="..\NSE.Pedidos.Domain\PlataformaEducacional.Pedidos.Domain.csproj" />
@@ -35,7 +38,7 @@
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
-    <ProjectReference Include="..\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Infra.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Data.csproj" />
   </ItemGroup>
 
 </Project>

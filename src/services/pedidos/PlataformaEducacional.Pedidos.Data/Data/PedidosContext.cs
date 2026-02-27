@@ -1,19 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using NetDevPack.Mediator;
 using PlataformaEducacional.Core.Data;
 using PlataformaEducacional.Core.DomainObjects;
+using PlataformaEducacional.Core.Mediator;
 using PlataformaEducacional.Core.Messages;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
 using PlataformaEducacional.Pedidos.Domain.Vouchers;
-using FluentValidation.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PlataformaEducacional.Pedidos.Infra.Data
+namespace PlataformaEducacional.Pedidos.Data
 {
     public class PedidosContext : DbContext, IUnitOfWork
     {
@@ -89,7 +84,7 @@ namespace PlataformaEducacional.Pedidos.Infra.Data
 
             var tasks = domainEvents
                 .Select(async (domainEvent) => {
-                    await mediator.PublicarEventos(domainEvent);
+                    await mediator.PublishEvent(domainEvent);
                 });
 
             await Task.WhenAll(tasks);
