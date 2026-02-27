@@ -4,7 +4,6 @@ namespace PlataformaEducacional.Alunos.Api.Models;
 
 public class Aluno : Entity, IAggregateRoot
 {
-
     protected Aluno() 
     { 
         _matriculas = new List<Matricula>();
