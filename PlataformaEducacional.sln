@@ -40,19 +40,28 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Bff.Api", "src\services\bff\PlataformaEducacional.Bff.Api\PlataformaEducacional.Bff.Api.csproj", "{10E49B4C-139A-489C-AF73-A0743525DE5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		global.json = global.json
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.EducaPag", "src\services\pagamentos\PlataformaEducacional.Pagamentos.EducaPag\PlataformaEducacional.Pagamentos.EducaPag.csproj", "{90BBED69-D8E3-4EA9-879C-45F6E9021B54}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pedidos", "pedidos", "{85831DF0-AC02-4344-9B53-821EADFFDC10}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.API", "src\services\pedidos\PlataformaEducacional.Pedidos.API\PlataformaEducacional.Pedidos.API.csproj", "{2A9B314C-4C52-43B4-8C08-CF43E3EA5681}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E69B37B7-8487-43D2-8BF5-DEC4A344AACD} = {E69B37B7-8487-43D2-8BF5-DEC4A344AACD}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Domain", "src\services\pedidos\NSE.Pedidos.Domain\PlataformaEducacional.Pedidos.Domain.csproj", "{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pedidos.Data", "src\services\pedidos\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Data.csproj", "{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Alunos.Application", "src\services\alunos\PlataformaEducacional.Alunos.Application\PlataformaEducacional.Alunos.Application.csproj", "{49AC8C59-8441-4023-B5EC-3A1EC9930EF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Alunos.Data", "src\services\alunos\PlataformaEducacional.Alunos.Data\PlataformaEducacional.Alunos.Data.csproj", "{9C12719D-04EB-442C-B13A-D18C57616254}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Alunos.Domain", "src\services\alunos\PlataformaEducacional.Alunos.Domain\PlataformaEducacional.Alunos.Domain.csproj", "{734243B9-50CA-4813-805E-32BB444C92DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,6 +129,18 @@ Global
 		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49AC8C59-8441-4023-B5EC-3A1EC9930EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49AC8C59-8441-4023-B5EC-3A1EC9930EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49AC8C59-8441-4023-B5EC-3A1EC9930EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49AC8C59-8441-4023-B5EC-3A1EC9930EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C12719D-04EB-442C-B13A-D18C57616254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C12719D-04EB-442C-B13A-D18C57616254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C12719D-04EB-442C-B13A-D18C57616254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C12719D-04EB-442C-B13A-D18C57616254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{734243B9-50CA-4813-805E-32BB444C92DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{734243B9-50CA-4813-805E-32BB444C92DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{734243B9-50CA-4813-805E-32BB444C92DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{734243B9-50CA-4813-805E-32BB444C92DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,6 +167,9 @@ Global
 		{2A9B314C-4C52-43B4-8C08-CF43E3EA5681} = {85831DF0-AC02-4344-9B53-821EADFFDC10}
 		{5CEE1C7A-EAA6-4D05-AFAA-6F31E97BAB11} = {85831DF0-AC02-4344-9B53-821EADFFDC10}
 		{E9363FF5-7874-470F-A6BE-5CEAB13F28BF} = {85831DF0-AC02-4344-9B53-821EADFFDC10}
+		{49AC8C59-8441-4023-B5EC-3A1EC9930EF9} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
+		{9C12719D-04EB-442C-B13A-D18C57616254} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
+		{734243B9-50CA-4813-805E-32BB444C92DA} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17631DF5-7B17-4179-996A-7BF900F7D95C}

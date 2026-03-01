@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PlataformaEducacional.Alunos.Api.Application.Commands;
-using PlataformaEducacional.Alunos.Api.Data;
-using PlataformaEducacional.Alunos.Api.Models;
+using PlataformaEducacional.Alunos.Application.Commands;
+using PlataformaEducacional.Alunos.Data;
+using PlataformaEducacional.Alunos.Domain.Models;
 
 namespace PlataformaEducacional.Alunos.Api.Configuration.Seed;
 
@@ -43,13 +43,8 @@ public static class DatabaseMigrationStartDataExtension
 
         var aluno = new Aluno(Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765"), "Aluno Teste", "aluno.teste@educa.com", "32009883985");
         
-        var enderecoCommand = new AdicionarEnderecoCommand(
-            "Rua Teste", "123", "Apto 101", "Bairro Teste", "12345678", "Cidade Teste", "SP")
-        {
-            AlunoId = aluno.Id
-        };
-        
-        var endereco = new Endereco(enderecoCommand);
+        var endereco = new Endereco(
+            "Rua Teste", "123", "Apto 101", "Bairro Teste", "12345678", "Cidade Teste", "SP", aluno.Id);
         aluno.AtribuirEndereco(endereco);
 
         context.Alunos.Add(aluno);

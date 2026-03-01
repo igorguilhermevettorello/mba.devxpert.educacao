@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlataformaEducacional.Alunos.Api.Application.Commands;
-using PlataformaEducacional.Alunos.Api.Interfaces;
+using PlataformaEducacional.Alunos.Application.Commands;
+using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
@@ -21,6 +21,50 @@ public class AlunosController : MainController
         _mediator = mediator;
         _user = user;
     }
+
+    [HttpPost("matricula")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RealizarMatricula([FromBody] RealizarMatriculaCommand matriculaCommand)
+    {
+        var command = new RealizarMatriculaCommand(_user.ObterUserId(), matriculaCommand.CursoId, matriculaCommand.Valor);
+
+        return CustomResponse(await _mediator.Send(command));
+    }
+
+    [HttpPost("progresso")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RegistrarProgresso([FromBody] RegistrarProgressoCommand progressoCommand)
+    {
+        var command = new RegistrarProgressoCommand(_user.ObterUserId(), progressoCommand.AulaId);
+
+        return CustomResponse(await _mediator.Send(command));
+    }
+
+    [HttpPost("certificado")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> EmitirCertificado([FromBody] EmitirCertificadoCommand certificadoCommand)
+    {
+        var command = new EmitirCertificadoCommand(_user.ObterUserId(), certificadoCommand.MatriculaId);
+
+        return CustomResponse(await _mediator.Send(command));
+    }
+
+    [HttpGet("historico")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterHistorico()
+    {
+        var matriculas = await _alunosRepository.ObterMatriculasPorAluno(_user.ObterUserId());
+
+        if (matriculas == null || !matriculas.Any())
+            return NotFound("Nenhuma matrícula encontrada para este aluno.");
+
+        return CustomResponse(matriculas);
+    }
+
 
     [HttpGet("endereco")]
     [ProducesResponseType(StatusCodes.Status200OK)]

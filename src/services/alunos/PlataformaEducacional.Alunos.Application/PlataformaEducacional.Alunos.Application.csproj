@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PlataformaEducacional.Alunos.Domain\PlataformaEducacional.Alunos.Domain.csproj" />
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

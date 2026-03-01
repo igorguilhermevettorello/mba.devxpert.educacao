@@ -1,4 +1,4 @@
-﻿using PlataformaEducacional.Alunos.Api.Services;
+﻿using PlataformaEducacional.Alunos.Application.Services;
 using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.Core.Extensions;
 
