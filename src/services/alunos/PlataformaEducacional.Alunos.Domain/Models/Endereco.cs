@@ -1,5 +1,5 @@
-﻿
-using PlataformaEducacional.Core.DomainObjects;
+﻿using PlataformaEducacional.Core.DomainObjects;
+
 
 namespace PlataformaEducacional.Alunos.Domain.Models;
 
