@@ -65,6 +65,6 @@ namespace PlataformaEducacional.Core.DomainObjects
         public override string ToString()
         {
             return $"{GetType().Name} [Id={Id}]";
-        }
+        }        
     }
 }

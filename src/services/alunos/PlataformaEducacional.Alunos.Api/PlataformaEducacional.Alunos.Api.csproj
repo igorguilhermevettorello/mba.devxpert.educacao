@@ -10,6 +10,8 @@
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Alunos.Application\PlataformaEducacional.Alunos.Application.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Alunos.Data\PlataformaEducacional.Alunos.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +24,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

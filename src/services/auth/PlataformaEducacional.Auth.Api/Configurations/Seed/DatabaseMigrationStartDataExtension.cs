@@ -70,6 +70,7 @@ public static class DatabaseMigrationStartDataExtension
 
     private static async Task EnsureSeedSecurity(UserManager<IdentityUser> userManager, ApplicationDbContext contextSecurity)
     {
+        var userEmail = "aluno.teste@educa.com";
         var userAdminEmail = "admin@educa.com";
 
         if (await userManager.FindByEmailAsync(userAdminEmail) == null)
@@ -94,8 +95,34 @@ public static class DatabaseMigrationStartDataExtension
             {
                 await userManager.AddToRoleAsync(userAdmin, TipoUsuario.Administrador.GetDescription().ToUpperInvariant());
             }
-
-            contextSecurity.SaveChanges();
         }
+
+            
+        if (await userManager.FindByEmailAsync(userEmail) == null)
+        {
+            var userAluno = new IdentityUser
+            {
+                Id = "65EFB6D9-2374-4E87-8D83-C8E76C2B9765",
+                UserName = "AlunoTeste",
+                NormalizedUserName = "ALUNOTESTE",
+                Email = userEmail,
+                NormalizedEmail = userEmail.ToUpperInvariant(),
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0
+            };
+
+            var result = await userManager.CreateAsync(userAluno, "Aluno@123");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(userAluno, TipoUsuario.Aluno.GetDescription().ToUpperInvariant());
+            }
+        }
+
+        contextSecurity.SaveChanges();
     }
 }

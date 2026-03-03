@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlataformaEducacional.Auth.Api.Models;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
+using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,6 +17,7 @@ namespace PlataformaEducacional.Auth.Api.Controllers;
 [Route("api/identidade")]
 public class AuthController : MainController
 {
+    private readonly ILogger<AuthController> _logger;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly JwtSettings _appSettings;
@@ -24,12 +27,14 @@ public class AuthController : MainController
     public AuthController(SignInManager<IdentityUser> signInManager,
                           UserManager<IdentityUser> userManager,
                           IOptions<JwtSettings> appSettings,
-                          IMessageBus bus)
+                          IMessageBus bus,
+                          ILogger<AuthController> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _appSettings = appSettings.Value;
         _bus = bus;
+        _logger = logger;
     }
 
     [HttpPost("nova-conta")]
@@ -48,7 +53,7 @@ public class AuthController : MainController
 
         if (result.Succeeded)
         {
-            var clienteResult = await RegistrarCliente(usuarioRegistro);
+            var clienteResult = await RegistrarAluno(usuarioRegistro);
 
             if (!clienteResult.ValidationResult.IsValid)
             {
@@ -160,7 +165,7 @@ public class AuthController : MainController
     private static long ToUnixEpochDate(DateTime date)
         => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
 
-    private async Task<ResponseMessage> RegistrarCliente(UsuarioRegistro usuarioRegistro)
+    private async Task<ResponseMessage> RegistrarAluno(UsuarioRegistro usuarioRegistro)
     {
         var usuario = await _userManager.FindByEmailAsync(usuarioRegistro.Email);
 
@@ -171,10 +176,13 @@ public class AuthController : MainController
         {
             return await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
         }
-        catch
+        catch(Exception ex)
         {
+            _logger.LogError(ex, "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível");
             await _userManager.DeleteAsync(usuario);
-            throw;
+            var validationResult = new ValidationResult();
+            validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure("RabbitMQ", "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível"));
+            return new ResponseMessage(validationResult);
         }
     }
 }

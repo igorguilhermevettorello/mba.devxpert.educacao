@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlataformaEducacional.Alunos.Api.Data;
+using PlataformaEducacional.Alunos.Data;
 
 namespace PlataformaEducacional.Alunos.Api.Configuration
 {

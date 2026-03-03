@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>00ad6403-84bb-4809-be16-5c2d7a98ce93</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\**" />
+    <Content Remove="Migrations\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
+    <ProjectReference Include="..\NSE.Pedidos.Domain\PlataformaEducacional.Pedidos.Domain.csproj" />
+
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Pedidos.Data\PlataformaEducacional.Pedidos.Data.csproj" />
+  </ItemGroup>
+
+</Project>

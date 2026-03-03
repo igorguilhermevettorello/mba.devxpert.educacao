@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
+    <ProjectReference Include="..\PlataformaEducacional.Conteudo.Domain\PlataformaEducacional.Conteudo.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

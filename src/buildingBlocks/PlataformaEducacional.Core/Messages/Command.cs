@@ -9,5 +9,6 @@ namespace PlataformaEducacional.Core.Messages
         public ValidationResult ValidationResult { get; set; }
 
         public abstract bool IsValid();
+        
     }
 }
