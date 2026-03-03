@@ -11,17 +11,14 @@ using PlataformaEducacional.Pedidos.Data;
 namespace PlataformaEducacional.Pedidos.Data.Migrations
 {
     [DbContext(typeof(PedidosContext))]
-    [Migration("20260227191138_StartDbPedidos")]
-    partial class StartDbPedidos
+    [Migration("20260303040100_PedidoStart")]
+    partial class PedidoStart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.23");
-
-            modelBuilder.HasSequence<int>("MinhaSequencia")
-                .StartsAt(1000L);
 
             modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Pedido", b =>
                 {
@@ -33,9 +30,8 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Codigo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValueSql("NEXT VALUE FOR MinhaSequencia");
+                        .HasMaxLength(10)
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("TEXT");

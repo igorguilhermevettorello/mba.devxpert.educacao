@@ -35,7 +35,9 @@ namespace PlataformaEducacional.Pedidos.Data.Mappings
             });
 
             builder.Property(c => c.Codigo)
-                .HasDefaultValueSql("NEXT VALUE FOR MinhaSequencia");
+                .HasMaxLength(10)
+                .IsRequired();
+            //    .HasDefaultValueSql("NEXT VALUE FOR MinhaSequencia");
 
             // 1 : N => Pedido : PedidoItems
             builder.HasMany(c => c.PedidoItems)

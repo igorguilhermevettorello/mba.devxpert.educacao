@@ -17,9 +17,6 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.23");
 
-            modelBuilder.HasSequence<int>("MinhaSequencia")
-                .StartsAt(1000L);
-
             modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Pedido", b =>
                 {
                     b.Property<Guid>("Id")
@@ -30,9 +27,8 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Codigo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValueSql("NEXT VALUE FOR MinhaSequencia");
+                        .HasMaxLength(10)
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("TEXT");

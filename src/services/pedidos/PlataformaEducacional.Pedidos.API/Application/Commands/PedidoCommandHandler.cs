@@ -30,6 +30,9 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
             // Mapear Pedido
             var pedido = MapearPedido(message);
 
+            var pedidoCodigo = await _pedidoRepository.ObterProximoCodigo();
+            pedido.AtribuirCodigo(pedidoCodigo);
+
             // Aplicar voucher se houver
             if (!await AplicarVoucher(message, pedido)) return ValidationResult;
 

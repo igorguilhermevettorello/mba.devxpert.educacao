@@ -42,6 +42,15 @@ namespace PlataformaEducacional.Pedidos.Data.Repository
             _context.Pedidos.Update(pedido);
         }
 
+        public async Task<int> ObterProximoCodigo()
+        {
+            // Supondo que o código do pedido seja um número sequencial armazenado em uma coluna "Codigo"
+            var ultimoPedido = await _context.Pedidos
+                                             .OrderByDescending(p => p.Codigo)
+                                             .FirstOrDefaultAsync();
+
+            return (ultimoPedido != null) ? ultimoPedido.Codigo + 1 : 1000;
+        }
 
         public async Task<PedidoItem> ObterItemPorId(Guid id)
         {
@@ -50,8 +59,7 @@ namespace PlataformaEducacional.Pedidos.Data.Repository
 
         public async Task<PedidoItem> ObterItemPorPedido(Guid pedidoId, Guid produtoId)
         {
-            return await _context.PedidoItems
-                .FirstOrDefaultAsync(p => p.ProdutoId == produtoId && p.PedidoId == pedidoId);
+            return await _context.PedidoItems.FirstOrDefaultAsync(p => p.ProdutoId == produtoId && p.PedidoId == pedidoId);
         }
 
         public void Dispose()

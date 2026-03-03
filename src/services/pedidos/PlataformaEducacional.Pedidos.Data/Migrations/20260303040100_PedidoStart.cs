@@ -6,15 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PlataformaEducacional.Pedidos.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class StartDbPedidos : Migration
+    public partial class PedidoStart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateSequence<int>(
-                name: "MinhaSequencia",
-                startValue: 1000L);
-
             migrationBuilder.CreateTable(
                 name: "Vouchers",
                 columns: table => new
@@ -41,7 +37,7 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Codigo = table.Column<int>(type: "INTEGER", nullable: false, defaultValueSql: "NEXT VALUE FOR MinhaSequencia"),
+                    Codigo = table.Column<int>(type: "INTEGER", maxLength: 10, nullable: false),
                     ClienteId = table.Column<Guid>(type: "TEXT", nullable: false),
                     VoucherId = table.Column<Guid>(type: "TEXT", nullable: true),
                     VoucherUtilizado = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -111,9 +107,6 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Vouchers");
-
-            migrationBuilder.DropSequence(
-                name: "MinhaSequencia");
         }
     }
 }

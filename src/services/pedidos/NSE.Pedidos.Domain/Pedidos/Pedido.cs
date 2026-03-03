@@ -45,6 +45,11 @@ namespace PlataformaEducacional.Pedidos.Domain.Pedidos
             PedidoStatus = PedidoStatus.Autorizado;
         }
 
+        public void AtribuirCodigo(int codigo)
+        {
+            Codigo = codigo;
+        }
+
         public void AtribuirVoucher(Voucher voucher)
         {
             VoucherUtilizado = true;
