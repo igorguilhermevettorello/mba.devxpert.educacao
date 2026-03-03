@@ -6,6 +6,12 @@ namespace PlataformaEducacional.Pedidos.Data.Mappings
 {
     public class PedidoMapping : IEntityTypeConfiguration<Pedido>
     {
+        private readonly bool isSqlServer;
+        public PedidoMapping(bool isSqlServer = false)
+        {
+            this.isSqlServer = isSqlServer;
+        }
+
         public void Configure(EntityTypeBuilder<Pedido> builder)
         {
             builder.HasKey(c => c.Id);
@@ -34,11 +40,18 @@ namespace PlataformaEducacional.Pedidos.Data.Mappings
                     .HasColumnName("Estado");
             });
 
-            builder.Property(c => c.Codigo)
-                .HasMaxLength(10)
-                .IsRequired();
-            //    .HasDefaultValueSql("NEXT VALUE FOR MinhaSequencia");
-
+            if (isSqlServer)
+            {
+                builder.Property(c => c.Codigo)
+                       .HasDefaultValueSql("NEXT VALUE FOR MinhaSequencia");
+            }
+            else
+            {
+                builder.Property(c => c.Codigo)
+                       .HasMaxLength(10)
+                       .IsRequired();
+            }
+            
             // 1 : N => Pedido : PedidoItems
             builder.HasMany(c => c.PedidoItems)
                 .WithOne(c => c.Pedido)

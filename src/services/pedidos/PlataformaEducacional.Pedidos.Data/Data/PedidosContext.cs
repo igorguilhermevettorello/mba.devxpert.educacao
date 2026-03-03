@@ -5,6 +5,7 @@ using PlataformaEducacional.Core.Data;
 using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.Core.Mediator;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.Pedidos.Data.Mappings;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
 using PlataformaEducacional.Pedidos.Domain.Vouchers;
 
@@ -39,8 +40,10 @@ namespace PlataformaEducacional.Pedidos.Data
             foreach (var relationship in modelBuilder.Model.GetEntityTypes()
                 .SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
 
-            if (!Database.IsSqlite())
+            if (Database.IsSqlServer())
             {
+                modelBuilder.ApplyConfiguration(new PedidoMapping(true));
+
                 modelBuilder.HasSequence<int>("MinhaSequencia")
                             .StartsAt(1000)
                             .IncrementsBy(1);
