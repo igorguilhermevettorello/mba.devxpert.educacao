@@ -1,11 +1,13 @@
 using PlataformaEducacional.Alunos.Api.Configuration;
 using PlataformaEducacional.Alunos.Api.Configuration.Seed;
 using PlataformaEducacional.WebApi.Core.Configurations;
+using PlataformaEducacional.WebApi.Core.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Alunos API");
+builder.Services.AddJwtConfiguration(builder.Configuration);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 

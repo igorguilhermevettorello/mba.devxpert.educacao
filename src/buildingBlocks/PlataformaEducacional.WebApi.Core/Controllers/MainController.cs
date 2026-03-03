@@ -14,6 +14,11 @@ public class MainController : Controller
     {
         if (OperacaoValida())
         {
+            if (result == null)
+            {
+                return Ok(new { sucesso = true, mensagem = "Operação realizada com sucesso" });
+            }
+
             return Ok(result);
         }
 

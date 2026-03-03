@@ -1,6 +1,9 @@
-﻿using FluentValidation.Results;
+﻿using EasyNetQ;
+using FluentValidation.Results;
 using MediatR;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.Core.Messages.Integration;
+using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.Pedidos.API.Application.DTO;
 using PlataformaEducacional.Pedidos.API.Application.Events;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
@@ -14,6 +17,7 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
     {
         private readonly IPedidoRepository _pedidoRepository;
         private readonly IVoucherRepository _voucherRepository;
+        private readonly IMessageBus bus;
 
         public PedidoCommandHandler(IVoucherRepository voucherRepository,
                                     IPedidoRepository pedidoRepository)
@@ -40,7 +44,7 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
             if (!ValidarPedido(pedido)) return ValidationResult;
 
             // Processar pagamento
-            if (!ProcessarPagamento(pedido)) return ValidationResult;
+            if (!await ProcessarPagamento(pedido, message)) return ValidationResult;
 
             // Se pagamento tudo ok!
             pedido.AutorizarPedido();
@@ -57,19 +61,33 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
 
         private Pedido MapearPedido(AdicionarPedidoCommand message)
         {
-            var endereco = new Endereco
-            {
-                Logradouro = message.Endereco.Logradouro,
-                Numero = message.Endereco.Numero,
-                Complemento = message.Endereco.Complemento,
-                Bairro = message.Endereco.Bairro,
-                Cep = message.Endereco.Cep,
-                Cidade = message.Endereco.Cidade,
-                Estado = message.Endereco.Estado
-            };
+            var endereco = (Endereco)Activator.CreateInstance(
+                typeof(Endereco),
+                nonPublic: true
+            );
 
-            var pedido = new Pedido(message.ClienteId, message.ValorTotal, message.PedidoItems.Select(PedidoItemDTO.ParaPedidoItem).ToList(),
-                message.VoucherUtilizado, message.Desconto);
+            typeof(Endereco).GetProperty(nameof(Endereco.Logradouro))!
+                .SetValue(endereco, message.Endereco.Logradouro);
+            typeof(Endereco).GetProperty(nameof(Endereco.Numero))!
+                .SetValue(endereco, message.Endereco.Numero);
+            typeof(Endereco).GetProperty(nameof(Endereco.Complemento))!
+                .SetValue(endereco, message.Endereco.Complemento);
+            typeof(Endereco).GetProperty(nameof(Endereco.Bairro))!
+                .SetValue(endereco, message.Endereco.Bairro);
+            typeof(Endereco).GetProperty(nameof(Endereco.Cep))!
+                .SetValue(endereco, message.Endereco.Cep);
+            typeof(Endereco).GetProperty(nameof(Endereco.Cidade))!
+                .SetValue(endereco, message.Endereco.Cidade);
+            typeof(Endereco).GetProperty(nameof(Endereco.Estado))!
+                .SetValue(endereco, message.Endereco.Estado);
+
+            var pedido = new Pedido(
+                message.ClienteId,
+                message.ValorTotal,
+                message.PedidoItems.Select(PedidoItemDTO.ParaPedidoItem).ToList(),
+                message.VoucherUtilizado,
+                message.Desconto
+            );
 
             pedido.AtribuirEndereco(endereco);
             return pedido;
@@ -123,9 +141,31 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
             return true;
         }
 
-        public bool ProcessarPagamento(Pedido pedido)
+        public async Task<bool> ProcessarPagamento(Pedido pedido, AdicionarPedidoCommand message)
         {
-            return true;
+
+            var pedidoIniciado = new PedidoIniciadoIntegrationEvent
+            {
+                PedidoId = pedido.Id,
+                ClienteId = pedido.ClienteId,
+                TipoPagamento = 1, // Fixo, Alterar se tiver mais de um tipo de pagamento
+                Valor = pedido.ValorTotal,
+                NomeCartao = message.NomeCartao,
+                NumeroCartao = message.NumeroCartao,
+                MesAnoVencimento = message.ExpiracaoCartao,
+                CVV = message.CvvCartao
+            };
+
+            var result = await bus.RequestAsync<PedidoIniciadoIntegrationEvent, ResponseMessage>(pedidoIniciado);
+
+            if (result.ValidationResult.IsValid) return true;
+
+            foreach (var error in result.ValidationResult.Errors)
+            {
+                AddError(error.ErrorMessage);
+            }
+
+            return false;
         }
     }
 }
