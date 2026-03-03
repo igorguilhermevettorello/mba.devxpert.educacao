@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace PlataformaEducacional.Alunos.Api.Models
+namespace PlataformaEducacional.Alunos.Api.DTOs.Matriculas
 {
-    public class MatricularAlunoViewModel
+    public class MatricularAlunoDTO
     {
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public Guid AlunoId { get; set; }

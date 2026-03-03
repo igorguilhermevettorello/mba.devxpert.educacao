@@ -17,6 +17,9 @@ public static class DependencyInjectionConfig
         services.AddScoped<IMediatorHandler, MediatorHandler>();
         services.AddScoped<IRequestHandler<RegistrarAlunoCommand, ValidationResult>, AlunoCommandHandler>();
         services.AddScoped<IRequestHandler<RealizarMatriculaCommand, ValidationResult>, AlunoCommandHandler>();
+        services.AddScoped<IRequestHandler<AdicionarEnderecoCommand, ValidationResult>, AlunoCommandHandler>();
+        services.AddScoped<IRequestHandler<RegistrarProgressoCommand, ValidationResult>, AlunoCommandHandler>();
+        services.AddScoped<IRequestHandler<EmitirCertificadoCommand, ValidationResult>, AlunoCommandHandler>();
 
         services.AddScoped<INotificationHandler<AlunoRegistradoEvent>, AlunoEventHandler>();
 
