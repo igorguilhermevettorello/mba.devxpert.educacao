@@ -1,14 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PlataformaEducacional.Alunos.Api.Models;
 using PlataformaEducacional.Alunos.Application.Commands;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
+using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Alunos.Api.Controllers;
 
-[Authorize]
+//[Authorize]
 public class AlunosController : MainController
 {
     private readonly IAlunoRepository _alunosRepository;
@@ -25,11 +27,18 @@ public class AlunosController : MainController
     [HttpPost("matricula")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RealizarMatricula([FromBody] RealizarMatriculaCommand matriculaCommand)
+    public async Task<IActionResult> RealizarMatricula([FromBody] MatricularAlunoViewModel model)
     {
-        var command = new RealizarMatriculaCommand(_user.ObterUserId(), matriculaCommand.CursoId, matriculaCommand.Valor);
+        //var alunoId = _user.ObterUserId();
+        var alunoId = model.AlunoId;
 
-        return CustomResponse(await _mediator.Send(command));
+        if (alunoId != model.AlunoId)
+            throw new DomainException("Aluno não identificado");
+
+        var command = new RealizarMatriculaCommand(alunoId, model.CursoId, model.Valor);
+        var result = await _mediator.Send(command);
+
+        return CustomResponse(result);
     }
 
     [HttpPost("progresso")]
@@ -87,7 +96,7 @@ public class AlunosController : MainController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AdicionarEndereco(AdicionarEnderecoCommand endereco)
     {
-        endereco.AlunoId = _user.ObterUserId(); 
+        endereco.AlunoId = _user.ObterUserId();
         return CustomResponse(await _mediator.Send(endereco));
     }
 }

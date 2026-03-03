@@ -6,6 +6,7 @@ using PlataformaEducacional.Alunos.Data;
 using PlataformaEducacional.Alunos.Data.Repository;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Core.Mediator;
+using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Alunos.Api.Configuration;
 
@@ -15,8 +16,12 @@ public static class DependencyInjectionConfig
     {
         services.AddScoped<IMediatorHandler, MediatorHandler>();
         services.AddScoped<IRequestHandler<RegistrarAlunoCommand, ValidationResult>, AlunoCommandHandler>();
+        services.AddScoped<IRequestHandler<RealizarMatriculaCommand, ValidationResult>, AlunoCommandHandler>();
 
         services.AddScoped<INotificationHandler<AlunoRegistradoEvent>, AlunoEventHandler>();
+
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddScoped<IAspNetUser, AspNetUser>();
 
         services.AddScoped<IAlunoRepository, AlunoRepository>();
         services.AddScoped<AlunosContext>();
