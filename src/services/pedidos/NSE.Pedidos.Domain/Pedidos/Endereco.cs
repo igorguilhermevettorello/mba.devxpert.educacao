@@ -1,14 +1,32 @@
 ﻿
-namespace PlataformaEducacional.Pedidos.Domain.Pedidos
+using PlataformaEducacional.Core.DomainObjects;
+
+namespace PlataformaEducacional.Pedidos.Domain.Pedidos;
+
+public class Endereco : Entity
 {
-    public class Endereco
+    protected Endereco() { }
+
+    public Endereco(string logradouro, string numero, string complemento, string bairro, string cep, string cidade, string estado, Guid pedidoId)
     {
-        public string Logradouro { get; set; }
-        public string Numero { get; set; }
-        public string Complemento { get; set; }
-        public string Bairro { get; set; }
-        public string Cep { get; set; }
-        public string Cidade { get; set; }
-        public string Estado { get; set; }
+        Logradouro = logradouro;
+        Numero = numero;
+        Complemento = complemento;
+        Bairro = bairro;
+        Cep = cep;
+        Cidade = cidade;
+        Estado = estado;
+        PedidoId = pedidoId;
     }
+
+    public string Logradouro { get; private set; }
+    public string Numero { get; private set; }
+    public string Complemento { get; private set; }
+    public string Bairro { get; private set; }
+    public string Cep { get; private set; }
+    public string Cidade { get; private set; }
+    public string Estado { get; private set; }
+    public Guid PedidoId { get; private set; }
+
+    public Pedido Pedido { get; protected set; }
 }
