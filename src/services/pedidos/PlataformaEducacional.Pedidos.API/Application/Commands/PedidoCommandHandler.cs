@@ -17,13 +17,15 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
     {
         private readonly IPedidoRepository _pedidoRepository;
         private readonly IVoucherRepository _voucherRepository;
-        private readonly IMessageBus bus;
+        private readonly IMessageBus _bus;
 
         public PedidoCommandHandler(IVoucherRepository voucherRepository,
-                                    IPedidoRepository pedidoRepository)
+                                    IPedidoRepository pedidoRepository,
+                                    IMessageBus bus)
         {
             _voucherRepository = voucherRepository;
             _pedidoRepository = pedidoRepository;
+            _bus = bus;
         }
 
         public async Task<ValidationResult> Handle(AdicionarPedidoCommand message, CancellationToken cancellationToken)
@@ -33,9 +35,6 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
 
             // Mapear Pedido
             var pedido = MapearPedido(message);
-
-            var pedidoCodigo = await _pedidoRepository.ObterProximoCodigo();
-            pedido.AtribuirCodigo(pedidoCodigo);
 
             // Aplicar voucher se houver
             if (!await AplicarVoucher(message, pedido)) return ValidationResult;
@@ -156,7 +155,7 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
                 CVV = message.CvvCartao
             };
 
-            var result = await bus.RequestAsync<PedidoIniciadoIntegrationEvent, ResponseMessage>(pedidoIniciado);
+            var result = await _bus.RequestAsync<PedidoIniciadoIntegrationEvent, ResponseMessage>(pedidoIniciado);
 
             if (result.ValidationResult.IsValid) return true;
 
