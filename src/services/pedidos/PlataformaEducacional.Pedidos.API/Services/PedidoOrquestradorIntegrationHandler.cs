@@ -13,12 +13,22 @@ namespace PlataformaEducacional.Pedidos.API.Services
         private readonly ILogger<PedidoOrquestradorIntegrationHandler> _logger;
         private Timer _timer;
 
-        public PedidoOrquestradorIntegrationHandler(ILogger<PedidoOrquestradorIntegrationHandler> logger)
+
+
+        //public PedidoOrquestradorIntegrationHandler(ILogger<PedidoOrquestradorIntegrationHandler> logger)
+        //{
+        //    _logger = logger;
+        //}
+
+        public PedidoOrquestradorIntegrationHandler(
+            IServiceProvider serviceProvider, 
+            ILogger<PedidoOrquestradorIntegrationHandler> logger)            
         {
-            _logger = logger;
+            _serviceProvider = serviceProvider;
+            _logger = logger;            
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken) 
         {
             _logger.LogInformation("Serviço de pedidos iniciado.");
 
@@ -35,7 +45,7 @@ namespace PlataformaEducacional.Pedidos.API.Services
                 var pedidoQueries = scope.ServiceProvider.GetRequiredService<IPedidoQueries>();
                 var pedido = await pedidoQueries.ObterPedidosAutorizados();
 
-                if (pedido != null) return;
+                if (pedido == null) return;
 
                 var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
 
