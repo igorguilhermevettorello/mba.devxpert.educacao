@@ -17,6 +17,58 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.23");
 
+            modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Endereco", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Complemento")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Logradouro")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<Guid>("PedidoId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId")
+                        .IsUnique();
+
+                    b.ToTable("Enderecos", (string)null);
+                });
+
             modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Pedido", b =>
                 {
                     b.Property<Guid>("Id")
@@ -27,7 +79,6 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Codigo")
-                        .HasMaxLength(10)
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DataCadastro")
@@ -52,7 +103,7 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
 
                     b.HasIndex("VoucherId");
 
-                    b.ToTable("Pedidos", (string)null);
+                    b.ToTable("Pedidos");
                 });
 
             modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.PedidoItem", b =>
@@ -111,7 +162,7 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("Percentual")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("INTEGER");
@@ -123,11 +174,21 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal?>("ValorDesconto")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Vouchers", (string)null);
+                });
+
+            modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Endereco", b =>
+                {
+                    b.HasOne("PlataformaEducacional.Pedidos.Domain.Pedidos.Pedido", "Pedido")
+                        .WithOne("Endereco")
+                        .HasForeignKey("PlataformaEducacional.Pedidos.Domain.Pedidos.Endereco", "PedidoId")
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Pedido", b =>
@@ -135,57 +196,6 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                     b.HasOne("PlataformaEducacional.Pedidos.Domain.Vouchers.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
-
-                    b.OwnsOne("PlataformaEducacional.Pedidos.Domain.Pedidos.Endereco", "Endereco", b1 =>
-                        {
-                            b1.Property<Guid>("PedidoId")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Bairro")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Bairro");
-
-                            b1.Property<string>("Cep")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Cep");
-
-                            b1.Property<string>("Cidade")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Cidade");
-
-                            b1.Property<string>("Complemento")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Complemento");
-
-                            b1.Property<string>("Estado")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Estado");
-
-                            b1.Property<string>("Logradouro")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Logradouro");
-
-                            b1.Property<string>("Numero")
-                                .IsRequired()
-                                .HasColumnType("varchar(100)")
-                                .HasColumnName("Numero");
-
-                            b1.HasKey("PedidoId");
-
-                            b1.ToTable("Pedidos");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PedidoId");
-                        });
-
-                    b.Navigation("Endereco")
-                        .IsRequired();
 
                     b.Navigation("Voucher");
                 });
@@ -202,6 +212,9 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
 
             modelBuilder.Entity("PlataformaEducacional.Pedidos.Domain.Pedidos.Pedido", b =>
                 {
+                    b.Navigation("Endereco")
+                        .IsRequired();
+
                     b.Navigation("PedidoItems");
                 });
 #pragma warning restore 612, 618

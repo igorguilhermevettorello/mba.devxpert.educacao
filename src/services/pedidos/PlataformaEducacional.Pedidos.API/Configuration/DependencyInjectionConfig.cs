@@ -3,6 +3,7 @@ using MediatR;
 using PlataformaEducacional.Core.Mediator;
 using PlataformaEducacional.Pedidos.API.Application.Commands;
 using PlataformaEducacional.Pedidos.API.Application.Events;
+using PlataformaEducacional.Pedidos.API.Application.Queries;
 using PlataformaEducacional.Pedidos.Data;
 using PlataformaEducacional.Pedidos.Data.Repository;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
@@ -18,6 +19,8 @@ namespace PlataformaEducacional.Pedidos.API.Configuration
             services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
             
             services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
+
+            services.AddScoped<IPedidoQueries, PedidoQueries>();
 
             services.AddScoped<IPedidoRepository, PedidoRepository>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();

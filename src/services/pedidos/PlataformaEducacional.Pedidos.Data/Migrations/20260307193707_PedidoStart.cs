@@ -17,8 +17,8 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Codigo = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Percentual = table.Column<decimal>(type: "TEXT", nullable: true),
-                    ValorDesconto = table.Column<decimal>(type: "TEXT", nullable: true),
+                    Percentual = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ValorDesconto = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     TipoDesconto = table.Column<int>(type: "INTEGER", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -37,21 +37,14 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Codigo = table.Column<int>(type: "INTEGER", maxLength: 10, nullable: false),
+                    Codigo = table.Column<int>(type: "INTEGER", nullable: false),
                     ClienteId = table.Column<Guid>(type: "TEXT", nullable: false),
                     VoucherId = table.Column<Guid>(type: "TEXT", nullable: true),
                     VoucherUtilizado = table.Column<bool>(type: "INTEGER", nullable: false),
                     Desconto = table.Column<decimal>(type: "TEXT", nullable: false),
                     ValorTotal = table.Column<decimal>(type: "TEXT", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PedidoStatus = table.Column<int>(type: "INTEGER", nullable: false),
-                    Logradouro = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Numero = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Complemento = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Bairro = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Cep = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Cidade = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Estado = table.Column<string>(type: "varchar(100)", nullable: false)
+                    PedidoStatus = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,6 +53,30 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                         name: "FK_Pedidos_Vouchers_VoucherId",
                         column: x => x.VoucherId,
                         principalTable: "Vouchers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Enderecos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Logradouro = table.Column<string>(type: "varchar(100)", maxLength: 200, nullable: false),
+                    Numero = table.Column<string>(type: "varchar(100)", maxLength: 50, nullable: false),
+                    Complemento = table.Column<string>(type: "varchar(100)", maxLength: 250, nullable: false),
+                    Bairro = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Cep = table.Column<string>(type: "varchar(100)", maxLength: 20, nullable: false),
+                    Cidade = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Estado = table.Column<string>(type: "varchar(100)", maxLength: 50, nullable: false),
+                    PedidoId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enderecos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Enderecos_Pedidos_PedidoId",
+                        column: x => x.PedidoId,
+                        principalTable: "Pedidos",
                         principalColumn: "Id");
                 });
 
@@ -86,6 +103,12 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Enderecos_PedidoId",
+                table: "Enderecos",
+                column: "PedidoId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PedidoItems_PedidoId",
                 table: "PedidoItems",
                 column: "PedidoId");
@@ -99,6 +122,9 @@ namespace PlataformaEducacional.Pedidos.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Enderecos");
+
             migrationBuilder.DropTable(
                 name: "PedidoItems");
 
