@@ -7,6 +7,8 @@ namespace PlataformaEducacional.Pedidos.Domain.Pedidos
         Pago = 2,
         Recusado = 3,
         Entregue = 4,
-        Cancelado = 5
+        Cancelado = 5,
+        Processado = 6,
+        AguardandoProcessamento = 7
     }
 }

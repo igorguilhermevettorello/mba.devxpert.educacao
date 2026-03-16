@@ -1,0 +1,75 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PlataformaEducacional.Core.Messages.Integration;
+using PlataformaEducacional.MessageBus;
+using PlataformaEducacional.Pedidos.API.Application.Queries;
+using PlataformaEducacional.Pedidos.Data;
+using PlataformaEducacional.Pedidos.Domain.Pedidos;
+
+namespace PlataformaEducacional.Pedidos.API.Services
+{
+    public class PedidoOrquestradorIntegrationHandler : IHostedService, IDisposable
+    {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<PedidoOrquestradorIntegrationHandler> _logger;
+        private Timer _timer;
+
+
+
+        //public PedidoOrquestradorIntegrationHandler(ILogger<PedidoOrquestradorIntegrationHandler> logger)
+        //{
+        //    _logger = logger;
+        //}
+
+        public PedidoOrquestradorIntegrationHandler(
+            IServiceProvider serviceProvider, 
+            ILogger<PedidoOrquestradorIntegrationHandler> logger)            
+        {
+            _serviceProvider = serviceProvider;
+            _logger = logger;            
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken) 
+        {
+            _logger.LogInformation("Serviço de pedidos iniciado.");
+
+            _timer = new Timer(ProcessarPedidos, null, TimeSpan.Zero, 
+                        TimeSpan.FromMinutes(15));
+
+            return Task.CompletedTask;  
+        }
+
+        private async void ProcessarPedidos(object? state)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            {
+                var pedidoQueries = scope.ServiceProvider.GetRequiredService<IPedidoQueries>();
+                var pedido = await pedidoQueries.ObterPedidosAutorizados();
+
+                if (pedido == null) return;
+
+                var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
+
+                var pedidoAutorizado = new PedidoAutorizadoIntegrationEvent(pedido.ClienteId, pedido.Id,
+                   pedido.PedidoItems.ToDictionary(p => p.ProdutoId, p => p.Quantidade));
+
+                await bus.PublishAsync(pedidoAutorizado);
+
+                _logger.LogInformation($"Pedido ID: {pedido.Id} foi encaminhado para baixa no estoque.");
+            }
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Serviço de pedidos finalizado.");
+
+            _timer?.Change(Timeout.Infinite, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+        }
+    }
+}

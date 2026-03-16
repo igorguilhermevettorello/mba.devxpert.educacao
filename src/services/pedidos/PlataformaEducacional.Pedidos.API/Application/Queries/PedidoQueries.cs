@@ -8,6 +8,7 @@ namespace PlataformaEducacional.Pedidos.API.Application.Queries
     {
         Task<PedidoDTO> ObterUltimoPedido(Guid clienteId);
         Task<IEnumerable<PedidoDTO>> ObterListaPorClienteId(Guid clienteId);
+        Task<PedidoDTO> ObterPedidosAutorizados();  
     }
 
     public class PedidoQueries : IPedidoQueries
@@ -82,6 +83,35 @@ namespace PlataformaEducacional.Pedidos.API.Application.Queries
             }
 
             return pedido;
+        }
+
+        public async Task<PedidoDTO> ObterPedidosAutorizados()
+        {
+            const string sql = @"SELECT 
+                                P.ID as 'PedidoId', P.ID, P.CLIENTEID, 
+                                PI.ID as 'PedidoItemId', PI.ID, PI.PRODUTOID, PI.QUANTIDADE 
+                                FROM PEDIDOS P 
+                                INNER JOIN PEDIDOITEMS PI ON P.ID = PI.PEDIDOID 
+                                WHERE P.PEDIDOSTATUS = 1                                
+                                ORDER BY P.DATACADASTRO";
+
+            var lookup = new Dictionary<Guid, PedidoDTO>();
+
+            await _pedidoRepository.ObterConexao().QueryAsync<PedidoDTO, PedidoItemDTO, PedidoDTO>(sql,
+                (p, pi) =>
+                {
+                    if (!lookup.TryGetValue(p.Id, out var pedidoDTO))
+                        lookup.Add(p.Id, pedidoDTO = p);
+
+                    pedidoDTO.PedidoItems ??= new List<PedidoItemDTO>();
+                    pedidoDTO.PedidoItems.Add(pi);
+
+                    return pedidoDTO;
+
+                }, splitOn: "PedidoId,PedidoItemId");
+
+            // Obtendo dados o lookup
+            return lookup.Values.OrderBy(p => p.Data).FirstOrDefault();
         }
     }
 }
