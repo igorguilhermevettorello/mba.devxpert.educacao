@@ -9,7 +9,7 @@ builder.AddDataContextConfiguration();
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 
 // Add services to the container.
-builder.Services.AddApiConfiguration("Conte?do API");
+builder.Services.AddApiConfiguration("Conteúdo API");
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.CriarCursoCommand).Assembly));
 
@@ -23,3 +23,5 @@ app.UseApiConfiguration(app.Environment);
 app.UseDatabaseMigrationStartData();
 
 app.Run();
+
+public partial class Program { }

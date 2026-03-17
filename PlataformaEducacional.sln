@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Aluno
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Alunos.Domain", "src\services\alunos\PlataformaEducacional.Alunos.Domain\PlataformaEducacional.Alunos.Domain.csproj", "{734243B9-50CA-4813-805E-32BB444C92DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Conteudo.IntegrationTests", "src\services\conteudo\PlataformaEducacional.Conteudo.IntegrationTests\PlataformaEducacional.Conteudo.IntegrationTests.csproj", "{246FB9A8-731B-4DAE-8977-10E54FED86AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,10 @@ Global
 		{734243B9-50CA-4813-805E-32BB444C92DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{734243B9-50CA-4813-805E-32BB444C92DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{734243B9-50CA-4813-805E-32BB444C92DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{246FB9A8-731B-4DAE-8977-10E54FED86AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{246FB9A8-731B-4DAE-8977-10E54FED86AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{246FB9A8-731B-4DAE-8977-10E54FED86AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{246FB9A8-731B-4DAE-8977-10E54FED86AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,6 +176,7 @@ Global
 		{49AC8C59-8441-4023-B5EC-3A1EC9930EF9} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
 		{9C12719D-04EB-442C-B13A-D18C57616254} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
 		{734243B9-50CA-4813-805E-32BB444C92DA} = {1BEFD327-1FC2-4F43-AD62-30126CE7361E}
+		{246FB9A8-731B-4DAE-8977-10E54FED86AC} = {3B502EFE-379E-43C3-83A1-3F5491FAE334}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17631DF5-7B17-4179-996A-7BF900F7D95C}
