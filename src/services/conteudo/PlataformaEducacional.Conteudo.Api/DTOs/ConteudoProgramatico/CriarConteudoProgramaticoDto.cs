@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PlataformaEducacional.Conteudo.Api.DTOs.Cursos
+namespace PlataformaEducacional.Conteudo.Api.DTOs.ConteudoProgramatico
 {
-    public class ConteudoProgramaticoDto
+    public class CriarConteudoProgramaticoDto
     {
         [Required(ErrorMessage = "A ementa é obrigatória")]
         [StringLength(2000, MinimumLength = 10, ErrorMessage = "A ementa deve ter entre 10 e 2000 caracteres")]

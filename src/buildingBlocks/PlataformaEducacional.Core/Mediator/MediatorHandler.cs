@@ -1,4 +1,4 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using MediatR;
 using PlataformaEducacional.Core.Messages;
 

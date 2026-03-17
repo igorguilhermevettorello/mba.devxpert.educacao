@@ -1,4 +1,5 @@
-﻿using PlataformaEducacional.Conteudo.Domain.Enums;
+﻿using PlataformaEducacional.Conteudo.Api.DTOs.ConteudoProgramatico;
+using PlataformaEducacional.Conteudo.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace PlataformaEducacional.Conteudo.Api.DTOs.Cursos
@@ -17,6 +18,6 @@ namespace PlataformaEducacional.Conteudo.Api.DTOs.Cursos
         public NivelCurso Nivel { get; set; }
 
         [Required(ErrorMessage = "A chave Conteúdo Programático é obrigatória")]
-        public ConteudoProgramaticoDto ConteudoProgramatico { get; set; }
+        public CriarConteudoProgramaticoDto ConteudoProgramatico { get; set; }
     }
 }

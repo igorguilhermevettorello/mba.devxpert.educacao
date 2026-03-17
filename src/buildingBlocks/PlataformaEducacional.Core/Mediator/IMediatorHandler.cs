@@ -1,4 +1,4 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Core.Mediator

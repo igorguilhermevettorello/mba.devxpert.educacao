@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDataContextConfiguration();
 
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
+
 // Add services to the container.
-builder.Services.AddApiConfiguration("Contedo API");
+builder.Services.AddApiConfiguration("Conte?do API");
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.CriarCursoCommand).Assembly));
 

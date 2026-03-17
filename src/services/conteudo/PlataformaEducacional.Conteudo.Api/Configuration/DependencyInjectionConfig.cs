@@ -1,3 +1,4 @@
+using PlataformaEducacional.Conteudo.Api.AutoMapper;
 using PlataformaEducacional.Conteudo.Data.Repositories;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
 using PlataformaEducacional.Core.Mediator;
