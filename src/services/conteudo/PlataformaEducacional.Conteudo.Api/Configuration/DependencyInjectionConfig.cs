@@ -1,4 +1,6 @@
-using PlataformaEducacional.Conteudo.Api.AutoMapper;
+using MediatR;
+using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
+using PlataformaEducacional.Conteudo.Application.Handlers.Cursos;
 using PlataformaEducacional.Conteudo.Data.Repositories;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
 using PlataformaEducacional.Core.Mediator;
@@ -19,6 +21,8 @@ namespace PlataformaEducacional.Conteudo.Api.Configuration
             //services.AddScoped<INotificationHandler<AlunoRegistradoEvent>, AlunoEventHandler>();
 
             //services.AddScoped<IAlunoRepository, AlunoRepository>();
+
+            //services.AddScoped<IRequestHandler<AtualizarCursoCommand, validationres>, AtualizarCursoCommandHandler>();
         }
     }
 }
