@@ -1,4 +1,4 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using PlataformaEducacional.Core.Data;
 
 namespace PlataformaEducacional.Core.Messages;

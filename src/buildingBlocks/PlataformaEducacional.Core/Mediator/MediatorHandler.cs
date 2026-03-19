@@ -18,6 +18,11 @@ namespace PlataformaEducacional.Core.Mediator
             return await _mediator.Send(comando);
         }
 
+        public async Task<TResponse> SendQuery<TResponse>(IRequest<TResponse> request)
+        {
+            return await _mediator.Send(request);
+        }
+
         public async Task PublishEvent<T>(T evento) where T : Event
         {
             await _mediator.Publish(evento);
