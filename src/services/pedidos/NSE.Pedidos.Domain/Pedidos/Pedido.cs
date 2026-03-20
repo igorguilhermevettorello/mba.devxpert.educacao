@@ -69,7 +69,7 @@ public class Pedido : Entity, IAggregateRoot
     public void CalcularValorPedido()
     {
         ValorTotal = PedidoItems.Sum(p => p.CalcularValor());
-        CalcularValorTotalDesconto();
+        //CalcularValorTotalDesconto(); //TODO: ajustar erro de runtime
     }
 
     public void CalcularValorTotalDesconto()

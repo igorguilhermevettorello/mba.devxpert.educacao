@@ -37,7 +37,7 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
             var pedido = MapearPedido(message);
 
             // Aplicar voucher se houver
-            if (!await AplicarVoucher(message, pedido)) return ValidationResult;
+            //if (!await AplicarVoucher(message, pedido)) return ValidationResult; //TODO: ajustar erro de runtime
 
             // Validar pedido
             if (!ValidarPedido(pedido)) return ValidationResult;

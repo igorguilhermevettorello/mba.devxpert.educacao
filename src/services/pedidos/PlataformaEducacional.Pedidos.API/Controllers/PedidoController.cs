@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Core.Mediator;
 using PlataformaEducacional.Pedidos.API.Application.Commands;
 using PlataformaEducacional.Pedidos.API.Application.Queries;
+using PlataformaEducacional.Pedidos.API.DTOs;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
@@ -25,10 +26,24 @@ namespace PlataformaEducacional.Pedidos.API.Controllers
         }
 
         [HttpPost("pedido")]
-        public async Task<IActionResult> AdicionarPedido(AdicionarPedidoCommand pedido)
+        public async Task<IActionResult> AdicionarPedido(AdicionarPedidoDto pedido)
         {
-            pedido.ClienteId = _user.ObterUserId();
-            return CustomResponse(await _mediator.SendCommand(pedido));
+            var command = new AdicionarPedidoCommand()
+            {
+                ClienteId = _user.ObterUserId(),
+                CvvCartao = pedido.CvvCartao,
+                Desconto = pedido.Desconto,
+                Endereco = pedido.Endereco,
+                ExpiracaoCartao = pedido.ExpiracaoCartao,
+                NomeCartao = pedido.NomeCartao,
+                NumeroCartao = pedido.NumeroCartao,
+                PedidoItems = pedido.PedidoItems,
+                ValorTotal = pedido.ValorTotal,
+                VoucherCodigo = pedido.VoucherCodigo,
+                VoucherUtilizado = pedido.VoucherUtilizado,
+            };
+
+            return CustomResponse(await _mediator.SendCommand(command));
         }
 
         [HttpGet("pedido/ultimo")]
