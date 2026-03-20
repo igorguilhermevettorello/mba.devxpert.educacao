@@ -9,12 +9,13 @@ public class Matricula : Entity
         _progressoAulas = new List<ProgressoAula>();
     }
 
-    public Matricula(Guid alunoId, Guid cursoId, decimal valor) : this()
+    public Matricula(Guid alunoId, Guid cursoId, decimal valor, Guid pedidoId) : this()
     {
         Id = Guid.NewGuid();
         AlunoId = alunoId;
         CursoId = cursoId;
         Valor = valor;
+        PedidoId = pedidoId;
         DataMatricula = DateTime.UtcNow;    
         Status = EnumStatusMatricula.Pendente;
 
@@ -23,6 +24,7 @@ public class Matricula : Entity
 
     public Guid AlunoId { get; private set; }
     public Guid CursoId { get; private set; }
+    public Guid PedidoId { get; private set; }
     public decimal Valor { get; private set; }
     public DateTime DataMatricula { get; private set; }
     public EnumStatusMatricula Status { get; private set; }

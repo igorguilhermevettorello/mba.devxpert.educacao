@@ -45,6 +45,8 @@ namespace PlataformaEducacional.Pedidos.API.Services
                 {
                     throw new DomainException($"Problemas ao cancelar o pedido {message.PedidoId}");
                 }
+
+                await _bus.PublishAsync(new PedidoCanceladoIntegrationEvent(pedido.ClienteId, pedido.Id));
             }
         }
 
@@ -63,6 +65,8 @@ namespace PlataformaEducacional.Pedidos.API.Services
                 {
                     throw new DomainException($"Problemas ao finalizar o pedido {message.PedidoId}");
                 }
+
+                await _bus.PublishAsync(new PedidoPagoIntegrationEvent(pedido.ClienteId, pedido.Id));
             }
         }
     }

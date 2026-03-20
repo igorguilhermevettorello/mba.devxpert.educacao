@@ -1,0 +1,26 @@
+﻿using FluentValidation;
+using PlataformaEducacional.Pedidos.API.Application.DTO;
+
+namespace PlataformaEducacional.Pedidos.API.DTOs
+{
+    public class AdicionarPedidoDto
+    {
+        // Pedido
+        public decimal ValorTotal { get; set; }
+        public List<PedidoItemDTO> PedidoItems { get; set; }
+
+        // Voucher
+        public string VoucherCodigo { get; set; }
+        public bool VoucherUtilizado { get; set; }
+        public decimal Desconto { get; set; }
+
+        // Endereco
+        public EnderecoDTO Endereco { get; set; }
+
+        // Cartao
+        public string NumeroCartao { get; set; }
+        public string NomeCartao { get; set; }
+        public string ExpiracaoCartao { get; set; }
+        public string CvvCartao { get; set; }
+    }
+}

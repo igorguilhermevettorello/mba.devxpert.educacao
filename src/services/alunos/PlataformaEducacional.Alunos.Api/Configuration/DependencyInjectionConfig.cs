@@ -2,6 +2,7 @@
 using MediatR;
 using PlataformaEducacional.Alunos.Application.Commands;
 using PlataformaEducacional.Alunos.Application.Events;
+using PlataformaEducacional.Alunos.Application.Services;
 using PlataformaEducacional.Alunos.Data;
 using PlataformaEducacional.Alunos.Data.Repository;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
@@ -28,5 +29,7 @@ public static class DependencyInjectionConfig
 
         services.AddScoped<IAlunoRepository, AlunoRepository>();
         services.AddScoped<AlunosContext>();
+
+        services.AddHostedService<MatriculaIntegrationHandler>();
     }
 }

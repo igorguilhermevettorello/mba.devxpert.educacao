@@ -8,6 +8,7 @@ using PlataformaEducacional.Pedidos.Data;
 using PlataformaEducacional.Pedidos.Data.Repository;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
 using PlataformaEducacional.Pedidos.Domain.Vouchers;
+using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Pedidos.API.Configuration
 {
@@ -15,15 +16,29 @@ namespace PlataformaEducacional.Pedidos.API.Configuration
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<IMediatorHandler, MediatorHandler>();            
-            services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
+            // Mediator
+            services.AddScoped<IMediatorHandler, MediatorHandler>();
             
+            // Commands
+            services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
+            services.AddScoped<IRequestHandler<AdicionarVoucherCommand, ValidationResult>, VoucherCommandHandler>();
+
+            // Events
             services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
 
+            // Queries
             services.AddScoped<IPedidoQueries, PedidoQueries>();
+            services.AddScoped<IVoucherQueries, VoucherQueries>();
 
+            // Http Context
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IAspNetUser, AspNetUser>();
+
+            // Repositories
             services.AddScoped<IPedidoRepository, PedidoRepository>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
+            
+            // Context
             services.AddScoped<PedidosContext>();
         }
     }

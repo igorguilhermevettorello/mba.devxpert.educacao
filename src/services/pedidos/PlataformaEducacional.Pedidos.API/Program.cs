@@ -6,7 +6,6 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDataContextConfiguration();
-
 builder.Services.AddApiConfiguration("Pedidos API");
 builder.Services.AddJwtConfiguration(builder.Configuration);
 

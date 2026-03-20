@@ -7,12 +7,14 @@ public class RealizarMatriculaCommand : Command
 {
     public Guid AlunoId { get; private set; }
     public Guid CursoId { get; private set; }
+    public Guid PedidoId { get; private set; }
     public decimal Valor { get; private set; }
 
-    public RealizarMatriculaCommand(Guid alunoId, Guid cursoId, decimal valor)
+    public RealizarMatriculaCommand(Guid alunoId, Guid cursoId, Guid pedidoId, decimal valor)
     {
         AlunoId = alunoId;
         CursoId = cursoId;
+        PedidoId = pedidoId;
         Valor = valor;
     }
 
@@ -34,6 +36,10 @@ public class RealizarMatriculaValidation : AbstractValidator<RealizarMatriculaCo
         RuleFor(c => c.CursoId)
             .NotEqual(Guid.Empty)
             .WithMessage("Id do curso inválido");
+
+        RuleFor(c => c.PedidoId)
+            .NotEqual(Guid.Empty)
+            .WithMessage("Id do pedido inválido");
 
         RuleFor(c => c.Valor)
             .GreaterThan(0)

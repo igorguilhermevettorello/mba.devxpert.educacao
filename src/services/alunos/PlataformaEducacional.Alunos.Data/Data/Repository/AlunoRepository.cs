@@ -46,14 +46,22 @@ public class AlunoRepository : IAlunoRepository
     {
         _context.Alunos.Add(aluno);        
     }
+    
     public void AdicionarEndereco(Endereco endereco)
     {
         _context.Enderecos.Add(endereco);
     }
+    
     public void AdicionarMatricula(Matricula matricula)
     {
         _context.Matriculas.Add(matricula);
     }
+
+    public void AtualizarMatricula(Matricula matricula)
+    {
+        _context.Matriculas.Update(matricula);
+    }
+    
     public async Task<Matricula?> ObterMatriculaPorId(Guid id)
     {
         return await _context.Matriculas
@@ -62,6 +70,16 @@ public class AlunoRepository : IAlunoRepository
            .Include(m => m.Certificado)
            .FirstOrDefaultAsync(m => m.Id == id);
     }
+
+    public async Task<Matricula?> ObterMatriculaPorPedidoId(Guid pedidoId)
+    {
+        return await _context.Matriculas
+           .Include(m => m.Aluno)
+           .Include(m => m.ProgressoAulas)
+           .Include(m => m.Certificado)
+           .FirstOrDefaultAsync(m => m.PedidoId == pedidoId);
+    }
+    
     public async Task<IEnumerable<Matricula>> ObterMatriculasPorAluno(Guid alunoId)
     {
         return await _context.Matriculas
@@ -71,10 +89,12 @@ public class AlunoRepository : IAlunoRepository
             .Where(m => m.AlunoId == alunoId)
             .ToListAsync();
     }
+    
     public void AdicionarProgresso(ProgressoAula progressoAula)
     {
         _context.ProgressoAulas.Add(progressoAula);
     }
+    
     public async Task<Certificado?> ObterCertificado(Guid id)
     {
         return await _context.Certificados.FirstOrDefaultAsync(c => c.Id == id);
@@ -85,5 +105,4 @@ public class AlunoRepository : IAlunoRepository
     {
         _context.Dispose();
     }
-
 }

@@ -63,8 +63,8 @@ public class AlunoCommandHandler : CommandHandler,
             return ValidationResult;
         }
 
-        var matricula = new Matricula(message.AlunoId, message.CursoId, message.Valor);
-        
+        var matricula = new Matricula(message.AlunoId, message.CursoId, message.Valor, message.PedidoId);
+
         _alunoRepository.AdicionarMatricula(matricula);
 
         return await PersistData(_alunoRepository.UnitOfWork);
