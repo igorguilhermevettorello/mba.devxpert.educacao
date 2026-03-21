@@ -15,13 +15,37 @@ namespace PlataformaEducacional.Pedidos.Domain.Vouchers
         public bool Ativo { get; private set; }
         public bool Utilizado { get; private set; }
 
+        // Construtor protegido para EF
+        protected Voucher() { }
+
+        public static Voucher VoucherFactory(
+            string codigo, 
+            decimal? percentual, 
+            decimal? valorDesconto, 
+            int quantidade,
+            TipoDescontoVoucher tipoDesconto, 
+            DateTime dataValidade)
+        {
+            return new Voucher
+            {
+                Codigo = codigo,
+                Percentual = percentual,
+                ValorDesconto = valorDesconto,
+                Quantidade = quantidade,
+                TipoDesconto = tipoDesconto,
+                DataCriacao = DateTime.Now,
+                DataValidade = dataValidade,
+                Ativo = true,
+                Utilizado = false
+            };
+        }
+
         public bool EstaValidoParaUtilizacao()
         {
-            return true;
-            //return new VoucherAtivoSpecification()
-            //    .And(new VoucherDataSpecification())
-            //    .And(new VoucherQuantidadeSpecification())
-            //    .IsSatisfiedBy(this);
+            return Ativo 
+                   && !Utilizado 
+                   && Quantidade > 0 
+                   && DataValidade >= DateTime.Now;
         }
 
         public void MarcarComoUtilizado()

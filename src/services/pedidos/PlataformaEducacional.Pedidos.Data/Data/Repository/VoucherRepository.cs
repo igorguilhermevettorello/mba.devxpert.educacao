@@ -17,7 +17,14 @@ namespace PlataformaEducacional.Pedidos.Data.Repository
 
         public async Task<Voucher> ObterVoucherPorCodigo(string codigo)
         {
-            return await _context.Vouchers.FirstOrDefaultAsync(p => p.Codigo == codigo);
+            return await _context.Vouchers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Codigo == codigo);
+        }
+
+        public void Adicionar(Voucher voucher)
+        {
+            _context.Vouchers.Add(voucher);
         }
 
         public void Atualizar(Voucher voucher)
