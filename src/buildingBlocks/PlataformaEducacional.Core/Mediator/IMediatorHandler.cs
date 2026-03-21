@@ -1,4 +1,5 @@
 using FluentValidation.Results;
+using MediatR;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Core.Mediator
@@ -7,5 +8,6 @@ namespace PlataformaEducacional.Core.Mediator
     {
         Task PublishEvent<T>(T evento) where T : Event;
         Task<ValidationResult> SendCommand<T>(T comando) where T : Command;
+        Task<TResponse> SendQuery<TResponse>(IRequest<TResponse> request);
     }
 }

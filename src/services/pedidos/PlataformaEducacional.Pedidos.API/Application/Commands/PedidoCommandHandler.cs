@@ -9,7 +9,6 @@ using PlataformaEducacional.Pedidos.API.Application.Events;
 using PlataformaEducacional.Pedidos.Domain.Pedidos;
 using PlataformaEducacional.Pedidos.Domain.Vouchers;
 
-
 namespace PlataformaEducacional.Pedidos.API.Application.Commands
 {
     public class PedidoCommandHandler : CommandHandler,
@@ -103,12 +102,11 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
                 return false;
             }
 
-            //var voucherValidation = new VoucherValidation().Validate(voucher);
-            //if (!voucherValidation.IsValid)
-            //{
-            //    voucherValidation.Errors.ToList().ForEach(m => AddError(m.ErrorMessage));
-            //    return false;
-            //}
+            if (!voucher.EstaValidoParaUtilizacao())
+            {
+                AddError("Este voucher não está válido para utilização!");
+                return false;
+            }
 
             pedido.AtribuirVoucher(voucher);
             voucher.DebitarQuantidade();
@@ -142,29 +140,41 @@ namespace PlataformaEducacional.Pedidos.API.Application.Commands
 
         public async Task<bool> ProcessarPagamento(Pedido pedido, AdicionarPedidoCommand message)
         {
-
-            var pedidoIniciado = new PedidoIniciadoIntegrationEvent
+            try
             {
-                PedidoId = pedido.Id,
-                ClienteId = pedido.ClienteId,
-                TipoPagamento = 1, // Fixo, Alterar se tiver mais de um tipo de pagamento
-                Valor = pedido.ValorTotal,
-                NomeCartao = message.NomeCartao,
-                NumeroCartao = message.NumeroCartao,
-                MesAnoVencimento = message.ExpiracaoCartao,
-                CVV = message.CvvCartao
-            };
+                var pedidoIniciado = new PedidoIniciadoIntegrationEvent
+                {
+                    PedidoId = pedido.Id,
+                    ClienteId = pedido.ClienteId,
+                    TipoPagamento = 1, // Fixo, Alterar se tiver mais de um tipo de pagamento
+                    Valor = pedido.ValorTotal,
+                    NomeCartao = message.NomeCartao,
+                    NumeroCartao = message.NumeroCartao,
+                    MesAnoVencimento = message.ExpiracaoCartao,
+                    CVV = message.CvvCartao
+                };
 
-            var result = await _bus.RequestAsync<PedidoIniciadoIntegrationEvent, ResponseMessage>(pedidoIniciado);
+                var result = await _bus.RequestAsync<PedidoIniciadoIntegrationEvent, ResponseMessage>(pedidoIniciado);
 
-            if (result.ValidationResult.IsValid) return true;
+                if (result.ValidationResult.IsValid) return true;
 
-            foreach (var error in result.ValidationResult.Errors)
-            {
-                AddError(error.ErrorMessage);
+                foreach (var error in result.ValidationResult.Errors)
+                {
+                    AddError(error.ErrorMessage);
+                }
+
+                return false;
             }
-
-            return false;
+            catch (TaskCanceledException)
+            {
+                AddError("O serviço de pagamento não está disponível no momento. Tente novamente mais tarde.");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                AddError($"Erro ao processar pagamento: {ex.Message}");
+                return false;
+            }
         }
     }
 }

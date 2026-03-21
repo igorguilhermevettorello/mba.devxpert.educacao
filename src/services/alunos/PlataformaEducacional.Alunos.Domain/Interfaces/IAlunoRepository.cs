@@ -17,6 +17,11 @@ public interface IAlunoRepository : IRepository<Aluno>
     void AdicionarMatricula(Matricula matricula);
 
     /// <summary>
+    /// Atualiza uma matrícula existente.
+    /// </summary>
+    void AtualizarMatricula(Matricula matricula);
+
+    /// <summary>
     /// Adiciona progresso de uma aula concluída.
     /// </summary>
     void AdicionarProgresso(ProgressoAula progressoAula);
@@ -38,11 +43,11 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// Obtém o endereço de um aluno pelo ID do aluno.
     /// </summary>
     /// <param name="id">ID do aluno.</param>
-    /// <returns>O endereço correspondente ao ID do aluno fornecido, ou null se não encontrado.</returns>
+    /// <returns>O endereço correspondente ao ID do aluno, ou null se não encontrado.</returns>
     Task<Endereco?> ObterEnderecoPorAlunoId(Guid id);
 
     /// <summary>
-    /// Obtém um aluno pelo seu CPF.
+    /// Obtém um aluno pelo CPF.
     /// </summary>
     /// <param name="cpf">CPF do aluno.</param>
     /// <returns>O aluno correspondente ao CPF fornecido, ou null se não encontrado.</returns>
@@ -51,22 +56,26 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// <summary>
     /// Obtém todos os alunos.
     /// </summary>
-    /// <returns>Uma lista de todos os alunos.</returns>
+    /// <returns>Uma coleção de todos os alunos.</returns>
     Task<IEnumerable<Aluno>> ObterTodos();
 
     /// <summary>
-    /// Obtém uma matrícula por ID (trazendo o aluno, as aulas e o certificado se houver).
+    /// Obtém uma matrícula pelo ID.
     /// </summary>
     Task<Matricula?> ObterMatriculaPorId(Guid id);
 
     /// <summary>
-    /// Obtém todas as matrículas de um aluno específico.
+    /// Obtém uma matrícula pelo ID do pedido.
+    /// </summary>
+    Task<Matricula?> ObterMatriculaPorPedidoId(Guid pedidoId);
+
+    /// <summary>
+    /// Obtém todas as matrículas de um aluno.
     /// </summary>
     Task<IEnumerable<Matricula>> ObterMatriculasPorAluno(Guid alunoId);
 
     /// <summary>
-    /// Obtém um certificado.
+    /// Obtém um certificado pelo ID.
     /// </summary>
     Task<Certificado?> ObterCertificado(Guid id);
-
 }
