@@ -38,9 +38,9 @@ public class AlunosController : MainController
         var alunoId = _user.ObterUserId();
 
         if (alunoId != model.AlunoId)
-            throw new DomainException("Aluno não identificado"); 
+            throw new DomainException("Aluno não identificado");
 
-        var command = new RealizarMatriculaCommand(alunoId, model.CursoId, Guid.NewGuid(), model.Valor);
+        var command = new RealizarMatriculaCommand(alunoId, model.CursoId, model.ValorCurso, model.NumeroCartao, model.TitularCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
         var result = await _mediator.Send(command);
 
         return CustomResponse(result);
@@ -49,33 +49,33 @@ public class AlunosController : MainController
     [Tags("2. Progresso de Aulas")]
     [HttpPost("progresso")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]      
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegistrarProgresso([FromBody] RegistrarProgressoDTO progressoDto)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
         var command = new RegistrarProgressoCommand(_user.ObterUserId(), progressoDto.AulaId);
 
-        return CustomResponse(await _mediator.Send(command));    
+        return CustomResponse(await _mediator.Send(command));
     }
 
     [Tags("3. Certificados")]
     [HttpPost("certificado")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]      
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> EmitirCertificado([FromBody] EmitirCertificadoDTO certificadoDto)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
         var command = new EmitirCertificadoCommand(_user.ObterUserId(), certificadoDto.MatriculaId);
 
-        return CustomResponse(await _mediator.Send(command));    
+        return CustomResponse(await _mediator.Send(command));
     }
 
     [Tags("4. Histórico")]
     [HttpGet("historico")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]        
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ObterHistorico()
     {
         var matriculas = await _alunosRepository.ObterMatriculasPorAluno(_user.ObterUserId());
@@ -90,7 +90,7 @@ public class AlunosController : MainController
     [Tags("5. Endereço")]
     [HttpGet("endereco")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]        
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ObterEndereco()
     {
         if (_user == null)
@@ -107,21 +107,21 @@ public class AlunosController : MainController
     [Tags("5. Endereço")]
     [HttpPost("endereco")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]      
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AdicionarEndereco([FromBody] AdicionarEnderecoDTO enderecoDto)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
         var endereco = new AdicionarEnderecoCommand(
-            enderecoDto.Logradouro, 
-            enderecoDto.Numero, 
-            enderecoDto.Complemento, 
-            enderecoDto.Bairro, 
-            enderecoDto.Cep, 
-            enderecoDto.Cidade, 
+            enderecoDto.Logradouro,
+            enderecoDto.Numero,
+            enderecoDto.Complemento,
+            enderecoDto.Bairro,
+            enderecoDto.Cep,
+            enderecoDto.Cidade,
             enderecoDto.Estado
         );
         endereco.AlunoId = _user.ObterUserId();
-        return CustomResponse(await _mediator.Send(endereco));   
+        return CustomResponse(await _mediator.Send(endereco));
     }
 }

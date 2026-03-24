@@ -4,6 +4,8 @@ using PlataformaEducacional.Alunos.Application.Events;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.Core.Messages.Integration;
+using PlataformaEducacional.MessageBus;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
 
@@ -15,10 +17,12 @@ public class AlunoCommandHandler : CommandHandler,
     IRequestHandler<EmitirCertificadoCommand, ValidationResult>
 {
     private readonly IAlunoRepository _alunoRepository;
+    private readonly IMessageBus _bus;
 
-    public AlunoCommandHandler(IAlunoRepository alunoRepository)
+    public AlunoCommandHandler(IAlunoRepository alunoRepository, IMessageBus bus)
     {
         _alunoRepository = alunoRepository;
+        _bus = bus;
     }
 
     public async Task<ValidationResult> Handle(AdicionarEnderecoCommand message, CancellationToken cancellationToken)
@@ -53,7 +57,8 @@ public class AlunoCommandHandler : CommandHandler,
 
     public async Task<ValidationResult> Handle(RealizarMatriculaCommand message, CancellationToken cancellationToken)
     {
-        if (!message.IsValid()) return message.ValidationResult;
+        if (!message.IsValid())
+            return message.ValidationResult;
 
         var aluno = await _alunoRepository.ObterPorId(message.AlunoId);
 
@@ -63,10 +68,16 @@ public class AlunoCommandHandler : CommandHandler,
             return ValidationResult;
         }
 
-        var matricula = new Matricula(message.AlunoId, message.CursoId, message.Valor, message.PedidoId);
+        var matricula = new Matricula(message.AlunoId, message.CursoId);
+
+        //envia evento de matricula iniciada
+        if (!await RealizarPagamento(matricula, message)) return ValidationResult;
+
+        matricula.Ativar();
+
+        //TODO: é necessário gerar/receber evento de PagamentoConfirmado??
 
         _alunoRepository.AdicionarMatricula(matricula);
-
         return await PersistData(_alunoRepository.UnitOfWork);
     }
 
@@ -103,19 +114,19 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (matricula.Status != Domain.Models.EnumStatusMatricula.Ativa && matricula.Status != Domain.Models.EnumStatusMatricula.Concluida)
         {
-             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
-             return ValidationResult;
+            AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
+            return ValidationResult;
         }
 
         if (matricula.Certificado != null)
         {
-             AddError("Certificado já emitido para esta matrícula.");
-             return ValidationResult;
+            AddError("Certificado já emitido para esta matrícula.");
+            return ValidationResult;
         }
 
         // Em um cenário real, aqui entraria a validação com a API de Conteúdo
         // para checar se a quantidade de aulas no progresso == quantidade de aulas do curso
-        
+
         var certificado = new Certificado(matricula.Id);
         matricula.Concluir();
 
@@ -123,5 +134,44 @@ public class AlunoCommandHandler : CommandHandler,
         // Mas se precisar, podemos dicionar um método _alunoRepository.AdicionarCertificado(certificado) na interface
 
         return await PersistData(_alunoRepository.UnitOfWork);
+    }
+
+    private async Task<bool> RealizarPagamento(Matricula matricula, RealizarMatriculaCommand message)
+    {
+        var eventoMatriculaIniciada = new MatriculaIniciadaIntegrationEvent
+        {
+            MatriculaId = matricula.Id,
+            AlunoId = matricula.AlunoId,
+            CursoId = matricula.CursoId,
+            ValorCurso = message.ValorCurso,
+            TipoPagamento = 1,              //1 = TipoPagamento.CartaoCredito. Está fixo pois o propósito da api é apenas didático
+            Titular = message.TitularCartao,
+            CodigoSeguranca = message.CodigoSegurancaCartao,
+            NumeroCartao = message.NumeroCartao,
+            Validade = message.ValidadeCartao
+        };
+
+        try
+        {
+            //TODO: avaliar se o método PUBLISH(...) é mais adequado p/ que a api de pagamento possa publicar um evento
+            //var result = await _bus.Publish<MatriculaIniciadaIntegrationEvent, ResponseMessage>(eventoMatriculaIniciada);
+            //var result = await _bus.RequestAsync<MatriculaIniciadaIntegrationEvent, ResponseMessage>(eventoMatriculaIniciada);
+            var result = _bus.Request<MatriculaIniciadaIntegrationEvent, ResponseMessage>(eventoMatriculaIniciada);
+
+            if (result.ValidationResult.IsValid)
+                return true;
+
+            foreach (var error in result.ValidationResult.Errors)
+            {
+                AddError(error.ErrorMessage);
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            AddError($"Ocorreu um erro ao tentar enviar {nameof(MatriculaIniciadaIntegrationEvent)} para fila, verifique se o RabbitMQ esta acessível");
+            return false;
+        }
     }
 }

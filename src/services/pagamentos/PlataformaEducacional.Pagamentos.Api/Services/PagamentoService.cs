@@ -25,9 +25,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
             if (transacao.Status != StatusTransacao.Autorizado)
             {
-                validationResult.Errors.Add(new ValidationFailure("Pagamento",
-                        "Pagamento recusado, entre em contato com a sua operadora de cartão"));
-
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", "Pagamento recusado, entre em contato com a sua operadora de cartão"));
                 return new ResponseMessage(validationResult);
             }
 
@@ -36,11 +34,10 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
             if (!await _pagamentoRepository.UnitOfWork.Commit())
             {
-                validationResult.Errors.Add(new ValidationFailure("Pagamento",
-                    "Houve um erro ao realizar o pagamento."));
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", "Houve um erro ao realizar o pagamento."));
 
                 // Cancelar pagamento no gateway
-                await CancelarPagamento(pagamento.PedidoId);
+                await CancelarPagamento(pagamento.MatriculaId);
 
                 return new ResponseMessage(validationResult);
             }
@@ -50,7 +47,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
         public async Task<ResponseMessage> CapturarPagamento(Guid pedidoId)
         {
-            var transacoes = await _pagamentoRepository.ObterTransacaoesPorPedidoId(pedidoId);
+            var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(pedidoId);
             var transacaoAutorizada = transacoes?.FirstOrDefault(t => t.Status == StatusTransacao.Autorizado);
             var validationResult = new ValidationResult();
 
@@ -82,19 +79,18 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
         public async Task<ResponseMessage> CancelarPagamento(Guid pedidoId)
         {
-            var transacoes = await _pagamentoRepository.ObterTransacaoesPorPedidoId(pedidoId);
+            var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(pedidoId);
             var transacaoAutorizada = transacoes?.FirstOrDefault(t => t.Status == StatusTransacao.Autorizado);
             var validationResult = new ValidationResult();
 
-            if (transacaoAutorizada == null) throw new DomainException($"Transação não encontrada para o pedido {pedidoId}");
+            if (transacaoAutorizada == null)
+                throw new DomainException($"Transação não encontrada para o pedido {pedidoId}");
 
             var transacao = await _pagamentoFacade.CancelarAutorizacao(transacaoAutorizada);
 
             if (transacao.Status != StatusTransacao.Cancelado)
             {
-                validationResult.Errors.Add(new ValidationFailure("Pagamento",
-                    $"Não foi possível cancelar o pagamento do pedido {pedidoId}"));
-
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Não foi possível cancelar o pagamento do pedido {pedidoId}"));
                 return new ResponseMessage(validationResult);
             }
 
@@ -103,9 +99,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
             if (!await _pagamentoRepository.UnitOfWork.Commit())
             {
-                validationResult.Errors.Add(new ValidationFailure("Pagamento",
-                    $"Não foi possível persistir o cancelamento do pagamento do pedido {pedidoId}"));
-
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Não foi possível persistir o cancelamento do pagamento do pedido {pedidoId}"));
                 return new ResponseMessage(validationResult);
             }
 

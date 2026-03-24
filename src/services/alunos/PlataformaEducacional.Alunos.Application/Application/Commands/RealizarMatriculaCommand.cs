@@ -7,15 +7,24 @@ public class RealizarMatriculaCommand : Command
 {
     public Guid AlunoId { get; private set; }
     public Guid CursoId { get; private set; }
-    public Guid PedidoId { get; private set; }
-    public decimal Valor { get; private set; }
+    public decimal ValorCurso { get; set; }
 
-    public RealizarMatriculaCommand(Guid alunoId, Guid cursoId, Guid pedidoId, decimal valor)
+    // Cartao
+    public string NumeroCartao { get; set; }
+    public string TitularCartao { get; set; }
+    public string ValidadeCartao { get; set; }
+    public string CodigoSegurancaCartao { get; set; }
+
+
+    public RealizarMatriculaCommand(Guid alunoId, Guid cursoId, decimal valorCurso, string numeroCartao, string titular, string validade, string codigoSeguranca)
     {
         AlunoId = alunoId;
         CursoId = cursoId;
-        PedidoId = pedidoId;
-        Valor = valor;
+        ValorCurso = valorCurso;
+        NumeroCartao = numeroCartao;
+        TitularCartao = titular;
+        ValidadeCartao = validade;
+        CodigoSegurancaCartao = codigoSeguranca;
     }
 
     public override bool IsValid()
@@ -37,12 +46,21 @@ public class RealizarMatriculaValidation : AbstractValidator<RealizarMatriculaCo
             .NotEqual(Guid.Empty)
             .WithMessage("Id do curso inválido");
 
-        RuleFor(c => c.PedidoId)
-            .NotEqual(Guid.Empty)
-            .WithMessage("Id do pedido inválido");
+        RuleFor(c => c.NumeroCartao)
+                .CreditCard()
+                .WithMessage("Cartão de crédito inválido");
 
-        RuleFor(c => c.Valor)
-            .GreaterThan(0)
-            .WithMessage("O valor da matrícula precisa ser maior que 0");
+        RuleFor(c => c.TitularCartao)
+            .NotNull()
+            .WithMessage("O titular é obrigatório");
+
+        RuleFor(c => c.CodigoSegurancaCartao.Length)
+            .GreaterThan(2)
+            .LessThan(5)
+            .WithMessage("O código de segurança deve possuir 3 or 4 números");
+
+        RuleFor(c => c.ValidadeCartao)
+            .NotNull()
+            .WithMessage("A Validade do cartão é obrigatória");
     }
 }

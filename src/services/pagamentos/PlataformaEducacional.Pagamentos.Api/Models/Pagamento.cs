@@ -9,7 +9,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Models
             Transacoes = new List<Transacao>();
         }
 
-        public Guid PedidoId { get; set; }
+        public Guid MatriculaId { get; set; }
         public TipoPagamento TipoPagamento { get; set; }
         public decimal Valor { get; set; }
 

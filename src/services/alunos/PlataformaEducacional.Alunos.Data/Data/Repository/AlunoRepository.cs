@@ -70,15 +70,6 @@ public class AlunoRepository : IAlunoRepository
            .Include(m => m.Certificado)
            .FirstOrDefaultAsync(m => m.Id == id);
     }
-
-    public async Task<Matricula?> ObterMatriculaPorPedidoId(Guid pedidoId)
-    {
-        return await _context.Matriculas
-           .Include(m => m.Aluno)
-           .Include(m => m.ProgressoAulas)
-           .Include(m => m.Certificado)
-           .FirstOrDefaultAsync(m => m.PedidoId == pedidoId);
-    }
     
     public async Task<IEnumerable<Matricula>> ObterMatriculasPorAluno(Guid alunoId)
     {

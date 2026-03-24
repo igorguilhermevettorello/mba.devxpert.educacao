@@ -25,16 +25,16 @@ namespace PlataformaEducacional.Pagamentos.Api.Data.Repository
             _context.Transacoes.Add(transacao);
         }
 
-        public async Task<Pagamento> ObterPagamentoPorPedidoId(Guid pedidoId)
+        public async Task<Pagamento> ObterPagamentoPorMatriculaId(Guid pedidoId)
         {
             return await _context.Pagamentos.AsNoTracking()
-                .FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+                .FirstOrDefaultAsync(p => p.MatriculaId == pedidoId);
         }
 
-        public async Task<IEnumerable<Transacao>> ObterTransacaoesPorPedidoId(Guid pedidoId)
+        public async Task<IEnumerable<Transacao>> ObterTransacaoesPorMatriculaId(Guid pedidoId)
         {
             return await _context.Transacoes.AsNoTracking()
-                .Where(t => t.Pagamento.PedidoId == pedidoId).ToListAsync();
+                .Where(t => t.Pagamento.MatriculaId == pedidoId).ToListAsync();
         }
 
         public void Dispose()

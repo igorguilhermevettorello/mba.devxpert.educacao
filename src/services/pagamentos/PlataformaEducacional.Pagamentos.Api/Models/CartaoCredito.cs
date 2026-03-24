@@ -2,17 +2,17 @@
 {
     public class CartaoCredito
     {
-        public string NomeCartao { get; set; }
-        public string NumeroCartao { get; set; }
-        public string MesAnoVencimento { get; set; }
-        public string CVV { get; set; }
+        public string Titular { get; set; } = string.Empty;
+        public string Numero { get; set; } = string.Empty;
+        public string MesAnoVencimento { get; set; } = string.Empty;
+        public string CVV { get; set; } = string.Empty;
 
         protected CartaoCredito() { }
 
-        public CartaoCredito(string nomeCartao, string numeroCartao, string mesAnoVencimento, string cvv)
+        public CartaoCredito(string titular, string numero, string mesAnoVencimento, string cvv)
         {
-            NomeCartao = nomeCartao;
-            NumeroCartao = numeroCartao;
+            Titular = titular;
+            Numero = numero;
             MesAnoVencimento = mesAnoVencimento;
             CVV = cvv;
         }
