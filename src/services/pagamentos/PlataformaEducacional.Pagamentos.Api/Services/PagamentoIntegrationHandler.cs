@@ -52,13 +52,13 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             using var scope = _serviceProvider.CreateScope();
             var pagamentoService = scope.ServiceProvider.GetRequiredService<IPagamentoService>();
 
-            var pagamento = new Pagamento
-            {
-                MatriculaId = message.MatriculaId,
-                TipoPagamento = (TipoPagamento)message.TipoPagamento,
-                Valor = message.ValorCurso,
-                CartaoCredito = new CartaoCredito(message.Titular, message.NumeroCartao, message.Validade, message.CodigoSeguranca),
-            };
+            var cartaoCredito = new CartaoCredito(message.Titular, message.NumeroCartao, message.Validade, message.CodigoSeguranca);
+
+            var pagamento = new Pagamento(
+                message.MatriculaId,
+                TipoPagamento.CartaoCredito,    //Tipo pagamento chumbado pois o propósito da api é apenas didático
+                message.ValorCurso,
+                cartaoCredito);
 
             var response = pagamentoService.AutorizarPagamento(pagamento).Result;
 

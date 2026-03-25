@@ -4,6 +4,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Models
 {
     public class Transacao : Entity
     {
+        //TODO: transformar props em private
         public string CodigoAutorizacao { get; set; }
         public string BandeiraCartao { get; set; }
         public DateTime? DataTransacao { get; set; }

@@ -2,6 +2,8 @@
 {
     public class CartaoCredito
     {
+        //TODO: transformar em value object
+
         public string Titular { get; set; } = string.Empty;
         public string Numero { get; set; } = string.Empty;
         public string MesAnoVencimento { get; set; } = string.Empty;

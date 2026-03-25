@@ -1,4 +1,5 @@
 ﻿using PlataformaEducacional.Core.Mediator;
+using PlataformaEducacional.Core.Notifications;
 using PlataformaEducacional.Pagamentos.Api.Data;
 using PlataformaEducacional.Pagamentos.Api.Data.Repository;
 using PlataformaEducacional.Pagamentos.Api.Facade;
@@ -11,6 +12,7 @@ public static class DependencyInjectionConfig
 {
     public static void RegisterServices(this IServiceCollection services)
     {
+        services.AddScoped<INotificador, Notificador>();
         services.AddScoped<IMediatorHandler, MediatorHandler>();
         services.AddScoped<IPagamentoService, PagamentoService>();
         services.AddScoped<IPagamentoRepository, PagamentoRepository>();
