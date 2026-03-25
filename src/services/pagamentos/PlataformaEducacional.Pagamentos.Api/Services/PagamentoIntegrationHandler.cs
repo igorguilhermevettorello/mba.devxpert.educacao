@@ -2,6 +2,8 @@
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.Pagamentos.Api.Models;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
+using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
 
 namespace PlataformaEducacional.Pagamentos.Api.Services
 {

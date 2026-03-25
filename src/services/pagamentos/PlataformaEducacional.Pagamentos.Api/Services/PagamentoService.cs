@@ -3,6 +3,7 @@ using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.Pagamentos.Api.Facade;
 using PlataformaEducacional.Pagamentos.Api.Models;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
 
 namespace PlataformaEducacional.Pagamentos.Api.Services
 {

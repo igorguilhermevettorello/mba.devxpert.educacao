@@ -5,6 +5,8 @@ using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.Core.Notifications;
 using PlataformaEducacional.Pagamentos.Api.Models;
 using PlataformaEducacional.Pagamentos.Api.Models.DTOs;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
+using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
 using PlataformaEducacional.Pagamentos.Api.Services;
 using PlataformaEducacional.WebApi.Core.Controllers.Base;
 

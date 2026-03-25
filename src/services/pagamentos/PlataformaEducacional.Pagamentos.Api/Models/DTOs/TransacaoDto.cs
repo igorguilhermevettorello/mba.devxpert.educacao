@@ -1,4 +1,6 @@
-﻿namespace PlataformaEducacional.Pagamentos.Api.Models.DTOs
+﻿using PlataformaEducacional.Pagamentos.Api.Models.Enums;
+
+namespace PlataformaEducacional.Pagamentos.Api.Models.DTOs
 {
     public class TransacaoDto
     {

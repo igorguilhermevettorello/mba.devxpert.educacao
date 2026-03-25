@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace PlataformaEducacional.Pagamentos.Api.Models
+namespace PlataformaEducacional.Pagamentos.Api.Models.ValueObjects
 {
     public sealed record CartaoCredito
     {

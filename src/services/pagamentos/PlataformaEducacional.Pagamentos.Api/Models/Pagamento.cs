@@ -1,4 +1,6 @@
 ﻿using PlataformaEducacional.Core.DomainObjects;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
+using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
 
 namespace PlataformaEducacional.Pagamentos.Api.Models
 {

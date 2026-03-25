@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using PlataformaEducacional.Pagamentos.Api.Models;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
 using PlataformaEducacional.Pagamentos.EducaPag;
 
 namespace PlataformaEducacional.Pagamentos.Api.Facade

@@ -1,4 +1,4 @@
-﻿namespace PlataformaEducacional.Pagamentos.Api.Models
+﻿namespace PlataformaEducacional.Pagamentos.Api.Models.Enums
 {
     public enum StatusTransacao
     {
