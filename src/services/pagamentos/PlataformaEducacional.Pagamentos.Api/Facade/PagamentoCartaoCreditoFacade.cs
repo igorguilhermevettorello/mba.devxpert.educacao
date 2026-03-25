@@ -16,38 +16,31 @@ namespace PlataformaEducacional.Pagamentos.Api.Facade
 
         public async Task<Transacao> AutorizarPagamento(Pagamento pagamento)
         {
-            try
+            var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey, _pagamentoConfig.DefaultEncryptionKey);
+
+            var cardHashGen = new CardHash(educaPagSvc)
             {
-                var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey, _pagamentoConfig.DefaultEncryptionKey);
+                CardNumber = pagamento.CartaoCredito.Numero,
+                CardHolderName = pagamento.CartaoCredito.Titular,
+                CardExpirationDate = pagamento.CartaoCredito.MesAnoVencimento,
+                CardCvv = pagamento.CartaoCredito.CVV
+            };
 
-                var cardHashGen = new CardHash(educaPagSvc)
-                {
-                    CardNumber = pagamento.CartaoCredito.Numero,
-                    CardHolderName = pagamento.CartaoCredito.Titular,
-                    CardExpirationDate = pagamento.CartaoCredito.MesAnoVencimento,
-                    CardCvv = pagamento.CartaoCredito.CVV
-                };
+            var cardHash = cardHashGen.Generate();
 
-                var cardHash = cardHashGen.Generate();
-
-                var transacao = new Transaction(educaPagSvc)
-                {
-                    CardHash = cardHash,
-                    CardNumber = pagamento.CartaoCredito.Numero,
-                    CardHolderName = pagamento.CartaoCredito.Titular,
-                    CardExpirationDate = pagamento.CartaoCredito.MesAnoVencimento,
-                    CardCvv = pagamento.CartaoCredito.CVV,
-                    PaymentMethod = PaymentMethod.CreditCard,
-                    Amount = pagamento.Valor
-                };
-
-                return ParaTransacao(await transacao.AuthorizeCardTransaction());
-            }
-            catch (Exception ex)
+            var transacao = new Transaction(educaPagSvc)
             {
-                //TODO: avaliar necessidade de try/catch
-                throw ex;
-            }
+                CardHash = cardHash,
+                CardNumber = pagamento.CartaoCredito.Numero,
+                CardHolderName = pagamento.CartaoCredito.Titular,
+                CardExpirationDate = pagamento.CartaoCredito.MesAnoVencimento,
+                CardCvv = pagamento.CartaoCredito.CVV,
+                PaymentMethod = PaymentMethod.CreditCard,
+                Amount = pagamento.Valor
+            };
+
+            return ParaTransacao(await transacao.AuthorizeCardTransaction());
+
         }
 
         public async Task<Transacao> CapturarPagamento(Transacao transacao)

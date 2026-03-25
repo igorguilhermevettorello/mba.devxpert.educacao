@@ -59,8 +59,6 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
         public async Task<ResponseMessage> CapturarPagamento(Guid pedidoId)
         {
-            //TODO: avaliar necessidade deste método @@@@@
-
             var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(pedidoId);
             var transacaoAutorizada = transacoes?.FirstOrDefault(t => t.Status == StatusTransacao.Autorizado);
             var validationResult = new ValidationResult();

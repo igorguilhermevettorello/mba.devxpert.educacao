@@ -18,9 +18,5 @@ public static class DependencyInjectionConfig
         services.AddScoped<IPagamentoRepository, PagamentoRepository>();
         services.AddScoped<IPagamentoFacade, PagamentoCartaoCreditoFacade>();
         services.AddScoped<PagamentosContext>();
-
-        // IMPORTANTE: Registrar o handler de integração
-        //TODO: avaliar necessidade do codigo abaixo
-        //services.AddHostedService<PagamentoIntegrationHandler>();
     }
 }
