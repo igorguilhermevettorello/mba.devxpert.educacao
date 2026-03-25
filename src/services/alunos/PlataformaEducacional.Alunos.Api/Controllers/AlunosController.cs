@@ -40,7 +40,7 @@ public class AlunosController : MainController
         if (alunoId != model.AlunoId)
             throw new DomainException("Aluno não identificado");
 
-        var command = new RealizarMatriculaCommand(alunoId, model.CursoId, model.ValorCurso, model.NumeroCartao, model.TitularCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
+        var command = new RealizarMatriculaCommand(alunoId, model.CursoId);
         var result = await _mediator.Send(command);
 
         return CustomResponse(result);

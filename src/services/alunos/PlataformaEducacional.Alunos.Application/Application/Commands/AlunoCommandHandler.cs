@@ -4,7 +4,6 @@ using PlataformaEducacional.Alunos.Application.Events;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;
-using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
@@ -69,14 +68,6 @@ public class AlunoCommandHandler : CommandHandler,
         }
 
         var matricula = new Matricula(message.AlunoId, message.CursoId);
-
-        //envia evento de matricula iniciada
-        if (!await RealizarPagamento(matricula, message)) return ValidationResult;
-
-        matricula.Ativar();
-
-        //TODO: é necessário gerar/receber evento de PagamentoConfirmado??
-
         _alunoRepository.AdicionarMatricula(matricula);
         return await PersistData(_alunoRepository.UnitOfWork);
     }
@@ -134,44 +125,5 @@ public class AlunoCommandHandler : CommandHandler,
         // Mas se precisar, podemos dicionar um método _alunoRepository.AdicionarCertificado(certificado) na interface
 
         return await PersistData(_alunoRepository.UnitOfWork);
-    }
-
-    private async Task<bool> RealizarPagamento(Matricula matricula, RealizarMatriculaCommand message)
-    {
-        var eventoMatriculaIniciada = new MatriculaIniciadaIntegrationEvent
-        {
-            MatriculaId = matricula.Id,
-            AlunoId = matricula.AlunoId,
-            CursoId = matricula.CursoId,
-            ValorCurso = message.ValorCurso,
-            TipoPagamento = 1,              //1 = TipoPagamento.CartaoCredito. Está fixo pois o propósito da api é apenas didático
-            Titular = message.TitularCartao,
-            CodigoSeguranca = message.CodigoSegurancaCartao,
-            NumeroCartao = message.NumeroCartao,
-            Validade = message.ValidadeCartao
-        };
-
-        try
-        {
-            //TODO: avaliar se o método PUBLISH(...) é mais adequado p/ que a api de pagamento possa publicar um evento
-            //var result = await _bus.Publish<MatriculaIniciadaIntegrationEvent, ResponseMessage>(eventoMatriculaIniciada);
-            //var result = await _bus.RequestAsync<MatriculaIniciadaIntegrationEvent, ResponseMessage>(eventoMatriculaIniciada);
-            var result = _bus.Request<MatriculaIniciadaIntegrationEvent, ResponseMessage>(eventoMatriculaIniciada);
-
-            if (result.ValidationResult.IsValid)
-                return true;
-
-            foreach (var error in result.ValidationResult.Errors)
-            {
-                AddError(error.ErrorMessage);
-            }
-
-            return false;
-        }
-        catch (Exception ex)
-        {
-            AddError($"Ocorreu um erro ao tentar enviar {nameof(MatriculaIniciadaIntegrationEvent)} para fila, verifique se o RabbitMQ esta acessível");
-            return false;
-        }
     }
 }
