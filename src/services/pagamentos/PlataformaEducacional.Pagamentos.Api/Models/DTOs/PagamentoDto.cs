@@ -1,6 +1,4 @@
-﻿using PlataformaEducacional.Core.DomainObjects;
-
-namespace PlataformaEducacional.Pagamentos.Api.Models.DTOs
+﻿namespace PlataformaEducacional.Pagamentos.Api.Models.DTOs
 {
     public class PagamentoDto
     {

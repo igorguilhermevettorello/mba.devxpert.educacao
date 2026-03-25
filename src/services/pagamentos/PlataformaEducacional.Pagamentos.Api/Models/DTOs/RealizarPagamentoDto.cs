@@ -1,17 +1,12 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace PlataformaEducacional.Alunos.Api.DTOs.Matriculas
+namespace PlataformaEducacional.Pagamentos.Api.Models.DTOs
 {
-    public class MatricularAlunoDTO
+    public class RealizarPagamentoDto
     {
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public Guid AlunoId { get; set; }
-
-        [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public Guid CursoId { get; set; }
-
-        //TODO: remover dados de pagamento desta classe
+        public Guid MatriculaId { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public decimal ValorCurso { get; set; }

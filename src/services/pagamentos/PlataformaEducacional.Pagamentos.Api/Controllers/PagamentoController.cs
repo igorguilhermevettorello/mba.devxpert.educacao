@@ -55,5 +55,11 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             var pagamentoDto = _mapper.Map<PagamentoDto>(pagamento);
             return Ok(pagamentoDto);
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> RealizarPagamento([FromBody] RealizarPagamentoDto pagamento)
+        //{
+
+        //}
     }
 }
