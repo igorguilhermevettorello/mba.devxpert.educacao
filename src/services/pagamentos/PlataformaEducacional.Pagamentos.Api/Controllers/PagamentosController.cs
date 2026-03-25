@@ -9,13 +9,13 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
 {
     [ApiController]
     [Route("api/pagamentos")]
-    public class PagamentoController : MainController
+    public class PagamentosController : MainController
     {
         readonly IPagamentoRepository _pagamentoRepository;
         private readonly IMediatorHandler _mediatorHandler;
         private readonly IMapper _mapper;
 
-        public PagamentoController(
+        public PagamentosController(
             IPagamentoRepository pagamentoRepository,
             IMediatorHandler mediatorHandler,
             IMapper mapper)
