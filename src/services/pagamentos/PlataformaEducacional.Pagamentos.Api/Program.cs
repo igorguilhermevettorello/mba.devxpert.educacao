@@ -6,6 +6,7 @@ using PlataformaEducacional.WebApi.Core.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddDataContextConfiguration();
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 builder.Services.AddApiConfiguration("Pagamentos API");
 builder.Services.Configure<PagamentoConfig>(builder.Configuration.GetSection("PagamentoConfig"));
 builder.Services.AddJwtConfiguration(builder.Configuration);

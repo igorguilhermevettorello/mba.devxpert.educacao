@@ -25,15 +25,27 @@ namespace PlataformaEducacional.Pagamentos.Api.Data.Repository
             _context.Transacoes.Add(transacao);
         }
 
-        public async Task<Pagamento> ObterPagamentoPorMatriculaId(Guid pedidoId)
+        public async Task<Pagamento?> ObterPorMatriculaId(Guid matriculaId)
         {
-            return await _context.Pagamentos.AsNoTracking()
-                .FirstOrDefaultAsync(p => p.MatriculaId == pedidoId);
+            return await _context.Pagamentos
+                .Include(x => x.Transacoes)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.MatriculaId == matriculaId);
         }
 
-        public async Task<IEnumerable<Transacao>> ObterTransacaoesPorMatriculaId(Guid pedidoId)
+        public async Task<Pagamento?> ObterPorId(Guid id)
         {
-            return await _context.Transacoes.AsNoTracking()
+            return await _context.Pagamentos
+                .Include(x => x.Transacoes)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<IEnumerable<Transacao>?> ObterTransacaoesPorMatriculaId(Guid pedidoId)
+        {
+            return await _context.Transacoes
+                .Include(x => x.Pagamento)
+                .AsNoTracking()
                 .Where(t => t.Pagamento.MatriculaId == pedidoId).ToListAsync();
         }
 
