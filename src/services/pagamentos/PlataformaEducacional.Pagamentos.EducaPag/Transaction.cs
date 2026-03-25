@@ -93,7 +93,6 @@ namespace PlataformaEducacional.Pagamentos.EducaPag
 
         public Task<Transaction> AuthorizeCardTransaction()
         {
-            //var success = new Random().Next(2) == 0;
             var success = Random.Shared.Next(2) == 0;
 
             Transaction transaction;

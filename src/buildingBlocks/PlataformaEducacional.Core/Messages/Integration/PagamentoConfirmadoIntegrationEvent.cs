@@ -2,6 +2,6 @@
 
 public class PagamentoConfirmadoIntegrationEvent : IntegrationEvent
 {
-    //TODO:
     public Guid MatriculaId { get; set; }
+    public DateTime DataConfirmacao { get; set; }
 }
