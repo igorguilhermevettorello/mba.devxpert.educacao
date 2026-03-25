@@ -35,9 +35,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Models.DTOs
     /// </summary>
     public class CardExpirationAttribute : ValidationAttribute
     {
-        //TODO: remover classe
-        private static readonly Regex _regex = new(@"^(0[1-9]|1[0-2])\/?([0-9]{2}|[0-9]{4})$",
-                                                   RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _regex = new(@"^(0[1-9]|1[0-2])\/?([0-9]{2}|[0-9]{4})$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public override bool IsValid(object value)
         {

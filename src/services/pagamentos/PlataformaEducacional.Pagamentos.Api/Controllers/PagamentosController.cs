@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Core.Mediator;
+using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.Core.Notifications;
 using PlataformaEducacional.Pagamentos.Api.Models;
 using PlataformaEducacional.Pagamentos.Api.Models.DTOs;
 using PlataformaEducacional.Pagamentos.Api.Services;
 using PlataformaEducacional.WebApi.Core.Controllers.Base;
-//using PlataformaEducacional.WebApi.Core.Controllers;
 
 namespace PlataformaEducacional.Pagamentos.Api.Controllers
 {
@@ -33,7 +33,10 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        //TODO: Add tipos de retorno
+        [ProducesResponseType(typeof(PagamentoDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId([FromRoute] Guid id)
         {
             //TODO: validar autorização
@@ -50,7 +53,10 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
 
 
         [HttpGet("matricula/{matriculaId:guid}")]
-        //TODO: Add tipos de retorno
+        [ProducesResponseType(typeof(PagamentoDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorMatriculaId([FromRoute] Guid matriculaId)
         {
             //TODO: validar autorização
@@ -66,7 +72,10 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         }
 
         [HttpPost]
-        //TODO: Add tipos de retorno
+        [ProducesResponseType(typeof(PagamentoDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> RealizarPagamento([FromBody] RealizarPagamentoDto model)
         {
             if (!ModelState.IsValid)
@@ -84,15 +93,19 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
 
             if (!responseMessage.ValidationResult.IsValid)
             {
-                foreach (var erro in responseMessage.ValidationResult.Errors)
-                {
-                    NotificarErro(erro.PropertyName, erro.ErrorMessage);
-                }
-
+                NotificarErros(responseMessage);
                 return CustomResponse();
             }
 
             return CreatedAtAction(nameof(ObterPorId), new { id = pagamento.Id }, _mapper.Map<PagamentoDto>(pagamento));
+        }
+
+        private void NotificarErros(ResponseMessage responseMessage)
+        {
+            foreach (var erro in responseMessage.ValidationResult.Errors)
+            {
+                NotificarErro(erro.PropertyName, erro.ErrorMessage);
+            }
         }
     }
 }
