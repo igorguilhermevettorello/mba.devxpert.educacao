@@ -63,7 +63,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
                 return new ResponseMessage(validationResult);
             }
 
-            transacao.PagamentoId = transacaoAutorizada.PagamentoId;
+            transacao.AtualizarPagamentoId(transacaoAutorizada.PagamentoId);
             _pagamentoRepository.AdicionarTransacao(transacao);
 
             if (!await _pagamentoRepository.UnitOfWork.Commit())
@@ -94,7 +94,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
                 return new ResponseMessage(validationResult);
             }
 
-            transacao.PagamentoId = transacaoAutorizada.PagamentoId;
+            transacao.AtualizarPagamentoId(transacaoAutorizada.PagamentoId);
             _pagamentoRepository.AdicionarTransacao(transacao);
 
             if (!await _pagamentoRepository.UnitOfWork.Commit())

@@ -4,19 +4,39 @@ namespace PlataformaEducacional.Pagamentos.Api.Models
 {
     public class Transacao : Entity
     {
-        //TODO: transformar props em private
-        public string CodigoAutorizacao { get; set; }
-        public string BandeiraCartao { get; set; }
-        public DateTime? DataTransacao { get; set; }
-        public decimal ValorTotal { get; set; }
-        public decimal CustoTransacao { get; set; }
-        public StatusTransacao Status { get; set; }
-        public string TID { get; set; } // Id
-        public string NSU { get; set; } // Meio (paypal)
+        public Transacao(string codigoAutorizacao, string bandeiraCartao, DateTime? dataTransacao, decimal valorTotal, decimal custoTransacao, StatusTransacao status, string tID, string nSU, Guid? pagamentoId = null)
+        {
+            CodigoAutorizacao = codigoAutorizacao;
+            BandeiraCartao = bandeiraCartao;
+            DataTransacao = dataTransacao;
+            ValorTotal = valorTotal;
+            CustoTransacao = custoTransacao;
+            Status = status;
+            TID = tID;
+            NSU = nSU;
 
-        public Guid PagamentoId { get; set; }
+            if (pagamentoId.HasValue)
+                PagamentoId = pagamentoId.Value;
+        }
+
+        protected Transacao() { }
+
+        public string CodigoAutorizacao { get; private set; } = string.Empty;
+        public string BandeiraCartao { get; private set; } = string.Empty;
+        public DateTime? DataTransacao { get; private set; }
+        public decimal ValorTotal { get; private set; }
+        public decimal CustoTransacao { get; private set; }
+        public StatusTransacao Status { get; private set; }
+        public string TID { get; private set; } // Id
+        public string NSU { get; private set; } // Meio (paypal)
+        public Guid PagamentoId { get; private set; }
 
         // EF Relation
-        public Pagamento Pagamento { get; set; }
+        public Pagamento? Pagamento { get; private set; }
+
+        public void AtualizarPagamentoId(Guid pagamentoId)
+        {
+            PagamentoId = pagamentoId;
+        }
     }
 }

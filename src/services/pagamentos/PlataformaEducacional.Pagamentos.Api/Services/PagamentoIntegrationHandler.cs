@@ -52,7 +52,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             using var scope = _serviceProvider.CreateScope();
             var pagamentoService = scope.ServiceProvider.GetRequiredService<IPagamentoService>();
 
-            var cartaoCredito = new CartaoCredito(message.Titular, message.NumeroCartao, message.Validade, message.CodigoSeguranca);
+            var cartaoCredito = CartaoCredito.Criar(message.Titular, message.NumeroCartao, message.Validade, message.CodigoSeguranca);
 
             var pagamento = new Pagamento(
                 message.MatriculaId,

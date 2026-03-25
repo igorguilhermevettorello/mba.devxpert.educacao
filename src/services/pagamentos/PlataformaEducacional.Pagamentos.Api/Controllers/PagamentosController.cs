@@ -72,7 +72,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
-            var cartaoCredito = new CartaoCredito(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
+            var cartaoCredito = CartaoCredito.Criar(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
 
             var pagamento = new Pagamento(
                 model.MatriculaId,
