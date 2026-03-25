@@ -23,8 +23,15 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
         public async Task<ResponseMessage> AutorizarPagamento(Pagamento pagamento)
         {
-            var transacao = await _pagamentoFacade.AutorizarPagamento(pagamento);
             var validationResult = new ValidationResult();
+
+            if (await ExistePagamentoParaAMatricula(pagamento.MatriculaId))
+            {
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Já existe pagamento para a matrícula {pagamento.MatriculaId}"));
+                return new ResponseMessage(validationResult);
+            }
+
+            var transacao = await _pagamentoFacade.AutorizarPagamento(pagamento);
 
             if (transacao.Status != StatusTransacao.Autorizado)
             {
@@ -38,10 +45,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             if (!await _pagamentoRepository.UnitOfWork.Commit())
             {
                 validationResult.Errors.Add(new ValidationFailure("Pagamento", "Houve um erro ao realizar o pagamento."));
-
-                // Cancelar pagamento no gateway
                 await CancelarPagamento(pagamento.MatriculaId);
-
                 return new ResponseMessage(validationResult);
             }
 
@@ -133,6 +137,12 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             {
                 return false;
             }
+        }
+
+        private async Task<bool> ExistePagamentoParaAMatricula(Guid matriculaId)
+        {
+            var pagamentoAnterior = await _pagamentoRepository.ObterPorMatriculaId(matriculaId);
+            return pagamentoAnterior != null ? true : false;
         }
     }
 }

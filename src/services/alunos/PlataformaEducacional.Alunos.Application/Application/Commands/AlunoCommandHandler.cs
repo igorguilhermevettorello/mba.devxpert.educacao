@@ -67,6 +67,12 @@ public class AlunoCommandHandler : CommandHandler,
             return ValidationResult;
         }
 
+        if (aluno.Matriculas.Any(x => x.CursoId == message.CursoId))
+        {
+            AddError($"Aluno não já possui matricula no curso {message.CursoId}");
+            return ValidationResult;
+        }
+
         var matricula = new Matricula(message.AlunoId, message.CursoId);
         _alunoRepository.AdicionarMatricula(matricula);
         return await PersistData(_alunoRepository.UnitOfWork);
