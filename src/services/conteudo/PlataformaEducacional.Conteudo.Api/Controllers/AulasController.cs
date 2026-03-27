@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Conteudo.Api.DTOs;
 using PlataformaEducacional.Conteudo.Api.DTOs.Aulas;
@@ -13,6 +14,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
 {
     [ApiController]
     [Route("api/aulas")]
+    [Authorize]
     public class AulasController : MainController
     {
         private readonly IMediatorHandler _mediatorHandler;
@@ -31,6 +33,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto<Guid>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -62,6 +65,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -91,9 +95,8 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<AulaDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> ObterPorId(Guid id)
         {
@@ -105,13 +108,13 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
             }
 
             var aulaDto = _mapper.Map<AulaDto>(aula);
-            return Ok(aulaDto);
+            var response = ResultDto.Ok(aulaDto, "Aula obtida com sucesso");
+            return CustomResponse(response);
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<IEnumerable<AulaDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> Listar(
             [FromQuery] Guid? cursoId = null, 
             [FromQuery] bool apenasAtivas = false)
@@ -124,9 +127,8 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpGet("curso/{cursoId:guid}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<IEnumerable<AulaDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> ListarPorCurso(Guid cursoId, [FromQuery] bool apenasAtivas = false)
         {
             IEnumerable<Aula> aulas;
@@ -142,6 +144,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

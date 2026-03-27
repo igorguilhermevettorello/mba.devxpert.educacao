@@ -14,6 +14,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
 {
     [ApiController]
     [Route("api/cursos")]
+    [Authorize]
     public class CursosController : MainController
     {
         private readonly IMediatorHandler _mediatorHandler;
@@ -32,6 +33,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto<Guid>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -77,6 +79,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -119,9 +122,8 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<CursoDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> ObterPorId(Guid id)
         {
@@ -133,21 +135,23 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
             }
 
             var cursoDto = _mapper.Map<CursoDto>(curso);
-            return Ok(cursoDto);
+            var response = ResultDto.Ok(cursoDto, "Curso obtido com sucesso");
+            return CustomResponse(response);
         }
 
-        [AllowAnonymous]
         [HttpGet("ativos")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<IEnumerable<CursoDto>>), StatusCodes.Status200OK)]
         public async Task<ActionResult> ListarCursosAtivos()
         {
-            var cursos = await _cursoRepository.ObterTodosAsync();
+            var cursos = await _cursoRepository.ObterAtivosAsync();
             var cursosDto = _mapper.Map<IEnumerable<CursoDto>>(cursos);
-            return CustomResponse(cursosDto);
-            
+            var response = ResultDto.Ok(cursosDto, "Cursos ativos obtidos com sucesso");
+            return CustomResponse(response);
         }
 
         [HttpGet]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto<IEnumerable<CursoDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -161,6 +165,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -179,6 +184,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPut("{id:guid}/ativar")]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -197,6 +203,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPut("{id:guid}/inativar")]
+        [Authorize(Roles = "ADMINISTRADOR")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
