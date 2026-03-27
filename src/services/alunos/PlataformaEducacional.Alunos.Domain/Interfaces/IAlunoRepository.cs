@@ -63,12 +63,7 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// Obtém uma matrícula pelo ID.
     /// </summary>
     Task<Matricula?> ObterMatriculaPorId(Guid id);
-
-    /// <summary>
-    /// Obtém uma matrícula pelo ID do pedido.
-    /// </summary>
-    Task<Matricula?> ObterMatriculaPorPedidoId(Guid pedidoId);
-
+        
     /// <summary>
     /// Obtém todas as matrículas de um aluno.
     /// </summary>

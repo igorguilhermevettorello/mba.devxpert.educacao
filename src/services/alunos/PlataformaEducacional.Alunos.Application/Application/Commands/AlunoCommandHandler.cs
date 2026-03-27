@@ -4,6 +4,7 @@ using PlataformaEducacional.Alunos.Application.Events;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.MessageBus;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
 
@@ -15,10 +16,12 @@ public class AlunoCommandHandler : CommandHandler,
     IRequestHandler<EmitirCertificadoCommand, ValidationResult>
 {
     private readonly IAlunoRepository _alunoRepository;
+    private readonly IMessageBus _bus;
 
-    public AlunoCommandHandler(IAlunoRepository alunoRepository)
+    public AlunoCommandHandler(IAlunoRepository alunoRepository, IMessageBus bus)
     {
         _alunoRepository = alunoRepository;
+        _bus = bus;
     }
 
     public async Task<ValidationResult> Handle(AdicionarEnderecoCommand message, CancellationToken cancellationToken)
@@ -53,7 +56,8 @@ public class AlunoCommandHandler : CommandHandler,
 
     public async Task<ValidationResult> Handle(RealizarMatriculaCommand message, CancellationToken cancellationToken)
     {
-        if (!message.IsValid()) return message.ValidationResult;
+        if (!message.IsValid())
+            return message.ValidationResult;
 
         var aluno = await _alunoRepository.ObterPorId(message.AlunoId);
 
@@ -63,10 +67,14 @@ public class AlunoCommandHandler : CommandHandler,
             return ValidationResult;
         }
 
-        var matricula = new Matricula(message.AlunoId, message.CursoId, message.Valor, message.PedidoId);
+        if (aluno.Matriculas.Any(x => x.CursoId == message.CursoId))
+        {
+            AddError($"Aluno não já possui matricula no curso {message.CursoId}");
+            return ValidationResult;
+        }
 
+        var matricula = new Matricula(message.AlunoId, message.CursoId);
         _alunoRepository.AdicionarMatricula(matricula);
-
         return await PersistData(_alunoRepository.UnitOfWork);
     }
 
@@ -103,19 +111,19 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (matricula.Status != Domain.Models.EnumStatusMatricula.Ativa && matricula.Status != Domain.Models.EnumStatusMatricula.Concluida)
         {
-             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
-             return ValidationResult;
+            AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
+            return ValidationResult;
         }
 
         if (matricula.Certificado != null)
         {
-             AddError("Certificado já emitido para esta matrícula.");
-             return ValidationResult;
+            AddError("Certificado já emitido para esta matrícula.");
+            return ValidationResult;
         }
 
         // Em um cenário real, aqui entraria a validação com a API de Conteúdo
         // para checar se a quantidade de aulas no progresso == quantidade de aulas do curso
-        
+
         var certificado = new Certificado(matricula.Id);
         matricula.Concluir();
 

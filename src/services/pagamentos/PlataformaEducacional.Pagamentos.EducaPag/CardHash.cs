@@ -5,12 +5,12 @@ namespace PlataformaEducacional.Pagamentos.EducaPag
 {
     public class CardHash
     {
-        public CardHash(EducaPagService nerdsPagService)
+        public CardHash(EducaPagService educaPagService)
         {
-            NerdsPagService = nerdsPagService;
+            EducaPagService = educaPagService;
         }
 
-        private readonly EducaPagService NerdsPagService;
+        private readonly EducaPagService EducaPagService;
 
         public string CardHolderName { get; set; }
         public string CardNumber { get; set; }
@@ -21,8 +21,8 @@ namespace PlataformaEducacional.Pagamentos.EducaPag
         {
             using var aesAlg = Aes.Create();
 
-            aesAlg.IV = Encoding.Default.GetBytes(NerdsPagService.EncryptionKey);
-            aesAlg.Key = Encoding.Default.GetBytes(NerdsPagService.ApiKey);
+            aesAlg.IV = Encoding.Default.GetBytes(EducaPagService.EncryptionKey);
+            aesAlg.Key = Encoding.Default.GetBytes(EducaPagService.ApiKey);
 
             var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 

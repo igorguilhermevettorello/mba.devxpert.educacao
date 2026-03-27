@@ -4,14 +4,14 @@ namespace PlataformaEducacional.Pagamentos.EducaPag
 {
     public class Transaction
     {
-        public Transaction(EducaPagService nerdsPagService)
+        public Transaction(EducaPagService educaPagService)
         {
-            NerdsPagService = nerdsPagService;
+            EducaPagService = educaPagService;
         }
 
         protected Transaction() { }
 
-        private readonly EducaPagService NerdsPagService;
+        private readonly EducaPagService EducaPagService;
 
         protected string Endpoint { get; set; }
 
@@ -93,7 +93,8 @@ namespace PlataformaEducacional.Pagamentos.EducaPag
 
         public Task<Transaction> AuthorizeCardTransaction()
         {
-            var success = new Random().Next(2) == 0;
+            var success = Random.Shared.Next(2) == 0;
+
             Transaction transaction;
 
             if (success)
