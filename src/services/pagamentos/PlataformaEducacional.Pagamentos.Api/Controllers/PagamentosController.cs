@@ -1,6 +1,6 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlataformaEducacional.Core.Mediator;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.Core.Notifications;
 using PlataformaEducacional.Pagamentos.Api.Models;
@@ -9,29 +9,31 @@ using PlataformaEducacional.Pagamentos.Api.Models.Enums;
 using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
 using PlataformaEducacional.Pagamentos.Api.Services;
 using PlataformaEducacional.WebApi.Core.Controllers.Base;
+using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Pagamentos.Api.Controllers
 {
     [ApiController]
     [Route("api/pagamentos")]
+    [Authorize]
     public class PagamentosController : MainController
     {
         readonly IPagamentoRepository _pagamentoRepository;
-        readonly IPagamentoService _pagamentoService;
-        private readonly IMediatorHandler _mediatorHandler;
+        readonly IPagamentoService _pagamentoService;        
         private readonly IMapper _mapper;
+        private readonly IAspNetUser _user;
 
         public PagamentosController(
             IPagamentoRepository pagamentoRepository,
-            IMediatorHandler mediatorHandler,
             IMapper mapper,
             IPagamentoService pagamentoService,
-            INotificador notificador) : base(notificador)
+            INotificador notificador,
+            IAspNetUser user) : base(notificador)
         {
             _pagamentoRepository = pagamentoRepository;
-            _mediatorHandler = mediatorHandler;
             _mapper = mapper;
             _pagamentoService = pagamentoService;
+            _user = user;
         }
 
         [HttpGet("{id:guid}")]
@@ -41,7 +43,6 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId([FromRoute] Guid id)
         {
-            //TODO: validar autorização
             var pagamento = await _pagamentoRepository.ObterPorId(id);
 
             if (pagamento == null)
@@ -61,7 +62,6 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorMatriculaId([FromRoute] Guid matriculaId)
         {
-            //TODO: validar autorização
             var pagamento = await _pagamentoRepository.ObterPorMatriculaId(matriculaId);
 
             if (pagamento == null)
