@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlataformaEducacional.Pagamentos.Api.Data;
+using PlataformaEducacional.Pagamentos.Api.Models;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
+using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
 
 namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
 {
@@ -38,11 +41,34 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
         {
             if (await context.Pagamentos.AnyAsync())
                 return;
-            
-            //TODO: add seed de pagamentos
-            //var pagamento = new Pagamento(Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765"), "Aluno Teste", "aluno.teste@educa.com", "32009883985");
-            //context.Pagamentos.Add(pagamento);
-            //await context.SaveChangesAsync();
+
+            var pagamento = GerarPagamento();
+            context.Pagamentos.Add(pagamento);
+            await context.SaveChangesAsync();
+        }
+
+        private static Pagamento GerarPagamento()
+        {
+            var cartaoCredito = CartaoCredito.Criar("Joaozinho da Silva", "5571 9114 0412 6886", "02/27", "690");
+            var pagamento = new Pagamento(Guid.NewGuid(), TipoPagamento.CartaoCredito, 1500M, cartaoCredito);
+            pagamento.AdicionarTransacao(GerarTransacao(pagamento.Id));
+            return pagamento;
+        }
+
+        private static Transacao GerarTransacao(Guid pagamentoId)
+        {
+            var transacao = new Transacao(
+                "JDPL2DUAPM",
+                "MasterCard",
+                DateTime.Now,
+                1500M,
+                2.4M,
+                StatusTransacao.Autorizado,
+                "B3DO4XP9XW",
+                "4W6FYCOWMQ",
+                pagamentoId);
+
+            return transacao;
         }
     }
 }
