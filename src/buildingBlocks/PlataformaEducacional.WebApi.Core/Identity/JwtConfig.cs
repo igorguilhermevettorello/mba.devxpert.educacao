@@ -20,7 +20,7 @@ public static class JwtConfig
             throw new InvalidOperationException("JwtSettings or JwtSettings.Secret is not configured properly.");
         }
 
-        var key = Encoding.ASCII.GetBytes(jwSettings.Secret);
+        var key = Encoding.UTF8.GetBytes(jwSettings.Secret);
 
         services.AddAuthentication(x =>
         {

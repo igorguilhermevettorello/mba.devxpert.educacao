@@ -9,6 +9,7 @@ using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.Identity;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime;
 using System.Security.Claims;
 using System.Text;
 
@@ -94,6 +95,40 @@ public class AuthController : MainController
         return CustomResponse();
     }
 
+    [HttpPost("validate-token")]
+    public IActionResult ValidateToken([FromBody] TokenDto request)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
+
+        var token = request.Token?
+            .Trim()
+            .Trim('"')
+            .Replace("\n", "")
+            .Replace("\r", "");
+
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = _appSettings.Emissor,
+                ValidateAudience = true,
+                ValidAudiences = new[] { _appSettings.ValidoEm },
+                RequireAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            }, out SecurityToken validatedToken);
+
+            return Ok(new { valid = true });
+        }
+        catch (Exception ex)
+        {
+            return Unauthorized(new { valid = false, error = ex.Message });
+        }
+    }
+
     private async Task<UsuarioRespostaLogin> GerarJwt(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -134,7 +169,7 @@ public class AuthController : MainController
     private string CodificarToken(ClaimsIdentity identityClaims)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
         var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
         {
             Issuer = _appSettings.Emissor,
