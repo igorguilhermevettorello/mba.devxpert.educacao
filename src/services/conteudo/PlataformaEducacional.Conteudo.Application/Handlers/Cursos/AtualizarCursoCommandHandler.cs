@@ -1,12 +1,14 @@
-﻿using MediatR;
+using FluentValidation.Results;
+using MediatR;
 using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
 using PlataformaEducacional.Conteudo.Domain.ValueObjects;
+using PlataformaEducacional.Core.Messages;
 using PlataformaEducacional.Core.Notifications;
 
 namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
 {
-    public class AtualizarCursoCommandHandler : IRequestHandler<AtualizarCursoCommand, bool>
+    public class AtualizarCursoCommandHandler : CommandHandler, IRequestHandler<AtualizarCursoCommand, ValidationResult>
     {
         private readonly ICursoRepository _cursoRepository;
         private readonly INotificador _notificador;
@@ -17,7 +19,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
             _notificador = notificador;
         }
 
-        public async Task<bool> Handle(AtualizarCursoCommand request, CancellationToken cancellationToken)
+        public async Task<ValidationResult> Handle(AtualizarCursoCommand request, CancellationToken cancellationToken)
         {
             if (!request.IsValid())
             {
@@ -29,7 +31,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
                         Mensagem = error.ErrorMessage
                     });
                 }
-                return false;
+                return request.ValidationResult;
             }
 
             var curso = await _cursoRepository.BuscarPorIdAsync(request.Id);
@@ -41,14 +43,13 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
                     Campo = "Id",
                     Mensagem = "Curso não encontrado"
                 });
-                return false;
+                return new ValidationResult(new[] { new ValidationFailure("Id", "Curso não encontrado") });
             }
 
             try
             {
                 curso.AtualizarInformacoes(request.Titulo, request.Descricao, curso.Instrutor, request.Nivel, curso.Valor);
 
-                // Atualizar ConteudoProgramatico se fornecido
                 if (request.ConteudoProgramatico != null)
                 {
                     var conteudoProgramatico = new ConteudoProgramatico(
@@ -62,7 +63,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
                 }
 
                 _cursoRepository.Alterar(curso);
-                return await _cursoRepository.UnitOfWork.Commit();
+                return await PersistData(_cursoRepository.UnitOfWork);
             }
             catch (ArgumentException ex)
             {
@@ -71,7 +72,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
                     Campo = "Curso",
                     Mensagem = ex.Message
                 });
-                return false;
+                return new ValidationResult(new[] { new ValidationFailure("Curso", ex.Message) });
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using MediatR;
+using MediatR;
 using PlataformaEducacional.Conteudo.Application.Validators;
 using PlataformaEducacional.Conteudo.Domain.Enums;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Conteudo.Application.Commands.Cursos
 {
-    public class AtualizarCursoCommand : Command, IRequest<bool>
+    public class AtualizarCursoCommand : Command
     {
         public Guid Id { get; set; }
         public string Titulo { get; set; }

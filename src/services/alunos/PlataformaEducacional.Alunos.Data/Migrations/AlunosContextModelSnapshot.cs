@@ -123,14 +123,8 @@ namespace PlataformaEducacional.Alunos.Api.Migrations
                     b.Property<DateTime>("DataMatricula")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("PedidoId")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

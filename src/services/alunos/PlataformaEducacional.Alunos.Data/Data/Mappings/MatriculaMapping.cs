@@ -15,10 +15,6 @@ public class MatriculaMapping : IEntityTypeConfiguration<Matricula>
         builder.Property(m => m.CursoId)
                .IsRequired();
 
-        builder.Property(m => m.Valor)
-               .IsRequired()
-               .HasColumnType("decimal(18,2)");
-
         builder.Property(m => m.DataMatricula)
                .IsRequired();
 

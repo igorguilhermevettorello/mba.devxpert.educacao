@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlataformaEducacional.Auth.Api.Models;
+using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.WebApi.Core.Controllers;
@@ -174,9 +175,9 @@ public class AuthController : MainController
 
         try
         {
-            return await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
+            return _bus.Request<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível");
             await _userManager.DeleteAsync(usuario);

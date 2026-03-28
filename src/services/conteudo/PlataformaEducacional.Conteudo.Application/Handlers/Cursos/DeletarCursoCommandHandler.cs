@@ -1,11 +1,13 @@
-﻿using MediatR;
+using FluentValidation.Results;
+using MediatR;
 using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
+using PlataformaEducacional.Core.Messages;
 using PlataformaEducacional.Core.Notifications;
 
 namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
 {
-    public class DeletarCursoCommandHandler : IRequestHandler<DeletarCursoCommand, bool>
+    public class DeletarCursoCommandHandler : CommandHandler, IRequestHandler<DeletarCursoCommand, ValidationResult>
     {
         private readonly ICursoRepository _cursoRepository;
         private readonly INotificador _notificador;
@@ -16,7 +18,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
             _notificador = notificador;
         }
 
-        public async Task<bool> Handle(DeletarCursoCommand request, CancellationToken cancellationToken)
+        public async Task<ValidationResult> Handle(DeletarCursoCommand request, CancellationToken cancellationToken)
         {
             if (!request.IsValid())
             {
@@ -28,7 +30,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
                         Mensagem = error.ErrorMessage
                     });
                 }
-                return false;
+                return request.ValidationResult;
             }
 
             var curso = await _cursoRepository.BuscarPorIdAsync(request.Id);
@@ -37,14 +39,16 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
             {
                 _notificador.Handle(new Notificacao
                 {
-                    Campo = "Id",
+                    Campo = nameof(DeletarCursoCommand.Id),
                     Mensagem = "Curso não encontrado"
                 });
-                return false;
+                return new ValidationResult([
+                    new ValidationFailure(nameof(DeletarCursoCommand.Id), "Curso não encontrado")
+                ]);
             }
 
             _cursoRepository.Remover(curso);
-            return await _cursoRepository.UnitOfWork.Commit();
+            return await PersistData(_cursoRepository.UnitOfWork);
         }
     }
 }

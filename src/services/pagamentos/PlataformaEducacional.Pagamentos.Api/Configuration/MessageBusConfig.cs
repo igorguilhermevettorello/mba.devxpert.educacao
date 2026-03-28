@@ -1,6 +1,5 @@
-﻿using PlataformaEducacional.MessageBus;
-using PlataformaEducacional.Pagamentos.Api.Services;
-using PlataformaEducacional.Core.Extensions;
+﻿using PlataformaEducacional.Core.Extensions;
+using PlataformaEducacional.MessageBus;
 
 namespace PlataformaEducacional.Pagamentos.Api.Configuration
 {
@@ -9,8 +8,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration
         public static void AddMessageBusConfiguration(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddMessageBus(configuration.GetMessageQueueConnection("MessageBus"))
-                .AddHostedService<PagamentoIntegrationHandler>();
+            services.AddMessageBus(configuration.GetMessageQueueConnection("MessageBus"));
         }
     }
 }
