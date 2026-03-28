@@ -33,7 +33,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "ADMINISTRADOR")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(typeof(ResultDto<Guid>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -65,7 +65,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize(Roles = "ADMINISTRADOR")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -144,7 +144,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "ADMINISTRADOR")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(typeof(ResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
