@@ -91,9 +91,11 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
             if (conteudo == null)
                 throw new ArgumentNullException(nameof(conteudo), "Conteúdo programático não pode ser nulo");
 
-            if (ConteudoProgramatico != null)
-                throw new InvalidOperationException("Curso já possui conteúdo programático. Use o método de atualização");
-
+            //if (ConteudoProgramatico != null) 
+            //{
+            //    throw new InvalidOperationException("Curso já possui conteúdo programático. Use o método de atualização");
+            //}
+            
             ConteudoProgramatico = conteudo;
         }
 

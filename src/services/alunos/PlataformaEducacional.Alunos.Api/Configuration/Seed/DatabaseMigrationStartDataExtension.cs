@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using PlataformaEducacional.Alunos.Application.Commands;
 using PlataformaEducacional.Alunos.Data;
 using PlataformaEducacional.Alunos.Domain.Models;
 

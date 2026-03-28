@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlataformaEducacional.Auth.Api.Models;
+using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.WebApi.Core.Controllers;

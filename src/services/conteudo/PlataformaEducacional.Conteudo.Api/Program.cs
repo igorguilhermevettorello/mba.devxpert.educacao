@@ -16,6 +16,7 @@ builder.Services.AddApiConfiguration("Conteudo API");
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.CriarCursoCommand).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.AtualizarCursoCommand).Assembly));
 
 builder.Services.RegisterServices();
 
