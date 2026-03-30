@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
     <Folder Include="Models\" />
     <Folder Include="Extensions\" />
     <Folder Include="Services\" />
