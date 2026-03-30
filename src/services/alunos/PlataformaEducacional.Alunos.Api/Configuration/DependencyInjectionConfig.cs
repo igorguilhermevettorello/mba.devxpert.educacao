@@ -1,4 +1,4 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using MediatR;
 using PlataformaEducacional.Alunos.Application.Commands;
 using PlataformaEducacional.Alunos.Application.Events;
@@ -26,6 +26,11 @@ public static class DependencyInjectionConfig
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<IAspNetUser, AspNetUser>();
+
+        services.AddHttpClient<IConteudoService, ConteudoService>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7077"); // URL da Conteudo API
+        });
 
         services.AddScoped<IAlunoRepository, AlunoRepository>();
         services.AddScoped<AlunosContext>();
