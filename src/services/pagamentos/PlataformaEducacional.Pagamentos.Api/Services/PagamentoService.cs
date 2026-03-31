@@ -57,20 +57,20 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             return new ResponseMessage(validationResult);
         }
 
-        public async Task<ResponseMessage> CapturarPagamento(Guid pedidoId)
+        public async Task<ResponseMessage> CapturarPagamento(Guid matriculaId)
         {
-            var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(pedidoId);
+            var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(matriculaId);
             var transacaoAutorizada = transacoes?.FirstOrDefault(t => t.Status == StatusTransacao.Autorizado);
             var validationResult = new ValidationResult();
 
-            if (transacaoAutorizada == null) throw new DomainException($"Transação não encontrada para o pedido {pedidoId}");
+            if (transacaoAutorizada == null) throw new DomainException($"Transação não encontrada para a matrícula {matriculaId}");
 
             var transacao = await _pagamentoFacade.CapturarPagamento(transacaoAutorizada);
 
             if (transacao.Status != StatusTransacao.Pago)
             {
                 validationResult.Errors.Add(new ValidationFailure("Pagamento",
-                    $"Não foi possível capturar o pagamento do pedido {pedidoId}"));
+                    $"Não foi possível capturar o pagamento da matrícula {matriculaId}"));
 
                 return new ResponseMessage(validationResult);
             }
@@ -81,7 +81,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             if (!await _pagamentoRepository.UnitOfWork.Commit())
             {
                 validationResult.Errors.Add(new ValidationFailure("Pagamento",
-                    $"Não foi possível persistir a captura do pagamento do pedido {pedidoId}"));
+                    $"Não foi possível persistir a captura do pagamento da matrícula {matriculaId}"));
 
                 return new ResponseMessage(validationResult);
             }
@@ -89,20 +89,20 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             return new ResponseMessage(validationResult);
         }
 
-        public async Task<ResponseMessage> CancelarPagamento(Guid pedidoId)
+        public async Task<ResponseMessage> CancelarPagamento(Guid matriculaId)
         {
             var validationResult = new ValidationResult();
-            var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(pedidoId);
+            var transacoes = await _pagamentoRepository.ObterTransacaoesPorMatriculaId(matriculaId);
             var transacaoAutorizada = transacoes?.FirstOrDefault(t => t.Status == StatusTransacao.Autorizado);
 
             if (transacaoAutorizada == null)
-                throw new DomainException($"Transação não encontrada para o pedido {pedidoId}");
+                throw new DomainException($"Transação não encontrada para a matrícula {matriculaId}");
 
             var transacao = await _pagamentoFacade.CancelarAutorizacao(transacaoAutorizada);
 
             if (transacao.Status != StatusTransacao.Cancelado)
             {
-                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Não foi possível cancelar o pagamento do pedido {pedidoId}"));
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Não foi possível cancelar o pagamento da matrícula {matriculaId}"));
                 return new ResponseMessage(validationResult);
             }
 
@@ -111,7 +111,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
             if (!await _pagamentoRepository.UnitOfWork.Commit())
             {
-                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Não foi possível persistir o cancelamento do pagamento do pedido {pedidoId}"));
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Não foi possível persistir o cancelamento do pagamento da matrícula {matriculaId}"));
                 return new ResponseMessage(validationResult);
             }
 
