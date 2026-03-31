@@ -1,6 +1,7 @@
 using FluentValidation.Results;
 using MediatR;
 using PlataformaEducacional.Alunos.Application.Events;
+using PlataformaEducacional.Alunos.Application.Services;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;

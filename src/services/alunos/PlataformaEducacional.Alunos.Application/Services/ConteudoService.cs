@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using PlataformaEducacional.Alunos.Application.Services.Models;
-using PlataformaEducacional.WebApi.Core.Controllers.Base; // Assumindo que o ResultDto global esteja acessível ou parecido
 
 namespace PlataformaEducacional.Alunos.Application.Services;
 
