@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PlataformaEducacional.Core.Enumerators;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.Core.Notifications;
 using PlataformaEducacional.Pagamentos.Api.Models;
@@ -19,21 +20,24 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
     public class PagamentosController : MainController
     {
         readonly IPagamentoRepository _pagamentoRepository;
-        readonly IPagamentoService _pagamentoService;        
+        readonly IPagamentoService _pagamentoService;
         private readonly IMapper _mapper;
         private readonly IAspNetUser _user;
+        private readonly IAlunoService _alunoService;
 
         public PagamentosController(
             IPagamentoRepository pagamentoRepository,
             IMapper mapper,
             IPagamentoService pagamentoService,
             INotificador notificador,
-            IAspNetUser user) : base(notificador)
+            IAspNetUser user,
+            IAlunoService alunoService) : base(notificador)
         {
             _pagamentoRepository = pagamentoRepository;
             _mapper = mapper;
             _pagamentoService = pagamentoService;
             _user = user;
+            _alunoService = alunoService;
         }
 
         [HttpGet("{id:guid}")]
@@ -48,6 +52,11 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             if (pagamento == null)
             {
                 return NotFound();
+            }
+
+            if (!await UsuarioPodeVerPagamento(pagamento))
+            {
+                return Forbid();
             }
 
             var pagamentoDto = _mapper.Map<PagamentoDto>(pagamento);
@@ -67,6 +76,11 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             if (pagamento == null)
             {
                 return NotFound();
+            }
+
+            if (!await UsuarioPodeVerPagamento(pagamento))
+            {
+                return Forbid();
             }
 
             var pagamentoDto = _mapper.Map<PagamentoDto>(pagamento);
@@ -108,6 +122,22 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             {
                 NotificarErro(erro.PropertyName, erro.ErrorMessage);
             }
+        }
+
+        private async Task<bool> UsuarioPodeVerPagamento(Pagamento pagamento)
+        {
+            var perfil = ObterPerfilUsuario();
+
+            if (perfil == TipoUsuario.Administrador)
+                return true;
+
+            var usuarioId = ObterIdUsuario();
+            var matricula = await _alunoService.ObterMatriculaPorIdAsync(pagamento.MatriculaId);
+
+            if (usuarioId == null || matricula?.AlunoId.ToString() != usuarioId)
+                return false;
+
+            return true;
         }
     }
 }

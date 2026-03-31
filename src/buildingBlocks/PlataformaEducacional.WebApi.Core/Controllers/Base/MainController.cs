@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PlataformaEducacional.Core.Enumerators;
 using PlataformaEducacional.Core.Notifications;
+using System.Security.Claims;
 
 namespace PlataformaEducacional.WebApi.Core.Controllers.Base
 {
@@ -73,6 +75,23 @@ namespace PlataformaEducacional.WebApi.Core.Controllers.Base
                 Campo = campo,
                 Mensagem = mensagem
             });
+        }
+
+        protected TipoUsuario? ObterPerfilUsuario()
+        {
+            var perfilString = User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            if (Enum.TryParse<TipoUsuario>(perfilString, true, out var perfil))
+            {
+                return perfil;
+            }
+
+            return null;
+        }
+
+        protected string? ObterIdUsuario()
+        {
+            return User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         }
 
     }
