@@ -1,9 +1,10 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlataformaEducacional.Auth.Api.Models;
+using PlataformaEducacional.Auth.Api.Security;
 using PlataformaEducacional.Core.Enumerators;
 using PlataformaEducacional.Core.Extensions;
 using PlataformaEducacional.Core.Messages.Integration;
@@ -12,7 +13,6 @@ using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace PlataformaEducacional.Auth.Api.Controllers;
 
@@ -23,18 +23,21 @@ public class AuthController : MainController
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly JwtSettings _appSettings;
+    private readonly IJwtRsaSigningCredentialsProvider _jwtSigning;
 
     private readonly IMessageBus _bus;
 
     public AuthController(SignInManager<IdentityUser> signInManager,
                           UserManager<IdentityUser> userManager,
                           IOptions<JwtSettings> appSettings,
+                          IJwtRsaSigningCredentialsProvider jwtSigning,
                           IMessageBus bus,
                           ILogger<AuthController> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _appSettings = appSettings.Value;
+        _jwtSigning = jwtSigning;
         _bus = bus;
         _logger = logger;
     }
@@ -138,14 +141,13 @@ public class AuthController : MainController
     private string CodificarToken(ClaimsIdentity identityClaims)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
         {
             Issuer = _appSettings.Emissor,
             Audience = _appSettings.ValidoEm,
             Subject = identityClaims,
             Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = _jwtSigning.SigningCredentials
         });
 
         return tokenHandler.WriteToken(token);

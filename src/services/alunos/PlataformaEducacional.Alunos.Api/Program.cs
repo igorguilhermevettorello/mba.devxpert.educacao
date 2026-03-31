@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Alunos API");
-builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.AddJwtConfiguration(builder.Configuration, builder.Environment);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
