@@ -13,21 +13,37 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
         private readonly IPagamentoFacade _pagamentoFacade;
         private readonly IPagamentoRepository _pagamentoRepository;
         private readonly IMessageBus _bus;
+        private readonly IConteudoService _conteudoService;
+        private readonly IAlunoService _alunoService;
 
-        public PagamentoService(IPagamentoFacade pagamentoFacade, IPagamentoRepository pagamentoRepository, IMessageBus bus)
+        public PagamentoService(IPagamentoFacade pagamentoFacade, IPagamentoRepository pagamentoRepository, IMessageBus bus, IConteudoService conteudoService, IAlunoService alunoService)
         {
             _pagamentoFacade = pagamentoFacade;
             _pagamentoRepository = pagamentoRepository;
             _bus = bus;
+            _conteudoService = conteudoService;
+            _alunoService = alunoService;
         }
 
         public async Task<ResponseMessage> AutorizarPagamento(Pagamento pagamento)
         {
             var validationResult = new ValidationResult();
 
+            if (!await MatriculaExiste(pagamento.MatriculaId))
+            {
+                validationResult.Errors.Add(new ValidationFailure("Matricula", $"Matrícula {pagamento.MatriculaId} não encontrada"));
+                return new ResponseMessage(validationResult);
+            }
+
             if (await ExistePagamentoParaAMatricula(pagamento.MatriculaId))
             {
                 validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Já existe pagamento para a matrícula {pagamento.MatriculaId}"));
+                return new ResponseMessage(validationResult);
+            }
+
+            if (!await ValidarValorDoPagamento(pagamento))
+            {
+                validationResult.Errors.Add(new ValidationFailure("Pagamento", "Valor do pagamento não corresponde ao preço do curso"));
                 return new ResponseMessage(validationResult);
             }
 
@@ -141,6 +157,19 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
         {
             var pagamentoAnterior = await _pagamentoRepository.ObterPorMatriculaId(matriculaId);
             return pagamentoAnterior != null ? true : false;
+        }
+
+        private async Task<bool> ValidarValorDoPagamento(Pagamento pagamento)
+        {
+            var matricula = await _alunoService.ObterMatriculaPorIdAsync(pagamento.MatriculaId);
+            var curso = await _conteudoService.ObterCursoPorIdAsync(matricula?.CursoId);
+            return curso?.Valor == pagamento.Valor;
+        }
+
+        private async Task<bool> MatriculaExiste(Guid matriculaId)
+        {
+            var matricula = await _alunoService.ObterMatriculaPorIdAsync(matriculaId);
+            return matricula != null;
         }
     }
 }

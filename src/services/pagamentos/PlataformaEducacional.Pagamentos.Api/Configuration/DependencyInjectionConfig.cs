@@ -11,7 +11,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration;
 
 public static class DependencyInjectionConfig
 {
-    public static void RegisterServices(this IServiceCollection services)
+    public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<INotificador, Notificador>();
         services.AddScoped<IAspNetUser, AspNetUser>();
@@ -21,5 +21,16 @@ public static class DependencyInjectionConfig
         services.AddScoped<IPagamentoRepository, PagamentoRepository>();
         services.AddScoped<IPagamentoFacade, PagamentoCartaoCreditoFacade>();
         services.AddScoped<PagamentosContext>();
+
+        services.AddHttpClient<IConteudoService, ConteudoService>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
+        });
+
+        services.AddHttpClient<IAlunoService, AlunoService>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["AlunoUrl"]);
+        });
+
     }
 }
