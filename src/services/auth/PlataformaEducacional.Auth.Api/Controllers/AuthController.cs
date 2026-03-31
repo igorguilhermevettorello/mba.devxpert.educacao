@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlataformaEducacional.Auth.Api.Models;
-using PlataformaEducacional.Core.DomainObjects;
+using PlataformaEducacional.Core.Enumerators;
+using PlataformaEducacional.Core.Extensions;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
 using PlataformaEducacional.WebApi.Core.Controllers;
@@ -54,6 +55,8 @@ public class AuthController : MainController
 
         if (result.Succeeded)
         {
+            await _userManager.AddToRoleAsync(user, TipoUsuario.Aluno.GetDescription().ToUpperInvariant());
+
             var clienteResult = await RegistrarAluno(usuarioRegistro);
 
             if (!clienteResult.ValidationResult.IsValid)
