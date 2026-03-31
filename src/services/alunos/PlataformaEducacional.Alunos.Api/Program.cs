@@ -11,7 +11,7 @@ builder.Services.AddJwtConfiguration(builder.Configuration);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
-builder.Services.RegisterServices();
+builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
 

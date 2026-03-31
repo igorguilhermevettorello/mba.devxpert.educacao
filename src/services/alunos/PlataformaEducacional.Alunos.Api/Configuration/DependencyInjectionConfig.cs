@@ -13,7 +13,7 @@ namespace PlataformaEducacional.Alunos.Api.Configuration;
 
 public static class DependencyInjectionConfig
 {
-    public static void RegisterServices(this IServiceCollection services)
+    public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IMediatorHandler, MediatorHandler>();
         services.AddScoped<IRequestHandler<RegistrarAlunoCommand, ValidationResult>, AlunoCommandHandler>();
@@ -29,7 +29,7 @@ public static class DependencyInjectionConfig
 
         services.AddHttpClient<IConteudoService, ConteudoService>(client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7077"); // URL da Conteudo API
+            client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
         });
 
         services.AddScoped<IAlunoRepository, AlunoRepository>();
