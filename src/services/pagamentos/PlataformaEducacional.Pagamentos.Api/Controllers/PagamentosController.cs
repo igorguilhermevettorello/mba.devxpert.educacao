@@ -97,6 +97,9 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
+            if (!await UsuarioPodePagarAMatricula(model.MatriculaId))
+                return Forbid();
+
             var cartaoCredito = CartaoCredito.Criar(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
 
             var pagamento = new Pagamento(
@@ -133,6 +136,22 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
 
             var usuarioId = ObterIdUsuario();
             var matricula = await _alunoService.ObterMatriculaPorIdAsync(pagamento.MatriculaId);
+
+            if (usuarioId == null || matricula?.AlunoId.ToString() != usuarioId)
+                return false;
+
+            return true;
+        }
+
+        private async Task<bool> UsuarioPodePagarAMatricula(Guid matriculaId)
+        {
+            var perfil = ObterPerfilUsuario();
+
+            if (perfil == TipoUsuario.Administrador)
+                return true;
+
+            var usuarioId = ObterIdUsuario();
+            var matricula = await _alunoService.ObterMatriculaPorIdAsync(matriculaId);
 
             if (usuarioId == null || matricula?.AlunoId.ToString() != usuarioId)
                 return false;
