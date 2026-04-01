@@ -6,8 +6,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Models
     {
         void AdicionarPagamento(Pagamento pagamento);
         void AdicionarTransacao(Transacao transacao);
-        Task<Pagamento?> ObterPorId(Guid pedidoId);
-        Task<Pagamento?> ObterPorMatriculaId(Guid pedidoId);
-        Task<IEnumerable<Transacao>?> ObterTransacaoesPorMatriculaId(Guid pedidoId);
+        Task<Pagamento?> ObterPorId(Guid id);
+        Task<Pagamento?> ObterPorMatriculaId(Guid matriculaId);
+        Task<IEnumerable<Transacao>?> ObterTransacaoesPorMatriculaId(Guid matriculaId);
     }
 }

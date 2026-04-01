@@ -1,5 +1,6 @@
 using PlataformaEducacional.Auth.Api.Configurations;
 using PlataformaEducacional.Auth.Api.Configurations.Seed;
+using PlataformaEducacional.Auth.Api.Security;
 using PlataformaEducacional.WebApi.Core.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false);
-builder.Services.AddIdentityConfiguration(builder.Configuration);
+builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
+builder.Services.AddSingleton<IJwtRsaSigningCredentialsProvider, JwtRsaSigningCredentialsProvider>();
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
 

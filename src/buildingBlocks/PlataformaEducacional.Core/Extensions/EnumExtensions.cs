@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace PlataformaEducacional.Core.Exceptions;
+namespace PlataformaEducacional.Core.Extensions;
 
 public static class EnumExtensions
 {
@@ -30,17 +30,17 @@ public static class EnumExtensions
         string[] names = Enum.GetNames(typeof(TEnum));
 
         // Join them with a comma and a space
-        return String.Join(", ", names);
+        return string.Join(", ", names);
     }
 
     /// <summary>
     /// Retrieves the display name of the specified enumeration value.
     /// </summary>
     /// <remarks>This method uses reflection to retrieve the <see
-    /// cref="System.ComponentModel.DataAnnotations.DisplayAttribute"/> associated with the enumeration value. If no
+    /// cref="DisplayAttribute"/> associated with the enumeration value. If no
     /// such attribute is found, the method returns the string representation of the enumeration value.</remarks>
     /// <param name="enumValue">The enumeration value for which to retrieve the display name.</param>
-    /// <returns>The display name specified by the <see cref="System.ComponentModel.DataAnnotations.DisplayAttribute"/> applied
+    /// <returns>The display name specified by the <see cref="DisplayAttribute"/> applied
     /// to the enumeration value, or the enumeration value's name as a string if no display attribute is present.</returns>
     public static string GetDisplayName<TEnum>(this TEnum enumValue) where TEnum : struct, Enum
     {
