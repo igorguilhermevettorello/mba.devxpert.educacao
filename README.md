@@ -16,7 +16,8 @@ A solução está organizada em camadas bem definidas, seguindo princípios SOLI
 PlataformaEducacional/
 ├── src/
 │   ├── buildingBlocks/          # Componentes compartilhados
-│   └── services/                # Microsserviços
+│   ├── services/                # Microsserviços
+│   └── tools/                   # Ferramentas utilitárias
 ```
 
 ### 🧱 Building Blocks (Componentes Compartilhados)
@@ -28,6 +29,14 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para 
 | **PlataformaEducacional.Core** | Componentes base, entidades, value objects, abstrações de domínio e mensagens de integração |
 | **PlataformaEducacional.MessageBus** | Implementação de mensageria com RabbitMQ usando EasyNetQ e políticas de resiliência com Polly |
 | **PlataformaEducacional.WebApi.Core** | Configurações compartilhadas de API, filtros, middleware, autenticação JWT e Swagger |
+
+### 🔧 Ferramentas Utilitárias
+
+Ferramentas auxiliares para desenvolvimento e operação da plataforma:
+
+| Projeto | Descrição |
+|---------|-----------|
+| **GenerateJwtSigningKey** | Utilitário para gerar chaves privadas RSA em formato PEM para assinatura de JWT (usado apenas na Auth API) |
 
 ---
 
@@ -111,9 +120,7 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para 
 
 **Estrutura**:
 - `PlataformaEducacional.Pagamentos.Api` - API REST
-- `PlataformaEducacional.Pagamentos.Application` - Casos de uso e lógica de aplicação
-- `PlataformaEducacional.Pagamentos.Data` - Acesso a dados e contexto
-- `PlataformaEducacional.Pagamentos.Domain` - Entidades e regras de negócio
+- `PlataformaEducacional.Pagamentos.EducaPag` - Integração com sistema de pagamentos
 
 **Porta**: A ser configurada
 
@@ -121,14 +128,14 @@ Conjunto de bibliotecas reutilizáveis que fornecem funcionalidades comuns para 
 
 ### 5. **BFF API** - Backend for Frontend
 
-**Descrição**: Agrega e orquestra chamadas aos microsserviços, servindo como gateway para o frontend.
+**Descrição**: Serviço que funciona como camada intermediária para o frontend, coordenando requisições e integrações.
 
 **Tecnologias**:
 - ASP.NET Core 8.0 Web API
 - Swagger/OpenAPI
 
 **Estrutura**:
-- `PlataformaEducacional.Bff.Api` - API REST
+- `PlataformaEducacional.Bff.Api` - API REST com controllers, serviços e configurações
 
 **Porta**: A ser configurada
 
@@ -248,21 +255,22 @@ rabbitmq-server
 
 #### 5. Executar Migrations
 
-Para cada microsserviço que possui camada de dados, execute as migrations:
+As migrations são executadas **automaticamente ao iniciar cada API** através do método `UseDatabaseMigrationStartData()` configurado no `Program.cs`.
 
-**Auth API**:
-```bash
-cd src/services/auth/PlataformaEducacional.Auth.Api
-dotnet ef database update
-```
+**APIs com migrations automáticas no startup:**
+- `PlataformaEducacional.Auth.Api`
+- `PlataformaEducacional.Alunos.Api`
+- `PlataformaEducacional.Conteudo.Api`
+- `PlataformaEducacional.Pagamentos.Api`
 
-**Alunos API**:
-```bash
-cd src/services/alunos/PlataformaEducacional.Alunos.Api
-dotnet ef database update
-```
+**APIs sem camada de dados:**
+- `PlataformaEducacional.Bff.Api` (sem banco de dados)
 
-> **Nota**: Repita o processo para outros microsserviços conforme necessário.
+> **Nota**: Se precisar executar migrations manualmente (em caso de problemas ou desenvolvimento), use:
+> ```bash
+> cd src/services/{nome-da-api}
+> dotnet ef database update
+> ```
 
 #### 6. Configurar JWT
 
@@ -273,7 +281,7 @@ Configure as chaves JWT nos arquivos `appsettings.json`:
   "Secret": "2632D324-BC04-4382-A61D-19C1C7311187",
   "ExpiracaoHoras": 1,
   "Emissor": "MBA.PlataformaEducacional",
-  "Audiencia": "https://localhost"
+  "ValidoEm": "https://localhost"
 }
 ```
 
@@ -311,11 +319,15 @@ Ou usar o Visual Studio para executar múltiplos projetos de inicialização sim
 
 Após iniciar cada API, acesse a documentação Swagger:
 
-- **Auth API**: `https://localhost:{porta}/swagger`
-- **Alunos API**: `https://localhost:{porta}/swagger`
-- **Conteúdo API**: `https://localhost:{porta}/swagger`
-- **Pagamentos API**: `https://localhost:{porta}/swagger`
-- **BFF API**: `https://localhost:{porta}/swagger`
+| Serviço | URL | Status |
+|---------|-----|--------|
+| **Auth API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
+| **Alunos API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
+| **Conteúdo API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
+| **Pagamentos API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
+| **BFF API** | `https://localhost:{porta}/swagger` | 🔄 Em desenvolvimento (endpoints são stubs) |
+
+> **Nota sobre BFF API**: Os endpoints estão definidos mas ainda não possuem implementação completa. A lógica será adicionada conforme o desenvolvimento avança.
 
 ---
 
@@ -359,8 +371,10 @@ A documentação completa dos endpoints está disponível via Swagger em cada mi
 
 ### Padrões de Comunicação
 
-- **Síncrona**: HTTP/REST entre BFF e microsserviços
+- **Síncrona**: HTTP/REST diretos entre serviços e clientes
 - **Assíncrona**: RabbitMQ para eventos de integração
+
+> **Nota**: O projeto não possui um API Gateway centralizado. Cada serviço expõe seus próprios endpoints REST.
 
 ---
 

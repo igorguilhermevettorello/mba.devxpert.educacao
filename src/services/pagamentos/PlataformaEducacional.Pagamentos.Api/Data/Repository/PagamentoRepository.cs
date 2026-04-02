@@ -41,12 +41,12 @@ namespace PlataformaEducacional.Pagamentos.Api.Data.Repository
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<IEnumerable<Transacao>?> ObterTransacaoesPorMatriculaId(Guid pedidoId)
+        public async Task<IEnumerable<Transacao>?> ObterTransacaoesPorMatriculaId(Guid matriculaId)
         {
             return await _context.Transacoes
                 .Include(x => x.Pagamento)
                 .AsNoTracking()
-                .Where(t => t.Pagamento.MatriculaId == pedidoId).ToListAsync();
+                .Where(t => t.Pagamento.MatriculaId == matriculaId).ToListAsync();
         }
 
         public void Dispose()

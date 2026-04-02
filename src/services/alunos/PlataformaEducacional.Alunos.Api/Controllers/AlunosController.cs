@@ -124,4 +124,19 @@ public class AlunosController : MainController
         endereco.AlunoId = _user.ObterUserId();
         return CustomResponse(await _mediator.Send(endereco));
     }
+
+    [HttpGet("matriculas/{id:guid}")]    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [AllowAnonymous]        //TODO: add autorização
+    public async Task<IActionResult> ObterMatriculaPorId(Guid id)
+    {
+
+        var matricula = await _alunosRepository.ObterMatriculaPorId(id);
+
+        if (matricula is null)
+            return NotFound();
+
+        return CustomResponse(matricula);
+    }
 }

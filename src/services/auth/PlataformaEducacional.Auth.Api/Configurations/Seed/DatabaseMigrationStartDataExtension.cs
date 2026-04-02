@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEducacional.Auth.Api.Data;
 using PlataformaEducacional.Core.Enumerators;
-using PlataformaEducacional.Core.Exceptions;
+using PlataformaEducacional.Core.Extensions;
 
 namespace PlataformaEducacional.Auth.Api.Configurations.Seed;
 

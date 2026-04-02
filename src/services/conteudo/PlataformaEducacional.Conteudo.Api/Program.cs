@@ -13,7 +13,7 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 builder.Services.AddApiConfiguration("Conteudo API");
 
 // Adicionar configuração JWT
-builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.AddJwtConfiguration(builder.Configuration, builder.Environment);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.CriarCursoCommand).Assembly));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.AtualizarCursoCommand).Assembly));
