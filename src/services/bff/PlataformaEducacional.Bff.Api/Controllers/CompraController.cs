@@ -17,8 +17,18 @@ public class CompraController : MainController
     }
 
     //Listar Conteúdos disponíveis para compra
+    public async Task<IActionResult> ListarConteudosDisponiveis()
+    {
+        // Implementar lógica de listagem utilizando _mediator e _user
+        return CustomResponse();
+    }
 
     //listar matrículas pendentes do aluno
+    public async Task<IActionResult> ListarMatriculasPendente()
+    {
+        // Implementar lógica de listagem utilizando _mediator e _user
+        return CustomResponse();
+    }
 
     [HttpPost("matricula")]
     [ProducesResponseType(StatusCodes.Status200OK)]
