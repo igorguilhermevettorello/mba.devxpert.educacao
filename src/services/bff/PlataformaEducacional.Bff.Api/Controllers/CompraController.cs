@@ -17,14 +17,21 @@ public class CompraController : MainController
     }
 
     //Listar Conteúdos disponíveis para compra
+    [HttpPost("cursos-disponiveis")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarConteudosDisponiveis()
     {
+        throw new NotImplementedException();
         // Implementar lógica de listagem utilizando _mediator e _user
         return CustomResponse();
     }
 
     //listar matrículas pendentes do aluno
-    public async Task<IActionResult> ListarMatriculasPendente()
+    [HttpPost("matricula-pendente")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ListarMatriculaPendente()
     {
         // Implementar lógica de listagem utilizando _mediator e _user
         return CustomResponse();

@@ -10,7 +10,13 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 builder.Services.AddApiConfiguration("Pagamentos API");
 builder.Services.Configure<PagamentoConfig>(builder.Configuration.GetSection("PagamentoConfig"));
 builder.Services.AddJwtConfiguration(builder.Configuration, builder.Environment);
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.LicenseKey = builder.Configuration.GetValue<string>("mediator-license") ?? string.Empty;
+    cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+});
+
 builder.Services.RegisterServices(builder.Configuration);
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
 

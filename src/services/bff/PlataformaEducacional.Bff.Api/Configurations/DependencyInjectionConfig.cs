@@ -3,7 +3,6 @@ using PlataformaEducacional.Bff.Api.Interfaces;
 using PlataformaEducacional.Bff.Api.Services;
 using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.User;
-using Polly;
 
 namespace PlataformaEducacional.Bff.Api.Configurations;
 
@@ -14,6 +13,8 @@ public static class DependencyInjectionConfig
 
         var alunoUrl = configuration.GetValue<string>("AlunoApiUrl");
         var conteudoUrl = configuration.GetValue<string>("ConteudoApiUrl");
+
+        services.Configure<AppServicesSettings>(configuration);
 
         if (string.IsNullOrEmpty(alunoUrl))
         {
