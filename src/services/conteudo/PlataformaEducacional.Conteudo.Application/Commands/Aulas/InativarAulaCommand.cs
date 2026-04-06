@@ -1,10 +1,10 @@
-﻿using MediatR;
+using MediatR;
 using PlataformaEducacional.Conteudo.Application.Validators;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Conteudo.Application.Commands.Aulas
 {
-    public class InativarAulaCommand : Command, IRequest<bool>
+    public class InativarAulaCommand : Command
     {
         public Guid Id { get; set; }
 

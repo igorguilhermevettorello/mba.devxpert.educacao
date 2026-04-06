@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using PlataformaEducacional.Pagamentos.Api.Models;
+using PlataformaEducacional.Pagamentos.Api.Models.Enums;
 using PlataformaEducacional.Pagamentos.EducaPag;
 
 namespace PlataformaEducacional.Pagamentos.Api.Facade
@@ -15,23 +16,23 @@ namespace PlataformaEducacional.Pagamentos.Api.Facade
 
         public async Task<Transacao> AutorizarPagamento(Pagamento pagamento)
         {
-            var nerdsPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey,
-                _pagamentoConfig.DefaultEncryptionKey);
+            var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey, _pagamentoConfig.DefaultEncryptionKey);
 
-            var cardHashGen = new CardHash(nerdsPagSvc)
+            var cardHashGen = new CardHash(educaPagSvc)
             {
-                CardNumber = pagamento.CartaoCredito.NumeroCartao,
-                CardHolderName = pagamento.CartaoCredito.NomeCartao,
+                CardNumber = pagamento.CartaoCredito.Numero,
+                CardHolderName = pagamento.CartaoCredito.Titular,
                 CardExpirationDate = pagamento.CartaoCredito.MesAnoVencimento,
                 CardCvv = pagamento.CartaoCredito.CVV
             };
+
             var cardHash = cardHashGen.Generate();
 
-            var transacao = new Transaction(nerdsPagSvc)
+            var transacao = new Transaction(educaPagSvc)
             {
                 CardHash = cardHash,
-                CardNumber = pagamento.CartaoCredito.NumeroCartao,
-                CardHolderName = pagamento.CartaoCredito.NomeCartao,
+                CardNumber = pagamento.CartaoCredito.Numero,
+                CardHolderName = pagamento.CartaoCredito.Titular,
                 CardExpirationDate = pagamento.CartaoCredito.MesAnoVencimento,
                 CardCvv = pagamento.CartaoCredito.CVV,
                 PaymentMethod = PaymentMethod.CreditCard,
@@ -39,47 +40,42 @@ namespace PlataformaEducacional.Pagamentos.Api.Facade
             };
 
             return ParaTransacao(await transacao.AuthorizeCardTransaction());
+
         }
 
         public async Task<Transacao> CapturarPagamento(Transacao transacao)
         {
-            var nerdsPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey,
+            var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey,
                 _pagamentoConfig.DefaultEncryptionKey);
 
-            var transaction = ParaTransaction(transacao, nerdsPagSvc);
+            var transaction = ParaTransaction(transacao, educaPagSvc);
 
             return ParaTransacao(await transaction.CaptureCardTransaction());
         }
 
         public async Task<Transacao> CancelarAutorizacao(Transacao transacao)
         {
-            var nerdsPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey,
-                _pagamentoConfig.DefaultEncryptionKey);
-
-            var transaction = ParaTransaction(transacao, nerdsPagSvc);
-
+            var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey, _pagamentoConfig.DefaultEncryptionKey);
+            var transaction = ParaTransaction(transacao, educaPagSvc);
             return ParaTransacao(await transaction.CancelAuthorization());
         }
 
         public static Transacao ParaTransacao(Transaction transaction)
         {
-            return new Transacao
-            {
-                Id = Guid.NewGuid(),
-                Status = (StatusTransacao)transaction.Status,
-                ValorTotal = transaction.Amount,
-                BandeiraCartao = transaction.CardBrand,
-                CodigoAutorizacao = transaction.AuthorizationCode,
-                CustoTransacao = transaction.Cost,
-                DataTransacao = transaction.TransactionDate,
-                NSU = transaction.Nsu,
-                TID = transaction.Tid
-            };
+            return new Transacao(
+                transaction.AuthorizationCode,
+                transaction.CardBrand,
+                transaction.TransactionDate,
+                transaction.Amount,
+                transaction.Cost,
+                (StatusTransacao)transaction.Status,
+                transaction.Tid,
+                transaction.Nsu);
         }
 
-        public static Transaction ParaTransaction(Transacao transacao, EducaPagService nerdsPagService)
+        public static Transaction ParaTransaction(Transacao transacao, EducaPagService educaPagService)
         {
-            return new Transaction(nerdsPagService)
+            return new Transaction(educaPagService)
             {
                 Status = (TransactionStatus)transacao.Status,
                 Amount = transacao.ValorTotal,

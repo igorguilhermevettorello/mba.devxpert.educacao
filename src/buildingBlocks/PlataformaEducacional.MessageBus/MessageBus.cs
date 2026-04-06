@@ -56,7 +56,13 @@ public class MessageBus : IMessageBus
         where TRequest : IntegrationEvent where TResponse : ResponseMessage
     {
         TryConnect();
-        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request);
+        
+        // Adicionar timeout de 30 segundos
+        var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        
+        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request, 
+            configure => configure.WithQueueName("PedidoIniciado"),
+            cancellationTokenSource.Token);
     }
 
     public IDisposable Respond<TRequest, TResponse>(Func<TRequest, TResponse> responder)

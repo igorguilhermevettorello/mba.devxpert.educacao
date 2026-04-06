@@ -1,10 +1,10 @@
-﻿using MediatR;
+using MediatR;
 using PlataformaEducacional.Conteudo.Application.Validators;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Conteudo.Application.Commands.Aulas
 {
-    public class DeletarAulaCommand : Command, IRequest<bool>
+    public class DeletarAulaCommand : Command
     {
         public Guid Id { get; set; }
 

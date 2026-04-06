@@ -1,7 +1,8 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using MediatR;
 using PlataformaEducacional.Alunos.Application.Commands;
 using PlataformaEducacional.Alunos.Application.Events;
+using PlataformaEducacional.Alunos.Application.Services;
 using PlataformaEducacional.Alunos.Data;
 using PlataformaEducacional.Alunos.Data.Repository;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
@@ -12,7 +13,7 @@ namespace PlataformaEducacional.Alunos.Api.Configuration;
 
 public static class DependencyInjectionConfig
 {
-    public static void RegisterServices(this IServiceCollection services)
+    public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IMediatorHandler, MediatorHandler>();
         services.AddScoped<IRequestHandler<RegistrarAlunoCommand, ValidationResult>, AlunoCommandHandler>();
@@ -26,7 +27,14 @@ public static class DependencyInjectionConfig
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<IAspNetUser, AspNetUser>();
 
+        services.AddHttpClient<IConteudoService, ConteudoService>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
+        });
+
         services.AddScoped<IAlunoRepository, AlunoRepository>();
         services.AddScoped<AlunosContext>();
+
+        services.AddHostedService<MatriculaIntegrationHandler>();
     }
 }

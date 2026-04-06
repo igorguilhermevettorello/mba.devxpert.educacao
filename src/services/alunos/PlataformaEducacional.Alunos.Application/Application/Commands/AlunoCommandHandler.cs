@@ -1,9 +1,11 @@
-﻿using FluentValidation.Results;
+using FluentValidation.Results;
 using MediatR;
 using PlataformaEducacional.Alunos.Application.Events;
+using PlataformaEducacional.Alunos.Application.Services;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.MessageBus;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
 
@@ -15,10 +17,14 @@ public class AlunoCommandHandler : CommandHandler,
     IRequestHandler<EmitirCertificadoCommand, ValidationResult>
 {
     private readonly IAlunoRepository _alunoRepository;
+    private readonly IMessageBus _bus;
+    private readonly IConteudoService _conteudoService;
 
-    public AlunoCommandHandler(IAlunoRepository alunoRepository)
+    public AlunoCommandHandler(IAlunoRepository alunoRepository, IMessageBus bus, IConteudoService conteudoService)
     {
         _alunoRepository = alunoRepository;
+        _bus = bus;
+        _conteudoService = conteudoService;
     }
 
     public async Task<ValidationResult> Handle(AdicionarEnderecoCommand message, CancellationToken cancellationToken)
@@ -53,7 +59,8 @@ public class AlunoCommandHandler : CommandHandler,
 
     public async Task<ValidationResult> Handle(RealizarMatriculaCommand message, CancellationToken cancellationToken)
     {
-        if (!message.IsValid()) return message.ValidationResult;
+        if (!message.IsValid())
+            return message.ValidationResult;
 
         var aluno = await _alunoRepository.ObterPorId(message.AlunoId);
 
@@ -63,10 +70,21 @@ public class AlunoCommandHandler : CommandHandler,
             return ValidationResult;
         }
 
-        var matricula = new Matricula(message.AlunoId, message.CursoId, message.Valor);
-        
-        _alunoRepository.AdicionarMatricula(matricula);
+        var cursoExiste = await _conteudoService.CursoExisteAsync(message.CursoId);
+        if (!cursoExiste)
+        {
+            AddError("Curso não encontrado ou indisponível.");
+            return ValidationResult;
+        }
 
+        if (aluno.Matriculas.Any(x => x.CursoId == message.CursoId))
+        {
+            AddError($"Aluno já possui matricula no curso {message.CursoId}");
+            return ValidationResult;
+        }
+
+        var matricula = new Matricula(message.AlunoId, message.CursoId);
+        _alunoRepository.AdicionarMatricula(matricula);
         return await PersistData(_alunoRepository.UnitOfWork);
     }
 
@@ -74,12 +92,25 @@ public class AlunoCommandHandler : CommandHandler,
     {
         if (!message.IsValid()) return message.ValidationResult;
 
+        var cursoIdRelacionado = await _conteudoService.ObterCursoIdPorAulaAsync(message.AulaId);
+        if (cursoIdRelacionado == null)
+        {
+            AddError("A aula informada não foi encontrada na API de Conteúdos.");
+            return ValidationResult;
+        }
+
         var matriculas = await _alunoRepository.ObterMatriculasPorAluno(message.AlunoId);
-        var matriculaAtiva = matriculas.FirstOrDefault(m => m.Status == Domain.Models.EnumStatusMatricula.Ativa);
+        var matriculaAtiva = matriculas.FirstOrDefault(m => m.CursoId == cursoIdRelacionado.Value && m.Status == Domain.Models.EnumStatusMatricula.Ativa);
 
         if (matriculaAtiva == null)
         {
-            AddError("Aluno não possui matrícula ativa para este curso.");
+            AddError("Aluno não possui matrícula ativa para o curso desta aula.");
+            return ValidationResult;
+        }
+
+        if (matriculaAtiva.ProgressoAulas.Any(p => p.AulaId == message.AulaId))
+        {
+            AddError("O progresso desta aula já foi registrado anteriormente.");
             return ValidationResult;
         }
 
@@ -103,18 +134,23 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (matricula.Status != Domain.Models.EnumStatusMatricula.Ativa && matricula.Status != Domain.Models.EnumStatusMatricula.Concluida)
         {
-             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
-             return ValidationResult;
+            AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
+            return ValidationResult;
         }
 
         if (matricula.Certificado != null)
         {
-             AddError("Certificado já emitido para esta matrícula.");
-             return ValidationResult;
+            AddError("Certificado já emitido para esta matrícula.");
+            return ValidationResult;
         }
 
-        // Em um cenário real, aqui entraria a validação com a API de Conteúdo
-        // para checar se a quantidade de aulas no progresso == quantidade de aulas do curso
+        var totalAulasCurso = await _conteudoService.ObterTotalAulasPorCursoAsync(matricula.CursoId);
+
+        if (totalAulasCurso == 0 || matricula.ProgressoAulas.Count < totalAulasCurso)
+        {
+            AddError($"O aluno ainda não concluiu todas as {totalAulasCurso} aulas deste curso.");
+            return ValidationResult;
+        }
         
         var certificado = new Certificado(matricula.Id);
         matricula.Concluir();

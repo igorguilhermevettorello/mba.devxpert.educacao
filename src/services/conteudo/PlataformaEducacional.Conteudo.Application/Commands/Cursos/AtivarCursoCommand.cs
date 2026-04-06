@@ -1,10 +1,9 @@
-﻿using MediatR;
 using PlataformaEducacional.Conteudo.Application.Validators;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Conteudo.Application.Commands.Cursos
 {
-    public class AtivarCursoCommand : Command, IRequest<bool>
+    public class AtivarCursoCommand : Command
     {
         public Guid CursoId { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
@@ -36,26 +36,44 @@ public class EnderecoValidation : AbstractValidator<AdicionarEnderecoCommand>
 {
     public EnderecoValidation()
     {
+        RuleFor(c => c.AlunoId)
+            .NotEqual(Guid.Empty)
+            .WithMessage("Id do aluno inválido");
+
         RuleFor(c => c.Logradouro)
             .NotEmpty()
-            .WithMessage("Logradouro é obrigatório");
+            .WithMessage("Logradouro é obrigatório")
+            .MaximumLength(200)
+            .WithMessage("Logradouro deve ter no máximo 200 caracteres");
 
         RuleFor(c => c.Numero)
             .NotEmpty()
-            .WithMessage("Numero é obrigatório");
+            .WithMessage("Numero é obrigatório")
+            .MaximumLength(20)
+            .WithMessage("Numero deve ter no máximo 20 caracteres");
+
         RuleFor(c => c.Cep)
             .NotEmpty()
-            .WithMessage("Cep é obrigatório");
+            .WithMessage("Cep é obrigatório")
+            .Length(8)
+            .WithMessage("Cep deve ter 8 caracteres");
 
         RuleFor(c => c.Bairro)
             .NotEmpty()
-            .WithMessage("Bairro é obrigatório");
+            .WithMessage("Bairro é obrigatório")
+            .MaximumLength(100)
+            .WithMessage("Bairro deve ter no máximo 100 caracteres");
+
         RuleFor(c => c.Cidade)
             .NotEmpty()
-            .WithMessage("Cidade é obrigatório");
+            .WithMessage("Cidade é obrigatório")
+            .MaximumLength(100)
+            .WithMessage("Cidade deve ter no máximo 100 caracteres");
 
         RuleFor(c => c.Estado)
             .NotEmpty()
-            .WithMessage("Estado é obrigatório");
+            .WithMessage("Estado é obrigatório")
+            .Length(2)
+            .WithMessage("Estado deve ter 2 caracteres");
     }
 }

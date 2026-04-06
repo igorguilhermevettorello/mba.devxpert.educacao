@@ -1,33 +1,37 @@
-﻿using MediatR;
+using FluentValidation.Results;
+using MediatR;
 using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
-using System.ComponentModel.DataAnnotations;
+using PlataformaEducacional.Core.Messages;
 
 namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
 {
-    public class InativarCursoCommandHandler : IRequestHandler<InativarCursoCommand, bool>
+    public class InativarCursoCommandHandler : CommandHandler, IRequestHandler<InativarCursoCommand, ValidationResult>
     {
         private readonly ICursoRepository _cursoRepository;
-        private readonly IMediator _mediator;
 
-        public InativarCursoCommandHandler(ICursoRepository cursoRepository, IMediator mediator)
+        public InativarCursoCommandHandler(ICursoRepository cursoRepository)
         {
             _cursoRepository = cursoRepository;
-            _mediator = mediator;
         }
 
-        public async Task<bool> Handle(InativarCursoCommand request, CancellationToken cancellationToken)
+        public async Task<ValidationResult> Handle(InativarCursoCommand request, CancellationToken cancellationToken)
         {
+            if (!request.IsValid())
+                return request.ValidationResult;
+
             var curso = await _cursoRepository.BuscarPorIdAsync(request.CursoId);
 
-            if (curso != null)
+            if (curso == null)
             {
-                curso.Inativar();
-                _cursoRepository.Alterar(curso);
-                return await _cursoRepository.UnitOfWork.Commit();
+                return new ValidationResult([
+                    new ValidationFailure(nameof(InativarCursoCommand.CursoId), "Curso não encontrado")
+                ]);
             }
 
-            return false;
+            curso.Inativar();
+            _cursoRepository.Alterar(curso);
+            return await PersistData(_cursoRepository.UnitOfWork);
         }
     }
 }

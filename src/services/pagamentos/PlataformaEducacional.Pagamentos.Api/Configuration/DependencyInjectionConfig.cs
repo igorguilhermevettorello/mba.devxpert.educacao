@@ -1,24 +1,36 @@
-﻿using PlataformaEducacional.Pagamentos.Api.Data;
+﻿using PlataformaEducacional.Core.Mediator;
+using PlataformaEducacional.Core.Notifications;
+using PlataformaEducacional.Pagamentos.Api.Data;
 using PlataformaEducacional.Pagamentos.Api.Data.Repository;
 using PlataformaEducacional.Pagamentos.Api.Facade;
 using PlataformaEducacional.Pagamentos.Api.Models;
 using PlataformaEducacional.Pagamentos.Api.Services;
 using PlataformaEducacional.WebApi.Core.User;
 
-namespace PlataformaEducacional.Pagamentos.Api.Configuration
+namespace PlataformaEducacional.Pagamentos.Api.Configuration;
+
+public static class DependencyInjectionConfig
 {
-    public static class DependencyInjectionConfig
+    public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void RegisterServices(this IServiceCollection services)
+        services.AddScoped<INotificador, Notificador>();
+        services.AddScoped<IAspNetUser, AspNetUser>();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddScoped<IMediatorHandler, MediatorHandler>();
+        services.AddScoped<IPagamentoService, PagamentoService>();
+        services.AddScoped<IPagamentoRepository, PagamentoRepository>();
+        services.AddScoped<IPagamentoFacade, PagamentoCartaoCreditoFacade>();
+        services.AddScoped<PagamentosContext>();
+
+        services.AddHttpClient<IConteudoService, ConteudoService>(client =>
         {
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IAspNetUser, AspNetUser>();
+            client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
+        });
 
-            services.AddScoped<IPagamentoService, PagamentoService>();
-            services.AddScoped<IPagamentoFacade, PagamentoCartaoCreditoFacade>();
+        services.AddHttpClient<IAlunoService, AlunoService>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["AlunoUrl"]);
+        });
 
-            services.AddScoped<IPagamentoRepository, PagamentoRepository>();
-            services.AddScoped<PagamentosContext>();
-        }
     }
 }

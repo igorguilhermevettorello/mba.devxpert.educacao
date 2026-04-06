@@ -1,9 +1,9 @@
-﻿using EasyNetQ.LightInject;
+using EasyNetQ.LightInject;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEducacional.Auth.Api.Data;
 using PlataformaEducacional.Core.Enumerators;
-using PlataformaEducacional.Core.Exceptions;
+using PlataformaEducacional.Core.Extensions;
 
 namespace PlataformaEducacional.Auth.Api.Configurations.Seed;
 
@@ -77,8 +77,8 @@ public static class DatabaseMigrationStartDataExtension
         {
             var userAdmin = new IdentityUser
             {
-                UserName = "Administrador",
-                NormalizedUserName = "ADMINISTRADOR",
+                UserName = userAdminEmail,
+                NormalizedUserName = userAdminEmail.ToUpperInvariant(),
                 Email = userAdminEmail,
                 NormalizedEmail = userAdminEmail.ToUpperInvariant(),
                 EmailConfirmed = true,
@@ -103,8 +103,8 @@ public static class DatabaseMigrationStartDataExtension
             var userAluno = new IdentityUser
             {
                 Id = "65EFB6D9-2374-4E87-8D83-C8E76C2B9765",
-                UserName = "AlunoTeste",
-                NormalizedUserName = "ALUNOTESTE",
+                UserName = userEmail,
+                NormalizedUserName = userEmail.ToUpperInvariant(),
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpperInvariant(),
                 EmailConfirmed = true,
