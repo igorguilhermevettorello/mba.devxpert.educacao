@@ -1,22 +1,20 @@
-using MediatR;
 using PlataformaEducacional.Conteudo.Application.Validators;
-using PlataformaEducacional.Conteudo.Domain.Enums;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
-namespace PlataformaEducacional.Conteudo.Application.Commands.Cursos
+namespace PlataformaEducacional.Conteudo.Application.Commands.Cursos;
+
+public class AtualizarCursoCommand : Command
 {
-    public class AtualizarCursoCommand : Command
-    {
-        public Guid Id { get; set; }
-        public string Titulo { get; set; }
-        public string Descricao { get; set; }
-        public NivelCurso Nivel { get; set; }
-        public ConteudoProgramaticoCommand? ConteudoProgramatico { get; set; }
+    public Guid Id { get; set; }
+    public string Titulo { get; set; } = string.Empty;
+    public string Descricao { get; set; } = string.Empty;
+    public NivelCurso Nivel { get; set; }
+    public ConteudoProgramaticoCommand? ConteudoProgramatico { get; set; }
 
-        public override bool IsValid()
-        {
-            ValidationResult = new AtualizarCursoCommandValidator().Validate(this);
-            return ValidationResult.IsValid;
-        }
+    public override bool IsValid()
+    {
+        ValidationResult = new AtualizarCursoCommandValidator().Validate(this);
+        return ValidationResult.IsValid;
     }
 }

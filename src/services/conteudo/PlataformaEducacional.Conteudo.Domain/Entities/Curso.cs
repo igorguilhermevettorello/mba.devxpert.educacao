@@ -1,6 +1,6 @@
-﻿using PlataformaEducacional.Conteudo.Domain.Enums;
-using PlataformaEducacional.Conteudo.Domain.ValueObjects;
+﻿using PlataformaEducacional.Conteudo.Domain.ValueObjects;
 using PlataformaEducacional.Core.DomainObjects;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
 namespace PlataformaEducacional.Conteudo.Domain.Entities
 {

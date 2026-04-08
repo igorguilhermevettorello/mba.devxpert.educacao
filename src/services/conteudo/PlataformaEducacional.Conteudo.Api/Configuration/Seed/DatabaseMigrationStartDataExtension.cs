@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlataformaEducacional.Conteudo.Data.Context;
 using PlataformaEducacional.Conteudo.Domain.Entities;
-using PlataformaEducacional.Conteudo.Domain.Enums;
 using PlataformaEducacional.Conteudo.Domain.ValueObjects;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
 namespace PlataformaEducacional.Conteudo.Api.Configuration.Seed
 {

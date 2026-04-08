@@ -1,7 +1,6 @@
-using MediatR;
 using PlataformaEducacional.Conteudo.Application.Validators;
-using PlataformaEducacional.Conteudo.Domain.Enums;
 using PlataformaEducacional.Core.Messages;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
 namespace PlataformaEducacional.Conteudo.Application.Commands.Cursos
 {

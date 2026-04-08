@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PlataformaEducacional.Bff.Api.Interfaces;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
@@ -9,11 +10,16 @@ public class CompraController : MainController
 {
     private readonly IMediator _mediator;
     private readonly IAspNetUser _user;
+    
+    private readonly IConteudoService _conteudoService;
 
-    public CompraController(IMediator mediator, IAspNetUser aspNetUser)
+    public CompraController(IMediator mediator, 
+        IAspNetUser aspNetUser,
+        IConteudoService conteudoService)
     {
         _mediator = mediator;
         _user = aspNetUser;
+        _conteudoService = conteudoService;
     }
 
     //Listar Conteúdos disponíveis para compra
@@ -21,10 +27,9 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarConteudosDisponiveis()
-    {
-        throw new NotImplementedException();
-        // Implementar lógica de listagem utilizando _mediator e _user
-        return CustomResponse();
+    {        
+        var conteudos = await _conteudoService.ObterCursoDisponiveisAsync();
+        return CustomResponse(conteudos);
     }
 
     //listar matrículas pendentes do aluno

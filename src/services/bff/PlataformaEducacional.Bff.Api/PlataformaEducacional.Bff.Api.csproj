@@ -11,8 +11,4 @@
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>
