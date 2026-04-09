@@ -18,7 +18,8 @@ public class CompraController : MainController
     public CompraController(IMediator mediator, 
         IAspNetUser aspNetUser,
         IConteudoService conteudoService,
-        IMatriculaService matriculaService)
+        IMatriculaService matriculaService,
+        IPagamentoService pagamentoService)
     {
         _mediator = mediator;
         _user = aspNetUser;
