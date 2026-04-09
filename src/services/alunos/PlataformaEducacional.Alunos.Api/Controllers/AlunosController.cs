@@ -139,4 +139,20 @@ public class AlunosController : MainController
 
         return CustomResponse(matricula);
     }
+
+    [HttpGet("pendentes")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [AllowAnonymous]        //TODO: add autorização
+    public async Task<IActionResult> ObterMatriculaPendentes()
+    {
+
+        var matricula = await _alunosRepository.ObterMatriculaPendentes();
+
+        if (matricula is null)
+            return NotFound();
+
+        return CustomResponse(matricula);
+    }
+
 }

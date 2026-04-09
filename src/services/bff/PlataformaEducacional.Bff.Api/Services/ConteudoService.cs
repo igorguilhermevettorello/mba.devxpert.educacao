@@ -16,6 +16,7 @@ public class ConteudoService : ServiceBase, IConteudoService
         _httpClient.BaseAddress = new Uri(settings.Value.ConteudoApiUrl);
     }
 
+    ///<inheritdoc/>
     public async Task<IEnumerable<CursoDto>> ObterCursoDisponiveisAsync()
     {
         var response = await _httpClient.GetAsync("/ativos");

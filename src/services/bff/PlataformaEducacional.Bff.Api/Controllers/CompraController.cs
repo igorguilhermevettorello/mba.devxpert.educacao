@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Bff.Api.Interfaces;
+using PlataformaEducacional.Bff.Api.Models;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
@@ -12,14 +13,17 @@ public class CompraController : MainController
     private readonly IAspNetUser _user;
     
     private readonly IConteudoService _conteudoService;
+    private readonly IMatriculaService _matriculaService;
 
     public CompraController(IMediator mediator, 
         IAspNetUser aspNetUser,
-        IConteudoService conteudoService)
+        IConteudoService conteudoService,
+        IMatriculaService matriculaService)
     {
         _mediator = mediator;
         _user = aspNetUser;
         _conteudoService = conteudoService;
+        _matriculaService = matriculaService;
     }
 
     //Listar Conteúdos disponíveis para compra
@@ -38,17 +42,17 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarMatriculaPendente()
     {
-        // Implementar lógica de listagem utilizando _mediator e _user
-        return CustomResponse();
+        var matriculasPendentes = await _matriculaService.ObterMatriculaPendentesAsync();
+        return CustomResponse(matriculasPendentes);
     }
 
     [HttpPost("matricula")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RealizarMatricula()
+    public async Task<IActionResult> RealizarMatricula([FromBody] RealizarMatriculaDto model)
     {
-        // Implementar lógica de compra utilizando _mediator e _user
-        return CustomResponse();
+        var result = await _matriculaService.RealizarMatriculaAsync(model);
+        return CustomResponse(result);
     }
 
 

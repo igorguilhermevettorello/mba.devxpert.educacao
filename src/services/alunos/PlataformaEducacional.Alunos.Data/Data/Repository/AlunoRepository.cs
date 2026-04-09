@@ -2,6 +2,7 @@
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Data;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
 namespace PlataformaEducacional.Alunos.Data.Repository;
 
@@ -49,21 +50,25 @@ public class AlunoRepository : IAlunoRepository
         _context.Alunos.Add(aluno);
     }
 
+    ///<inheritdoc/>
     public void AdicionarEndereco(Endereco endereco)
     {
         _context.Enderecos.Add(endereco);
     }
 
+    ///<inheritdoc/>
     public void AdicionarMatricula(Matricula matricula)
     {
         _context.Matriculas.Add(matricula);
     }
 
+    ///<inheritdoc/>
     public void AtualizarMatricula(Matricula matricula)
     {
         _context.Matriculas.Update(matricula);
     }
 
+    ///<inheritdoc/>
     public async Task<Matricula?> ObterMatriculaPorId(Guid id)
     {
         return await _context.Matriculas
@@ -73,6 +78,14 @@ public class AlunoRepository : IAlunoRepository
            .FirstOrDefaultAsync(m => m.Id == id);
     }
 
+    ///<inheritdoc/>
+    public async Task<Matricula?> ObterMatriculaPendentes()
+    {
+        return await _context.Matriculas.AsNoTracking()
+                                        .FirstOrDefaultAsync(m => m.Status == StatusMatricula.Pendente);
+    }
+
+    ///<inheritdoc/>
     public async Task<IEnumerable<Matricula>> ObterMatriculasPorAluno(Guid alunoId)
     {
         return await _context.Matriculas
@@ -83,17 +96,19 @@ public class AlunoRepository : IAlunoRepository
             .ToListAsync();
     }
 
+    ///<inheritdoc/>
     public void AdicionarProgresso(ProgressoAula progressoAula)
     {
         _context.ProgressoAulas.Add(progressoAula);
     }
 
+    ///<inheritdoc/>
     public async Task<Certificado?> ObterCertificado(Guid id)
     {
         return await _context.Certificados.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    ///<inheritdoc/>
+    
     public void Dispose()
     {
         _context.Dispose();
