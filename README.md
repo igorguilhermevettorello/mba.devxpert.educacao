@@ -324,10 +324,10 @@ Após iniciar cada API, acesse a documentação Swagger:
 | **Auth API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
 | **Alunos API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
 | **Conteúdo API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
-| **Pagamentos API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados |
-| **BFF API** | `https://localhost:{porta}/swagger` | 🔄 Em desenvolvimento (endpoints são stubs) |
+| **Pagamentos API** | `https://localhost:{porta}/swagger` | ✅ Endpoints implementados (integração com EducaPag) |
+| **BFF API** | `https://localhost:{porta}/swagger` | 🔄 Em desenvolvimento (roteamento básico implementado) |
 
-> **Nota sobre BFF API**: Os endpoints estão definidos mas ainda não possuem implementação completa. A lógica será adicionada conforme o desenvolvimento avança.
+> **Nota sobre BFF API**: O BFF API atua como camada intermediária para roteamento de requisições. A orquestração completa de chamadas aos microsserviços ainda está em desenvolvimento.
 
 ---
 
@@ -374,7 +374,7 @@ A documentação completa dos endpoints está disponível via Swagger em cada mi
 - **Síncrona**: HTTP/REST diretos entre serviços e clientes
 - **Assíncrona**: RabbitMQ para eventos de integração
 
-> **Nota**: O projeto não possui um API Gateway centralizado. Cada serviço expõe seus próprios endpoints REST.
+> **Nota sobre Arquitetura**: O projeto utiliza uma arquitetura de **Microsserviços distribuídos** sem um API Gateway centralizado. Cada serviço expõe seus próprios endpoints REST de forma independente. Em produção, recomenda-se adicionar um API Gateway (como Azure API Management, Kong ou similar) para gerenciar roteamento, segurança e rate limiting.
 
 ---
 
