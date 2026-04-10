@@ -6,6 +6,7 @@ using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;
 using PlataformaEducacional.MessageBus;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
 
@@ -100,9 +101,8 @@ public class AlunoCommandHandler : CommandHandler,
         }
 
         var matriculas = await _alunoRepository.ObterMatriculasPorAluno(message.AlunoId);
-        var matriculaAtiva = matriculas.FirstOrDefault(m => m.CursoId == cursoIdRelacionado.Value && m.Status == Domain.Models.EnumStatusMatricula.Ativa);
-
-        if (matriculaAtiva == null)
+        var matriculaAtiva = matriculas.FirstOrDefault(m => m.CursoId.Equals(cursoIdRelacionado.Value) && m.Status == StatusMatricula.Ativa);
+        if (matriculaAtiva is null)
         {
             AddError("Aluno não possui matrícula ativa para o curso desta aula.");
             return ValidationResult;
@@ -132,7 +132,7 @@ public class AlunoCommandHandler : CommandHandler,
             return ValidationResult;
         }
 
-        if (matricula.Status != Domain.Models.EnumStatusMatricula.Ativa && matricula.Status != Domain.Models.EnumStatusMatricula.Concluida)
+        if (matricula.Status != StatusMatricula.Ativa && matricula.Status != StatusMatricula.Concluida)
         {
             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
             return ValidationResult;

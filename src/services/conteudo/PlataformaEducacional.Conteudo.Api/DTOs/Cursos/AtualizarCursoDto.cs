@@ -1,23 +1,22 @@
 ﻿using PlataformaEducacional.Conteudo.Api.DTOs.ConteudoProgramatico;
-using PlataformaEducacional.Conteudo.Domain.Enums;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 using System.ComponentModel.DataAnnotations;
 
-namespace PlataformaEducacional.Conteudo.Api.DTOs.Cursos
+namespace PlataformaEducacional.Conteudo.Api.DTOs.Cursos;
+
+public class AtualizarCursoDto
 {
-    public class AtualizarCursoDto
-    {
-        [Required(ErrorMessage = "O título é obrigatório")]
-        [StringLength(200, MinimumLength = 3, ErrorMessage = "O título deve ter entre 3 e 200 caracteres")]
-        public string Titulo { get; set; }
+    [Required(ErrorMessage = "O título é obrigatório")]
+    [StringLength(200, MinimumLength = 3, ErrorMessage = "O título deve ter entre 3 e 200 caracteres")]
+    public string Titulo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "A descrição é obrigatória")]
-        [StringLength(1000, MinimumLength = 10, ErrorMessage = "A descrição deve ter entre 10 e 1000 caracteres")]
-        public string Descricao { get; set; }
+    [Required(ErrorMessage = "A descrição é obrigatória")]
+    [StringLength(1000, MinimumLength = 10, ErrorMessage = "A descrição deve ter entre 10 e 1000 caracteres")]
+    public string Descricao { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O nível do curso é obrigatório")]
-        public NivelCurso Nivel { get; set; }
+    [Required(ErrorMessage = "O nível do curso é obrigatório")]
+    public NivelCurso Nivel { get; set; }
 
-        [Required(ErrorMessage = "A chave Conteúdo Programático é obrigatória")]
-        public CriarConteudoProgramaticoDto ConteudoProgramatico { get; set; }
-    }
+    [Required(ErrorMessage = "A chave Conteúdo Programático é obrigatória")]
+    public CriarConteudoProgramaticoDto ConteudoProgramatico { get; set; } = new CriarConteudoProgramaticoDto();
 }

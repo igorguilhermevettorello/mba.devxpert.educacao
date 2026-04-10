@@ -8,6 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApiConfiguration("BFF API");
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.LicenseKey = builder.Configuration.GetValue<string>("mediator-license") ?? string.Empty;
+    cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+});
+
 builder.Services.RegisterServices(builder.Configuration);
 
 var app = builder.Build();

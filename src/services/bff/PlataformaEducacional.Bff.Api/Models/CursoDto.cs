@@ -1,8 +1,6 @@
-﻿using PlataformaEducacional.Conteudo.Api.DTOs.Aulas;
-using PlataformaEducacional.Conteudo.Api.DTOs.ConteudoProgramatico;
-using PlataformaEducacional.WebApi.Core.Enumerators;
+﻿using PlataformaEducacional.WebApi.Core.Enumerators;
 
-namespace PlataformaEducacional.Conteudo.Api.DTOs.Cursos;
+namespace PlataformaEducacional.Bff.Api.Models;
 
 public class CursoDto
 {
@@ -14,5 +12,4 @@ public class CursoDto
     public decimal Valor { get; set; }
     public bool Ativo { get; set; }
     public ConteudoProgramaticoDto? ConteudoProgramatico { get; set; }
-    public IEnumerable<AulaDto> Aulas { get; set; } = new List<AulaDto>();
 }
