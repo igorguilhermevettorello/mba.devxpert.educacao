@@ -27,4 +27,8 @@
     <ProjectReference Include="..\PlataformaEducacional.Conteudo.Domain\PlataformaEducacional.Conteudo.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Database-PeConteudo.db" />
+  </ItemGroup>
+
 </Project>

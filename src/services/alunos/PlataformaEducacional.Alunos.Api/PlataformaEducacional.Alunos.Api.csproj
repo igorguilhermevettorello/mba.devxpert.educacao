@@ -26,4 +26,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Database-PeAlunos.db" />
+  </ItemGroup>
+
 </Project>
