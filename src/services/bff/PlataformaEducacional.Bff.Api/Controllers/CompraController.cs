@@ -11,11 +11,12 @@ public class CompraController : MainController
 {
     private readonly IMediator _mediator;
     private readonly IAspNetUser _user;
-    
+
     private readonly IConteudoService _conteudoService;
     private readonly IMatriculaService _matriculaService;
+    private readonly IPagamentoService _pagamentoService;
 
-    public CompraController(IMediator mediator, 
+    public CompraController(IMediator mediator,
         IAspNetUser aspNetUser,
         IConteudoService conteudoService,
         IMatriculaService matriculaService,
@@ -25,6 +26,7 @@ public class CompraController : MainController
         _user = aspNetUser;
         _conteudoService = conteudoService;
         _matriculaService = matriculaService;
+        _pagamentoService = pagamentoService;
     }
 
     //Listar Conteúdos disponíveis para compra
@@ -32,7 +34,7 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarConteudosDisponiveis()
-    {        
+    {
         var conteudos = await _conteudoService.ObterCursoDisponiveisAsync();
         return CustomResponse(conteudos);
     }
@@ -50,6 +52,7 @@ public class CompraController : MainController
     [HttpPost("matricula")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RealizarMatricula([FromBody] RealizarMatriculaDto model)
     {
         var result = await _matriculaService.RealizarMatriculaAsync(model);
@@ -60,9 +63,15 @@ public class CompraController : MainController
     [HttpPost("matricula/{id}/pagamento")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RealizarPagamento(Guid id)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RealizarPagamento(Guid id, [FromBody] RealizarPagamentoDto model)
     {
-        // Implementar lógica de registro de progresso utilizando _mediator e _user
-        return CustomResponse();
+        if (model.MatriculaId == Guid.Empty) return CustomResponse("MatriculaId é obrigatório.");
+        if (model.MatriculaId != id) return CustomResponse("Matricula invalida.");
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+        var result = await _pagamentoService.RealizarPagamentoAsync(model);
+
+        return CustomResponse(result);
     }
 }
