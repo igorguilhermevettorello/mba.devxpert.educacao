@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Bff.Api.Interfaces;
 using PlataformaEducacional.Bff.Api.Models;
@@ -7,6 +8,7 @@ using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Bff.Api.Controllers;
 
+[Authorize]
 public class CompraController : MainController
 {
     private readonly IMediator _mediator;
