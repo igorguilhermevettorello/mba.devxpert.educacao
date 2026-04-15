@@ -7,6 +7,7 @@ using PlataformaEducacional.Alunos.Data;
 using PlataformaEducacional.Alunos.Data.Repository;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Core.Mediator;
+using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.User;
 
 namespace PlataformaEducacional.Alunos.Api.Configuration;
@@ -30,7 +31,9 @@ public static class DependencyInjectionConfig
         services.AddHttpClient<IConteudoService, ConteudoService>(client =>
         {
             client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
-        });
+        })
+        .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+        .AddRetryAndCircuitBreaker();
 
         services.AddScoped<IAlunoRepository, AlunoRepository>();
         services.AddScoped<AlunosContext>();

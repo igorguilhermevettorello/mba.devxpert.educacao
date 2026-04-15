@@ -7,6 +7,8 @@ using PlataformaEducacional.Pagamentos.Api.Models;
 using PlataformaEducacional.Pagamentos.Api.Services;
 using PlataformaEducacional.WebApi.Core.User;
 
+using PlataformaEducacional.WebApi.Core.Configurations;
+
 namespace PlataformaEducacional.Pagamentos.Api.Configuration;
 
 public static class DependencyInjectionConfig
@@ -25,12 +27,16 @@ public static class DependencyInjectionConfig
         services.AddHttpClient<IConteudoService, ConteudoService>(client =>
         {
             client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
-        });
+        })
+        .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+        .AddRetryAndCircuitBreaker();
 
         services.AddHttpClient<IAlunoService, AlunoService>(client =>
         {
             client.BaseAddress = new Uri(configuration["AlunoUrl"]);
-        });
+        })
+        .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+        .AddRetryAndCircuitBreaker();
 
     }
 }
