@@ -27,11 +27,14 @@ public static class DependencyInjectionConfig
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<IAspNetUser, AspNetUser>();
+        services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
         services.AddHttpClient<IConteudoService, ConteudoService>(client =>
         {
             client.BaseAddress = new Uri(configuration["ConteudoUrl"]);
-        });
+        })
+        .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+        .AddRetryAndCircuitBreaker();
 
         services.AddScoped<IAlunoRepository, AlunoRepository>();
         services.AddScoped<AlunosContext>();

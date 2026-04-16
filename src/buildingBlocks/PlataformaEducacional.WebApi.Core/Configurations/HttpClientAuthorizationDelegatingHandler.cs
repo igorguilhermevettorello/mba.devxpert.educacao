@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Primitives;
 
-namespace PlataformaEducacional.Bff.Api.Extensions;
+namespace PlataformaEducacional.WebApi.Core.Configurations;
 
 public class HttpClientAuthorizationDelegatingHandler : DelegatingHandler
 {

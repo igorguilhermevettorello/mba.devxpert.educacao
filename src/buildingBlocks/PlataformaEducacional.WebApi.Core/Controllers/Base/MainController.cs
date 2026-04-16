@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PlataformaEducacional.Core.Enumerators;
@@ -47,6 +48,14 @@ namespace PlataformaEducacional.WebApi.Core.Controllers.Base
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {
             if (!modelState.IsValid) NotificarErroModelInvalida(modelState);
+            return CustomResponse();
+        }
+
+        protected ActionResult CustomResponse(ValidationResult validationResult)
+        {
+            foreach (var error in validationResult.Errors)
+                NotificarErro(error.PropertyName, error.ErrorMessage);
+
             return CustomResponse();
         }
 
