@@ -32,7 +32,7 @@ public class CompraController : MainController
     }
 
     //Listar Conteúdos disponíveis para compra
-    [HttpPost("cursos-disponiveis")]
+    [HttpGet("cursos-disponiveis")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarConteudosDisponiveis()
@@ -42,7 +42,7 @@ public class CompraController : MainController
     }
 
     //listar matrículas pendentes do aluno
-    [HttpPost("matricula-pendente")]
+    [HttpGet("matricula-pendente")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarMatriculaPendente()
