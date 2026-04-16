@@ -23,6 +23,7 @@ public static class DependencyInjectionConfig
         services.AddScoped<IPagamentoRepository, PagamentoRepository>();
         services.AddScoped<IPagamentoFacade, PagamentoCartaoCreditoFacade>();
         services.AddScoped<PagamentosContext>();
+        services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
         services.AddHttpClient<IConteudoService, ConteudoService>(client =>
         {

@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace PlataformaEducacional.Pagamentos.Api.Models.ValueObjects
 {
@@ -17,55 +19,27 @@ namespace PlataformaEducacional.Pagamentos.Api.Models.ValueObjects
             CVV = cvv;
         }
 
-        public static CartaoCredito Criar(string titular, string numero, string mesAnoVencimento, string cvv)
+        public static (bool IsValid, CartaoCredito? Card, ValidationResult ValidationResult) TryCreate(
+            string titular,
+            string numero,
+            string mesAnoVencimento,
+            string cvv)
         {
-            if (string.IsNullOrWhiteSpace(titular))
-                throw new ArgumentException("O campo TitularCartao é obrigatório", nameof(titular));
+            var numeroDigitos = Regex.Replace(numero ?? string.Empty, @"\D", "");
+            var input = new CartaoCreditoInput(titular, numeroDigitos, mesAnoVencimento, cvv);
+            var validator = new CartaoCreditoValidator();
+            var validationResult = validator.Validate(input);
 
-            var nomeTrim = titular.Trim();
-            if (nomeTrim.Length < 3)
-                throw new ArgumentException("O TitularCartao deve ter no mínimo 3 caracteres", nameof(titular));
+            if (!validationResult.IsValid)
+                return (false, null, validationResult);
 
-            if (nomeTrim.Length > 100)
-                throw new ArgumentException("O TitularCartao deve ter no máximo 100 caracteres", nameof(titular));
+            // normalized values
+            var nomeTrim = titular!.Trim();
+            var validade = mesAnoVencimento!.Trim();
+            var cvvTrim = cvv!.Trim();
 
-            if (!Regex.IsMatch(nomeTrim, @"^[\p{L} .'\-]+$"))
-                throw new ArgumentException("O TitularCartao contém caracteres inválidos", nameof(titular));
-
-            // Numero validations (remove non-digits)
-            if (string.IsNullOrWhiteSpace(numero))
-                throw new ArgumentException("O campo NumeroCartao é obrigatório", nameof(numero));
-
-            var numeroDigitos = Regex.Replace(numero, @"\D", "");
-            if (numeroDigitos.Length == 0)
-                throw new ArgumentException("Número de cartão inválido", nameof(numero));
-
-            if (numeroDigitos.Length > 23)
-                throw new ArgumentException("Número de cartão inválido", nameof(numero));
-
-            if (!ValidarAlgoritmoLuhn(numeroDigitos))
-                throw new ArgumentException("Número de cartão inválido", nameof(numero));
-
-            // Validade validations (MM/AA or MM/AAAA)
-            if (string.IsNullOrWhiteSpace(mesAnoVencimento))
-                throw new ArgumentException("O campo ValidadeCartao é obrigatório", nameof(mesAnoVencimento));
-
-            var validade = mesAnoVencimento.Trim();
-            if (!Regex.IsMatch(validade, @"^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$"))
-                throw new ArgumentException("Validade inválida. Use MM/AA ou MM/AAAA", nameof(mesAnoVencimento));
-
-            if (!NaoEstaVencido(validade))
-                throw new ArgumentException("Validade inválida ou cartão expirado. Use MM/AA ou MM/AAAA", nameof(mesAnoVencimento));
-
-            // CVV validations
-            if (string.IsNullOrWhiteSpace(cvv))
-                throw new ArgumentException("O campo CodigoSegurancaCartao é obrigatório", nameof(cvv));
-
-            var cvvTrim = cvv.Trim();
-            if (!Regex.IsMatch(cvvTrim, @"^\d{3,4}$"))
-                throw new ArgumentException("O CodigoSegurancaCartao deve conter 3 ou 4 dígitos", nameof(cvv));
-
-            return new CartaoCredito(nomeTrim, numeroDigitos, validade, cvvTrim);
+            var card = new CartaoCredito(nomeTrim, numeroDigitos, validade, cvvTrim);
+            return (true, card, validationResult);
         }
 
         private static bool NaoEstaVencido(string validade)
@@ -126,6 +100,43 @@ namespace PlataformaEducacional.Pagamentos.Api.Models.ValueObjects
                 alternate = !alternate;
             }
             return sum % 10 == 0;
+        }
+
+        private sealed record CartaoCreditoInput(string Titular, string Numero, string MesAnoVencimento, string CVV);
+
+        private sealed class CartaoCreditoValidator : AbstractValidator<CartaoCreditoInput>
+        {
+            private const string NomeRegex = @"^[\p{L} .'\-]+$";
+            private const string ValidadeRegex = @"^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$";
+
+            public CartaoCreditoValidator()
+            {
+                //CascadeMode = CascadeMode.Stop;
+
+                RuleFor(x => x.Titular)
+                    .NotEmpty()
+                    .WithMessage("O campo TitularCartao é obrigatório")
+                    .Must(t => !string.IsNullOrWhiteSpace(t) && t.Trim().Length >= 3)
+                    .WithMessage("O TitularCartao deve ter no mínimo 3 caracteres")
+                    .Must(t => !string.IsNullOrWhiteSpace(t) && t.Trim().Length <= 100)
+                    .WithMessage("O TitularCartao deve ter no máximo 100 caracteres")
+                    .Matches(NomeRegex).WithMessage("O TitularCartao contém caracteres inválidos");
+
+                RuleFor(x => x.Numero)
+                    .NotEmpty().WithMessage("O campo NumeroCartao é obrigatório")
+                    .NotEmpty().WithMessage("Número de cartão inválido")
+                    .MaximumLength(23).WithMessage("Número de cartão inválido")
+                    .Must(ValidarAlgoritmoLuhn).WithMessage("Número de cartão inválido");
+
+                RuleFor(x => x.MesAnoVencimento)
+                    .NotEmpty().WithMessage("O campo ValidadeCartao é obrigatório")
+                    .Matches(ValidadeRegex).WithMessage("Validade inválida. Use MM/AA ou MM/AAAA")
+                    .Must(NaoEstaVencido).WithMessage("Validade inválida ou cartão expirado. Use MM/AA ou MM/AAAA");
+
+                RuleFor(x => x.CVV)
+                    .NotEmpty().WithMessage("O campo CodigoSegurancaCartao é obrigatório")
+                    .Matches(@"^\d{3,4}$").WithMessage("O CodigoSegurancaCartao deve conter 3 ou 4 dígitos");
+            }
         }
     }
 }

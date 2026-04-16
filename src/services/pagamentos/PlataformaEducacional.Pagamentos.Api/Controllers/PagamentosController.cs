@@ -48,17 +48,17 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         public async Task<IActionResult> ObterPorId([FromRoute] Guid id)
         {
             var pagamento = await _pagamentoRepository.ObterPorId(id);
-        
+
             if (pagamento == null)
             {
                 return NotFound();
             }
-        
+
             if (!await UsuarioPodeVerPagamento(pagamento))
             {
                 return Forbid();
             }
-        
+
             var pagamentoDto = _mapper.Map<PagamentoDto>(pagamento);
             return Ok(pagamentoDto);
         }
@@ -71,17 +71,17 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         public async Task<IActionResult> ObterPorMatriculaId([FromRoute] Guid matriculaId)
         {
             var pagamento = await _pagamentoRepository.ObterPorMatriculaId(matriculaId);
-        
+
             if (pagamento == null)
             {
                 return NotFound();
             }
-        
+
             if (!await UsuarioPodeVerPagamento(pagamento))
             {
                 return Forbid();
             }
-        
+
             var pagamentoDto = _mapper.Map<PagamentoDto>(pagamento);
             return Ok(pagamentoDto);
         }
@@ -95,26 +95,29 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
-        
+
             if (!await UsuarioPodePagarAMatricula(model.MatriculaId))
                 return Forbid();
-        
-            var cartaoCredito = CartaoCredito.Criar(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
-        
+
+            var cartaoCredito = CartaoCredito.TryCreate(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
+
+            if (!cartaoCredito.IsValid)
+                return CustomResponse(cartaoCredito.ValidationResult);
+
             var pagamento = new Pagamento(
                 model.MatriculaId,
                 TipoPagamento.CartaoCredito,    //Tipo pagamento chumbado pois o prop�sito da api � apenas did�tico
                 model.ValorCurso,
-                cartaoCredito);
-        
+                cartaoCredito.Card!);
+
             var responseMessage = await _pagamentoService.AutorizarPagamento(pagamento);
-        
+
             if (!responseMessage.ValidationResult.IsValid)
             {
                 NotificarErros(responseMessage);
                 return CustomResponse();
             }
-        
+
             return CreatedAtAction(nameof(ObterPorId), new { id = pagamento.Id }, _mapper.Map<PagamentoDto>(pagamento));
         }
 
