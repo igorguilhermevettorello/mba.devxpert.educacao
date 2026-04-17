@@ -1,9 +1,9 @@
-using EasyNetQ.LightInject;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEducacional.Auth.Api.Data;
 using PlataformaEducacional.Core.Enumerators;
 using PlataformaEducacional.Core.Extensions;
+using PlataformaEducacional.SeedDados;
 
 namespace PlataformaEducacional.Auth.Api.Configurations.Seed;
 
@@ -70,59 +70,65 @@ public static class DatabaseMigrationStartDataExtension
 
     private static async Task EnsureSeedSecurity(UserManager<IdentityUser> userManager, ApplicationDbContext contextSecurity)
     {
-        var userEmail = "aluno.teste@educa.com";
-        var userAdminEmail = "admin@educa.com";
-
-        if (await userManager.FindByEmailAsync(userAdminEmail) == null)
-        {
-            var userAdmin = new IdentityUser
-            {
-                UserName = userAdminEmail,
-                NormalizedUserName = userAdminEmail.ToUpperInvariant(),
-                Email = userAdminEmail,
-                NormalizedEmail = userAdminEmail.ToUpperInvariant(),
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                PhoneNumberConfirmed = false,
-                TwoFactorEnabled = false,
-                LockoutEnabled = true,
-                AccessFailedCount = 0
-            };
-
-            var result = await userManager.CreateAsync(userAdmin, "Admin@123");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(userAdmin, TipoUsuario.Administrador.GetDescription().ToUpperInvariant());
-            }
-        }
-
-            
-        if (await userManager.FindByEmailAsync(userEmail) == null)
-        {
-            var userAluno = new IdentityUser
-            {
-                Id = "65EFB6D9-2374-4E87-8D83-C8E76C2B9765",
-                UserName = userEmail,
-                NormalizedUserName = userEmail.ToUpperInvariant(),
-                Email = userEmail,
-                NormalizedEmail = userEmail.ToUpperInvariant(),
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                PhoneNumberConfirmed = false,
-                TwoFactorEnabled = false,
-                LockoutEnabled = true,
-                AccessFailedCount = 0
-            };
-
-            var result = await userManager.CreateAsync(userAluno, "Aluno@123");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(userAluno, TipoUsuario.Aluno.GetDescription().ToUpperInvariant());
-            }
-        }
-
+        await SeedAdmin(userManager);
+        await SeedAluno(userManager);
         contextSecurity.SaveChanges();
+    }
+
+    private static async Task SeedAluno(UserManager<IdentityUser> userManager)
+    {
+        if (await userManager.FindByEmailAsync(SeedUsuario.UsuarioEmail) != null)
+            return;
+
+        var userAluno = new IdentityUser
+        {
+            Id = SeedUsuario.UsuarioId.ToString(),
+            UserName = SeedUsuario.UsuarioEmail,
+            NormalizedUserName = SeedUsuario.UsuarioEmail.ToUpperInvariant(),
+            Email = SeedUsuario.UsuarioEmail,
+            NormalizedEmail = SeedUsuario.UsuarioEmail.ToUpperInvariant(),
+            EmailConfirmed = true,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false,
+            LockoutEnabled = true,
+            AccessFailedCount = 0
+        };
+
+        var result = await userManager.CreateAsync(userAluno, SeedUsuario.UsuarioSenha);
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(userAluno, TipoUsuario.Aluno.GetDescription().ToUpperInvariant());
+        }
+    }
+
+    private static async Task SeedAdmin(UserManager<IdentityUser> userManager)
+    {
+        if (await userManager.FindByEmailAsync(SeedUsuario.AdminEmail) != null)
+            return;
+
+        var userAdmin = new IdentityUser
+        {
+            UserName = SeedUsuario.AdminEmail,
+            NormalizedUserName = SeedUsuario.AdminEmail.ToUpperInvariant(),
+            Email = SeedUsuario.AdminEmail,
+            NormalizedEmail = SeedUsuario.AdminEmail.ToUpperInvariant(),
+            EmailConfirmed = true,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false,
+            LockoutEnabled = true,
+            AccessFailedCount = 0
+        };
+
+        var result = await userManager.CreateAsync(userAdmin, SeedUsuario.AdminSenha);
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(userAdmin, TipoUsuario.Administrador.GetDescription().ToUpperInvariant());
+        }
     }
 }
