@@ -77,16 +77,16 @@ public static class DatabaseMigrationStartDataExtension
 
     private static async Task SeedAluno(UserManager<IdentityUser> userManager)
     {
-        if (await userManager.FindByEmailAsync(SeedUsuario.UsuarioEmail) != null)
+        if (await userManager.FindByEmailAsync(SeedUsuario.USUARIO_EMAIL) != null)
             return;
 
         var userAluno = new IdentityUser
         {
-            Id = SeedUsuario.UsuarioId.ToString(),
-            UserName = SeedUsuario.UsuarioEmail,
-            NormalizedUserName = SeedUsuario.UsuarioEmail.ToUpperInvariant(),
-            Email = SeedUsuario.UsuarioEmail,
-            NormalizedEmail = SeedUsuario.UsuarioEmail.ToUpperInvariant(),
+            Id = SeedUsuario.USUARIO_ID.ToString(),
+            UserName = SeedUsuario.USUARIO_EMAIL,
+            NormalizedUserName = SeedUsuario.USUARIO_EMAIL.ToUpperInvariant(),
+            Email = SeedUsuario.USUARIO_EMAIL,
+            NormalizedEmail = SeedUsuario.USUARIO_EMAIL.ToUpperInvariant(),
             EmailConfirmed = true,
             SecurityStamp = Guid.NewGuid().ToString(),
             ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -96,7 +96,7 @@ public static class DatabaseMigrationStartDataExtension
             AccessFailedCount = 0
         };
 
-        var result = await userManager.CreateAsync(userAluno, SeedUsuario.UsuarioSenha);
+        var result = await userManager.CreateAsync(userAluno, SeedUsuario.USUARIO_SENHA);
 
         if (result.Succeeded)
         {
@@ -106,15 +106,15 @@ public static class DatabaseMigrationStartDataExtension
 
     private static async Task SeedAdmin(UserManager<IdentityUser> userManager)
     {
-        if (await userManager.FindByEmailAsync(SeedUsuario.AdminEmail) != null)
+        if (await userManager.FindByEmailAsync(SeedUsuario.ADMIN_EMAIL) != null)
             return;
 
         var userAdmin = new IdentityUser
         {
-            UserName = SeedUsuario.AdminEmail,
-            NormalizedUserName = SeedUsuario.AdminEmail.ToUpperInvariant(),
-            Email = SeedUsuario.AdminEmail,
-            NormalizedEmail = SeedUsuario.AdminEmail.ToUpperInvariant(),
+            UserName = SeedUsuario.ADMIN_EMAIL,
+            NormalizedUserName = SeedUsuario.ADMIN_EMAIL.ToUpperInvariant(),
+            Email = SeedUsuario.ADMIN_EMAIL,
+            NormalizedEmail = SeedUsuario.ADMIN_EMAIL.ToUpperInvariant(),
             EmailConfirmed = true,
             SecurityStamp = Guid.NewGuid().ToString(),
             ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -124,7 +124,7 @@ public static class DatabaseMigrationStartDataExtension
             AccessFailedCount = 0
         };
 
-        var result = await userManager.CreateAsync(userAdmin, SeedUsuario.AdminSenha);
+        var result = await userManager.CreateAsync(userAdmin, SeedUsuario.ADMIN_SENHA);
 
         if (result.Succeeded)
         {

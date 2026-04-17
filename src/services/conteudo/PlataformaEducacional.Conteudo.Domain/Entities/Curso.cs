@@ -39,6 +39,19 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
             Ativo = true;
         }
 
+        //construtor usado p/ o seed
+        public Curso(Guid id, string titulo, string descricao, string instrutor, NivelCurso nivel, decimal valor) : this()
+        {
+            Id = id;
+            Titulo = titulo;
+            Descricao = descricao;
+            Instrutor = instrutor;
+            Nivel = nivel;
+            Valor = valor;
+            DataCriacao = DateTime.UtcNow;
+            Ativo = true;
+        }
+
         public void AdicionarAula(Aula aula)
         {
             if (aula == null)
@@ -95,7 +108,7 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
             //{
             //    throw new InvalidOperationException("Curso já possui conteúdo programático. Use o método de atualização");
             //}
-            
+
             ConteudoProgramatico = conteudo;
         }
 
