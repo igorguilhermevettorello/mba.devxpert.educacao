@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlataformaEducacional.Alunos.Api.DTOs.Certificados;
@@ -27,6 +27,7 @@ public class AlunosController : MainController
         _user = user;
     }
 
+    #region > ALUNO <
     [Tags("1. Matrículas")]
     [HttpPost("matricula")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -125,34 +126,113 @@ public class AlunosController : MainController
         return CustomResponse(await _mediator.Send(endereco));
     }
 
-    [HttpGet("matriculas/{id:guid}")]    
+    [Tags("6. Matriculas por ID")]
+    [HttpGet("matriculas/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [AllowAnonymous]        //TODO: add autorização
-    public async Task<IActionResult> ObterMatriculaPorId(Guid id)
+    public async Task<IActionResult> ObterMatriculaPorId(Guid alunoId)
     {
-
-        var matricula = await _alunosRepository.ObterMatriculaPorId(id);
+        var matricula = await _alunosRepository.ObterMatriculaPorId(alunoId);
 
         if (matricula is null)
             return NotFound();
 
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
+
+        if (!ehAdministrador && matricula.AlunoId != usuarioId)
+            return Forbid();
+
         return CustomResponse(matricula);
     }
 
-    [HttpGet("pendentes")]
+    [Tags("7. Matrículas pendentes")]
+    [HttpGet("pendentes/{alunoId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [AllowAnonymous]        //TODO: add autorização
-    public async Task<IActionResult> ObterMatriculaPendentes()
+    public async Task<IActionResult> ObterMatriculasPendentes(Guid alunoId)
     {
+        var ehAdministrador = _user.PossuiRole("Administrador");
 
-        var matricula = await _alunosRepository.ObterMatriculaPendentes();
+        if (!ehAdministrador && alunoId != _user.ObterUserId())
+            return Forbid();
 
-        if (matricula is null)
+        var matriculas = await _alunosRepository.ObterMatriculasPendentesPorAluno(alunoId);
+
+        if (matriculas == null || !matriculas.Any())
+            return NotFound("Nenhuma matrícula pendente encontrada para este aluno.");
+
+        return CustomResponse(matriculas);
+    }
+    #endregion
+
+    #region > ADMINISTRADOR <
+    [Tags("8. Administrador")]
+    [HttpGet("admin")]
+    [Authorize(Roles = "Administrador")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> ListarAlunos()
+    {
+        var alunos = await _alunosRepository.ObterTodos();
+        return CustomResponse(alunos);
+    }
+
+    [Tags("8. Administrador")]
+    [HttpGet("admin/{alunoId:guid}")]
+    [Authorize(Roles = "Administrador")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterAlunoPorId(Guid alunoId)
+    {
+        var aluno = await _alunosRepository.ObterPorId(alunoId);
+
+        if (aluno is null)
             return NotFound();
 
-        return CustomResponse(matricula);
+        return CustomResponse(aluno);
     }
+
+    [Tags("8. Administrador")]
+    [HttpGet("admin/{alunoId:guid}/historico")]
+    [Authorize(Roles = "Administrador")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterHistoricoPorAluno(Guid alunoId)
+    {
+        var matriculas = await _alunosRepository.ObterMatriculasPorAluno(alunoId);
+
+        if (matriculas == null || !matriculas.Any())
+            return NotFound("Nenhuma matrícula encontrada para este aluno.");
+
+        return CustomResponse(matriculas);
+    }
+
+    [Tags("8. Administrador")]
+    [HttpGet("admin/{alunoId:guid}/pendentes")]
+    [Authorize(Roles = "Administrador")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterPendentesPorAluno(Guid alunoId)
+    {
+        var matriculas = await _alunosRepository.ObterMatriculasPendentesPorAluno(alunoId);
+
+        if (matriculas == null || !matriculas.Any())
+            return NotFound("Nenhuma matrícula pendente encontrada para este aluno.");
+
+        return CustomResponse(matriculas);
+    }
+    #endregion  
 
 }

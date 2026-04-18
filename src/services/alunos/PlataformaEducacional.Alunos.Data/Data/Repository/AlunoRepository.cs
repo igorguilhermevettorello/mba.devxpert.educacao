@@ -79,10 +79,12 @@ public class AlunoRepository : IAlunoRepository
     }
 
     ///<inheritdoc/>
-    public async Task<Matricula?> ObterMatriculaPendentes()
+    public async Task<IEnumerable<Matricula>> ObterMatriculasPendentesPorAluno(Guid alunoId)
     {
-        return await _context.Matriculas.AsNoTracking()
-                                        .FirstOrDefaultAsync(m => m.Status == StatusMatricula.Pendente);
+        return await _context.Matriculas
+            .AsNoTracking()
+            .Where(m => m.AlunoId == alunoId && m.Status == StatusMatricula.Pendente)
+            .ToListAsync();
     }
 
     ///<inheritdoc/>

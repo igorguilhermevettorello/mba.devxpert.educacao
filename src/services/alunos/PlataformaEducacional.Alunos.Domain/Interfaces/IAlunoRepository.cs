@@ -68,7 +68,7 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// Obtém a primeira matrícula pendente.
     /// </summary>
     /// <returns>A matrícula pendente, ou null se não houver.</returns>
-    Task<Matricula?> ObterMatriculaPendentes();
+    Task<IEnumerable<Matricula>> ObterMatriculasPendentesPorAluno(Guid alunoId);
 
     /// <summary>
     /// Obtém todas as matrículas de um aluno.
