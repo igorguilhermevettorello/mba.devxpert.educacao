@@ -86,7 +86,12 @@ public class AlunoCommandHandler : CommandHandler,
 
         var matricula = new Matricula(message.AlunoId, message.CursoId);
         _alunoRepository.AdicionarMatricula(matricula);
-        return await PersistData(_alunoRepository.UnitOfWork);
+
+        var result = await PersistData(_alunoRepository.UnitOfWork);
+        if (result.IsValid)
+            message.AggregateId = matricula.Id;
+
+        return result;
     }
 
     public async Task<ValidationResult> Handle(RegistrarProgressoCommand message, CancellationToken cancellationToken)

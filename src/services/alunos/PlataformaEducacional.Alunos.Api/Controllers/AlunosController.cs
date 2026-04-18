@@ -30,7 +30,7 @@ public class AlunosController : MainController
     #region > ALUNO <
     [Tags("1. Matrículas")]
     [HttpPost("matricula")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RealizarMatricula([FromBody] MatricularAlunoDTO model)
     {
@@ -44,7 +44,10 @@ public class AlunosController : MainController
         var command = new RealizarMatriculaCommand(alunoId, model.CursoId);
         var result = await _mediator.Send(command);
 
-        return CustomResponse(result);
+        if (!result.IsValid)
+            return CustomResponse(result);
+
+        return CreatedAtAction(nameof(ObterMatriculaPorId), new { id = command.AggregateId }, new { matriculaId = command.AggregateId });
     }
 
     [Tags("2. Progresso de Aulas")]
@@ -132,9 +135,9 @@ public class AlunosController : MainController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterMatriculaPorId(Guid alunoId)
+    public async Task<IActionResult> ObterMatriculaPorId(Guid matriculaId)
     {
-        var matricula = await _alunosRepository.ObterMatriculaPorId(alunoId);
+        var matricula = await _alunosRepository.ObterMatriculaPorId(matriculaId);
 
         if (matricula is null)
             return NotFound();
