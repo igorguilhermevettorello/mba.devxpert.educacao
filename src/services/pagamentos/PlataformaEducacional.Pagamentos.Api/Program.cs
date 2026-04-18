@@ -1,5 +1,6 @@
 using PlataformaEducacional.Pagamentos.Api.Configuration;
 using PlataformaEducacional.Pagamentos.Api.Configuration.Seed;
+using PlataformaEducacional.Pagamentos.Api.Facade;
 using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.Identity;
 
@@ -22,6 +23,8 @@ builder.Services.AddMediatR(cfg =>
 });
 
 builder.Services.RegisterServices(builder.Configuration);
+builder.Services.Configure<PagamentoConfig>(builder.Configuration.GetSection("PagamentoConfig"));
+
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
 

@@ -101,20 +101,20 @@ public static class DatabaseMigrationStartDataExtension
         var matriculas = new List<Matricula>
         {
             // Matrículas do Aluno 1 (Aluno Teste)
-            new Matricula(alunos[0].Id, Guid.Parse("11111111-1111-1111-1111-111111111111")), // C# Fundamentos
-            new Matricula(alunos[0].Id, Guid.Parse("22222222-2222-2222-2222-222222222222")), // ASP.NET Core Web API
+            new Matricula(alunos[0].Id, Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765")), // C# Fundamentos
+            new Matricula(alunos[0].Id, Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766")), // ASP.NET Core Web API
             
             // Matrículas do Aluno 2 (João Silva)
-            new Matricula(alunos[1].Id, Guid.Parse("11111111-1111-1111-1111-111111111111")), // C# Fundamentos
-            new Matricula(alunos[1].Id, Guid.Parse("33333333-3333-3333-3333-333333333333")), // Clean Architecture
+            new Matricula(alunos[1].Id, Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765")), // C# Fundamentos
+            new Matricula(alunos[1].Id, Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767")), // Clean Architecture
             
             // Matrículas do Aluno 3 (Maria Santos)
-            new Matricula(alunos[2].Id, Guid.Parse("22222222-2222-2222-2222-222222222222")), // ASP.NET Core Web API
-            new Matricula(alunos[2].Id, Guid.Parse("44444444-4444-4444-4444-444444444444")), // SQL Server e EF Core
+            new Matricula(alunos[2].Id, Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766")), // ASP.NET Core Web API
+            new Matricula(alunos[2].Id, Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768")), // SQL Server e EF Core
             
             // Matrículas do Aluno 4 (Pedro Oliveira)
-            new Matricula(alunos[3].Id, Guid.Parse("44444444-4444-4444-4444-444444444444")), // SQL Server e EF Core
-            new Matricula(alunos[3].Id, Guid.Parse("55555555-5555-5555-5555-555555555555")), // Testes Automatizados
+            new Matricula(alunos[3].Id, Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768")), // SQL Server e EF Core
+            new Matricula(alunos[3].Id, Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766")), // Testes Automatizados
         };
 
         // Ativando matrículas para simular fluxo completo

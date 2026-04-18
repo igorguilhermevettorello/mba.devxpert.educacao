@@ -9,8 +9,6 @@ public static class PollyConfig
 {
     public static IHttpClientBuilder AddRetryAndCircuitBreaker(this IHttpClientBuilder builder)
     {
-        //builder.AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(500)));
-
         builder.AddPolicyHandler(EsperarTentar())
                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 

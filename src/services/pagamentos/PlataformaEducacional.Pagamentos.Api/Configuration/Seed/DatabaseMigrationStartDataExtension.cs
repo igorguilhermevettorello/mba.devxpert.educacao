@@ -46,16 +46,16 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
             {
                 //Pagamento 1: Aluno Teste - C# Fundamentos (R$ 299,90)
                 GerarPagamento(
-                    Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"), 
-                    299.90M, 
+                    Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"),
+                    299.90M,
                     "João da Silva",
                     "4539595764370442",
                     "09/26",
                     "982"),
                  //Pagamento 2: Aluno Teste - ASP.NET Core Web API (R$ 399,90)
                  GerarPagamento(
-                     Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765"), 
-                     399.90M, 
+                     Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765"),
+                     399.90M,
                      "João da Silva",
                      "4539595764370442",
                      "09/26",
@@ -63,8 +63,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
 
                 //Pagamento 3: João Silva - C# Fundamentos (R$ 299,90)
                 GerarPagamento(
-                     Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"), 
-                     299.90M, 
+                     Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"),
+                     299.90M,
                      "João Silva",
                      "4539595764370442",
                      "09/26",
@@ -72,8 +72,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
                 
                  // Pagamento 4: João Silva - Clean Architecture (R$ 599,90)
                  GerarPagamento(
-                     Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"), 
-                     599.90M, 
+                     Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"),
+                     599.90M,
                      "João Silva",
                      "4539595764370442",
                      "09/26",
@@ -81,8 +81,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
                 
                  // Pagamento 5: Maria Santos - ASP.NET Core Web API (R$ 399,90)
                  GerarPagamento(
-                     Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767"), 
-                     399.90M, 
+                     Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767"),
+                     399.90M,
                      "Maria Santos",
                      "4539595764370442",
                      "09/26",
@@ -90,8 +90,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
                 
                  // Pagamento 6: Maria Santos - SQL Server e EF Core (R$ 349,90)
                  GerarPagamento(
-                     Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767"), 
-                     349.90M, 
+                     Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767"),
+                     349.90M,
                      "Maria Santos",
                      "4539595764370442",
                      "09/26",
@@ -99,8 +99,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
                 
                  // Pagamento 7: Pedro Oliveira - SQL Server e EF Core (R$ 349,90)
                  GerarPagamento(
-                     Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768"), 
-                     349.90M, 
+                     Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768"),
+                     349.90M,
                      "Pedro Oliveira",
                      "4539595764370442",
                      "09/26",
@@ -108,8 +108,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
                 
                  // Pagamento 8: Pedro Oliveira - Testes Automatizados (R$ 279,90)
                  GerarPagamento(
-                     Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768"), 
-                     279.90M, 
+                     Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768"),
+                     279.90M,
                      "Pedro Oliveira",
                      "4539595764370442",
                      "09/26",
@@ -121,19 +121,19 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
         }
 
         private static Pagamento GerarPagamento(
-            Guid matriculaId, 
-            decimal valor, 
+            Guid matriculaId,
+            decimal valor,
             string titular,
             string numeroCartao,
             string validade,
             string cvv)
         {
-            var cartaoCredito = CartaoCredito.Criar(titular, numeroCartao, validade, cvv);
-            var pagamento = new Pagamento(matriculaId, TipoPagamento.CartaoCredito, valor, cartaoCredito);
-            
+            var cartaoCredito = CartaoCredito.TryCreate(titular, numeroCartao, validade, cvv);
+            var pagamento = new Pagamento(matriculaId, TipoPagamento.CartaoCredito, valor, cartaoCredito.Card!);
+
             // Adiciona transação ao pagamento
             pagamento.AdicionarTransacao(GerarTransacao(pagamento.Id));
-            
+
             return pagamento;
         }
 
