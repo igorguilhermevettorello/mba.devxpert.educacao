@@ -71,22 +71,23 @@ public static class DatabaseMigrationStartDataExtension
     private static async Task EnsureSeedSecurity(UserManager<IdentityUser> userManager, ApplicationDbContext contextSecurity)
     {
         await SeedAdmin(userManager);
-        await SeedAluno(userManager);
+        await SeedAluno1(userManager);
+        await SeedAluno2(userManager);
         contextSecurity.SaveChanges();
     }
 
-    private static async Task SeedAluno(UserManager<IdentityUser> userManager)
+    private static async Task SeedAluno1(UserManager<IdentityUser> userManager)
     {
-        if (await userManager.FindByEmailAsync(SeedUsuario.USUARIO_EMAIL) != null)
+        if (await userManager.FindByEmailAsync(SeedUsuario.ALUNO1_EMAIL) != null)
             return;
 
         var userAluno = new IdentityUser
         {
-            Id = SeedUsuario.USUARIO_ID.ToString(),
-            UserName = SeedUsuario.USUARIO_EMAIL,
-            NormalizedUserName = SeedUsuario.USUARIO_EMAIL.ToUpperInvariant(),
-            Email = SeedUsuario.USUARIO_EMAIL,
-            NormalizedEmail = SeedUsuario.USUARIO_EMAIL.ToUpperInvariant(),
+            Id = SeedUsuario.ALUNO1_ID.ToString(),
+            UserName = SeedUsuario.ALUNO1_EMAIL,
+            NormalizedUserName = SeedUsuario.ALUNO1_EMAIL.ToUpperInvariant(),
+            Email = SeedUsuario.ALUNO1_EMAIL,
+            NormalizedEmail = SeedUsuario.ALUNO1_EMAIL.ToUpperInvariant(),
             EmailConfirmed = true,
             SecurityStamp = Guid.NewGuid().ToString(),
             ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -96,7 +97,36 @@ public static class DatabaseMigrationStartDataExtension
             AccessFailedCount = 0
         };
 
-        var result = await userManager.CreateAsync(userAluno, SeedUsuario.USUARIO_SENHA);
+        var result = await userManager.CreateAsync(userAluno, SeedUsuario.ALUNO1_SENHA);
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(userAluno, TipoUsuario.Aluno.GetDescription().ToUpperInvariant());
+        }
+    }
+
+    private static async Task SeedAluno2(UserManager<IdentityUser> userManager)
+    {
+        if (await userManager.FindByEmailAsync(SeedUsuario.ALUNO2_EMAIL) != null)
+            return;
+
+        var userAluno = new IdentityUser
+        {
+            Id = SeedUsuario.ALUNO2_ID.ToString(),
+            UserName = SeedUsuario.ALUNO2_EMAIL,
+            NormalizedUserName = SeedUsuario.ALUNO2_EMAIL.ToUpperInvariant(),
+            Email = SeedUsuario.ALUNO2_EMAIL,
+            NormalizedEmail = SeedUsuario.ALUNO2_EMAIL.ToUpperInvariant(),
+            EmailConfirmed = true,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false,
+            LockoutEnabled = true,
+            AccessFailedCount = 0
+        };
+
+        var result = await userManager.CreateAsync(userAluno, SeedUsuario.ALUNO2_SENHA);
 
         if (result.Succeeded)
         {

@@ -20,6 +20,17 @@ public class Matricula : Entity
         _progressoAulas = new List<ProgressoAula>();
     }
 
+    //construtor usado no seed
+    public Matricula(Guid id, Guid alunoId, Guid cursoId) : this()
+    {
+        Id = id;
+        AlunoId = alunoId;
+        CursoId = cursoId;
+        DataMatricula = DateTime.UtcNow;
+        Status = StatusMatricula.Pendente;
+        _progressoAulas = new List<ProgressoAula>();
+    }
+
     public Guid AlunoId { get; private set; }
     public Guid CursoId { get; private set; }
     public DateTime DataMatricula { get; private set; }
