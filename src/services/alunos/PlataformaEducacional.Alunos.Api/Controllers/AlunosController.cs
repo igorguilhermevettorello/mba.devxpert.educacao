@@ -36,12 +36,13 @@ public class AlunosController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        var alunoId = _user.ObterUserId();
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
 
-        if (alunoId != model.AlunoId)
-            throw new DomainException("Aluno não identificado");
+        if (!ehAdministrador && model.AlunoId != usuarioId)
+            return Forbid();
 
-        var command = new RealizarMatriculaCommand(alunoId, model.CursoId);
+        var command = new RealizarMatriculaCommand(model.AlunoId, model.CursoId);
         var result = await _mediator.Send(command);
 
         if (!result.IsValid)
