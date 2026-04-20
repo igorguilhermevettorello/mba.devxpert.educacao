@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.MessageBus\PlataformaEducacional.MessageBus.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
+    <ProjectReference Include="..\..\..\SeedDados\PlataformaEducacional.SeedDados\PlataformaEducacional.SeedDados.csproj" />
     <ProjectReference Include="..\PlataformaEducacional.Pagamentos.EducaPag\PlataformaEducacional.Pagamentos.EducaPag.csproj" />
   </ItemGroup>
 
