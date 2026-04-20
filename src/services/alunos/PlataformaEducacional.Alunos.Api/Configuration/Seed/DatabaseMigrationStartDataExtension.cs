@@ -44,7 +44,7 @@ public static class DatabaseMigrationStartDataExtension
         AddAlunos(context);
         AddMatriculas(context);
         AddProgressoAulas(context);
-        //AddCertificadoConclusao(context);
+        AddCertificadoConclusao(context);
         await context.SaveChangesAsync();
     }
 
