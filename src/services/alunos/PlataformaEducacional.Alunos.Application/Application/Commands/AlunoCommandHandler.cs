@@ -88,9 +88,6 @@ public class AlunoCommandHandler : CommandHandler,
         _alunoRepository.AdicionarMatricula(matricula);
 
         var result = await PersistData(_alunoRepository.UnitOfWork);
-        if (result.IsValid)
-            message.AggregateId = matricula.Id;
-
         return result;
     }
 

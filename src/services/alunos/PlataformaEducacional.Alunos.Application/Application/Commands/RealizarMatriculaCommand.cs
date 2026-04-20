@@ -7,7 +7,6 @@ public class RealizarMatriculaCommand : Command
 {
     public RealizarMatriculaCommand(Guid alunoId, Guid cursoId)
     {
-        AggregateId = Guid.NewGuid();
         AlunoId = alunoId;
         CursoId = cursoId;
     }
