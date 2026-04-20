@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.Core\PlataformaEducacional.Core.csproj" />
     <ProjectReference Include="..\..\..\buildingBlocks\PlataformaEducacional.WebApi.Core\PlataformaEducacional.WebApi.Core.csproj" />
+    <ProjectReference Include="..\..\..\SeedDados\PlataformaEducacional.SeedDados\PlataformaEducacional.SeedDados.csproj" />
     <ProjectReference Include="..\PlataformaEducacional.Conteudo.Application\PlataformaEducacional.Conteudo.Application.csproj" />
     <ProjectReference Include="..\PlataformaEducacional.Conteudo.Data\PlataformaEducacional.Conteudo.Data.csproj" />
     <ProjectReference Include="..\PlataformaEducacional.Conteudo.Domain\PlataformaEducacional.Conteudo.Domain.csproj" />

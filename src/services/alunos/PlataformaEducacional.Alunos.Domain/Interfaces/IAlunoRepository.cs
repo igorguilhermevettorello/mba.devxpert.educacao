@@ -32,6 +32,8 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// <param name="endereco">O endereço a ser adicionado.</param>
     void AdicionarEndereco(Endereco endereco);
 
+    void AdicionarCertifficado(Certificado certificado);
+
     /// <summary>
     /// Obtém um aluno pelo seu ID.
     /// </summary>

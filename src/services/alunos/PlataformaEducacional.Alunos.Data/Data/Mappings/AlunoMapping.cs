@@ -36,6 +36,8 @@ public class AlunoMapping : IEntityTypeConfiguration<Aluno>
         // 1 : 1 => Aluno : Endereco
         builder.HasOne(c => c.Endereco)
                .WithOne(c => c.Aluno);
-        
+
+        builder.Ignore(x => x.Certificados);
+
     }
 }

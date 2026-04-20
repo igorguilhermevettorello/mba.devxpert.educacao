@@ -68,6 +68,11 @@ public class AlunoRepository : IAlunoRepository
         _context.Matriculas.Update(matricula);
     }
 
+    public void AdicionarCertifficado(Certificado certificado)
+    {
+        _context.Certificados.Add(certificado);
+    }
+
     ///<inheritdoc/>
     public async Task<Matricula?> ObterMatriculaPorId(Guid id)
     {

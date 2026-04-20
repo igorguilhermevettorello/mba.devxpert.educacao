@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlataformaEducacional.Alunos.Data;
 using PlataformaEducacional.Alunos.Domain.Models;
+using PlataformaEducacional.SeedDados;
 
 namespace PlataformaEducacional.Alunos.Api.Configuration.Seed;
 
@@ -40,93 +41,61 @@ public static class DatabaseMigrationStartDataExtension
         if (await context.Alunos.AnyAsync())
             return;
 
-        var alunos = new List<Aluno>
-        {
-            // Aluno 1: Teste Principal
-            new Aluno(Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765"), 
-                "Aluno Teste", 
-                "aluno.teste@educa.com", 
-                "32009883985"),
-            
-            // Aluno 2: João Silva
-            new Aluno(Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766"), 
-                "João Silva", 
-                "joao.silva@educa.com", 
-                "32009883985"),
-            
-            // Aluno 3: Maria Santos
-            new Aluno(Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767"), 
-                "Maria Santos", 
-                "maria.santos@educa.com", 
-                "32009883985"),
-            
-            // Aluno 4: Pedro Oliveira
-            new Aluno(Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768"), 
-                "Pedro Oliveira", 
-                "pedro.oliveira@educa.com", 
-                "32009883985"),
-        };
-
-        // Adicionando endereços para cada aluno
-        var enderecos = new List<Endereco>
-        {
-            // Endereço do Aluno 1
-            new Endereco(
-                "Rua Teste", "123", "Apto 101", "Bairro Teste", "12345678", 
-                "Cidade Teste", "SP", alunos[0].Id),
-            
-            // Endereço do Aluno 2
-            new Endereco(
-                "Rua das Flores", "456", "Apto 202", "Jardim América", "23456789", 
-                "São Paulo", "SP", alunos[1].Id),
-            
-            // Endereço do Aluno 3
-            new Endereco(
-                "Avenida Paulista", "789", "Sala 1001", "Bela Vista", "34567890", 
-                "São Paulo", "SP", alunos[2].Id),
-            
-            // Endereço do Aluno 4
-            new Endereco(
-                "Rua da Paz", "321", "Casa 01", "Vila Mariana", "45678901", 
-                "São Paulo", "SP", alunos[3].Id),
-        };
-
-        // Associando endereços aos alunos
-        for (int i = 0; i < alunos.Count; i++)
-        {
-            alunos[i].AtribuirEndereco(enderecos[i]);
-        }
-
-        // Adicionando matrículas para os alunos
-        var matriculas = new List<Matricula>
-        {
-            // Matrículas do Aluno 1 (Aluno Teste)
-            new Matricula(alunos[0].Id, Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765")), // C# Fundamentos
-            new Matricula(alunos[0].Id, Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766")), // ASP.NET Core Web API
-            
-            // Matrículas do Aluno 2 (João Silva)
-            new Matricula(alunos[1].Id, Guid.Parse("65EFB6D9-2374-4E87-8D83-C8E76C2B9765")), // C# Fundamentos
-            new Matricula(alunos[1].Id, Guid.Parse("85EFB6D9-2374-4E87-8D83-C8E76C2B9767")), // Clean Architecture
-            
-            // Matrículas do Aluno 3 (Maria Santos)
-            new Matricula(alunos[2].Id, Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766")), // ASP.NET Core Web API
-            new Matricula(alunos[2].Id, Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768")), // SQL Server e EF Core
-            
-            // Matrículas do Aluno 4 (Pedro Oliveira)
-            new Matricula(alunos[3].Id, Guid.Parse("95EFB6D9-2374-4E87-8D83-C8E76C2B9768")), // SQL Server e EF Core
-            new Matricula(alunos[3].Id, Guid.Parse("75EFB6D9-2374-4E87-8D83-C8E76C2B9766")), // Testes Automatizados
-        };
-
-        // Ativando matrículas para simular fluxo completo
-        foreach (var matricula in matriculas)
-        {
-            matricula.Ativar();
-        }
-
-        // Adicionando dados ao contexto
-        context.Alunos.AddRange(alunos);
-        context.Matriculas.AddRange(matriculas);
-        
+        AddAlunos(context);
+        AddMatriculas(context);
+        AddProgressoAulas(context);
+        AddCertificadoConclusao(context);
         await context.SaveChangesAsync();
+    }
+
+    private static void AddAlunos(AlunosContext context)
+    {
+        var aluno1 = new Aluno(SeedUsuario.ALUNO1_ID, SeedUsuario.ALUNO1_NOME, SeedUsuario.ALUNO1_EMAIL, SeedUsuario.ALUNO1_CPF);
+        var endereco1 = new Endereco("Rua Teste", "123", "Apto 101", "Bairro Teste", "12345678", "Cidade Teste", "SP", aluno1.Id);
+        aluno1.AtribuirEndereco(endereco1);
+
+        var aluno2 = new Aluno(SeedUsuario.ALUNO2_ID, SeedUsuario.ALUNO2_NOME, SeedUsuario.ALUNO2_EMAIL, SeedUsuario.ALUNO2_CPF);
+        var endereco2 = new Endereco("Rua das Flores", "456", "Apto 202", "Jardim América", "23456789", "São Paulo", "SP", aluno2.Id);
+        aluno2.AtribuirEndereco(endereco2);
+
+        context.Alunos.Add(aluno1);
+        context.Alunos.Add(aluno2);
+    }
+
+    private static void AddMatriculas(AlunosContext context)
+    {
+        var matricula1 = new Matricula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedUsuario.ALUNO1_ID, SeedConteudo.CURSO_FUNDAMENTOS_CSHARP_ID);
+        var matricula2 = new Matricula(SeedMatriculas.MATRICULA_ALUNO2_ID, SeedUsuario.ALUNO2_ID, SeedConteudo.CURSO_SQL_ID);
+
+        matricula1.Concluir();  //Este aluno terá concluido todas as aulas do curso
+        matricula2.Ativar();
+
+        context.Matriculas.Add(matricula1);
+        context.Matriculas.Add(matricula2);
+    }
+
+    private static void AddProgressoAulas(AlunosContext context)
+    {
+        var progressoAulas = new List<ProgressoAula>()
+        {
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_01_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_02_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_03_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_04_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_05_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_06_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_07_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_08_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_09_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_10_ID),
+        };
+
+        context.ProgressoAulas.AddRange(progressoAulas);
+    }
+
+    private static void AddCertificadoConclusao(AlunosContext context)
+    {
+        var certificado = new Certificado(SeedMatriculas.MATRICULA_ALUNO1_ID);
+        context.Certificados.Add(certificado);
     }
 }

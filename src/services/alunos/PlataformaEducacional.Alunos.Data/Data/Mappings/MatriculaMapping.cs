@@ -26,10 +26,6 @@ public class MatriculaMapping : IEntityTypeConfiguration<Matricula>
                .WithMany(a => a.Matriculas)
                .HasForeignKey(m => m.AlunoId);
 
-        builder.HasOne(m => m.Certificado)
-               .WithOne(c => c.Matricula)
-               .HasForeignKey<Certificado>(c => c.MatriculaId);
-
         builder.HasMany(m => m.ProgressoAulas)
                .WithOne(p => p.Matricula)
                .HasForeignKey(p => p.MatriculaId);
