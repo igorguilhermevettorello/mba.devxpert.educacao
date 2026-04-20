@@ -151,9 +151,12 @@ public class AlunoCommandHandler : CommandHandler,
             AddError($"O aluno ainda não concluiu todas as {totalAulasCurso} aulas deste curso.");
             return ValidationResult;
         }
-        
+
         var certificado = new Certificado(matricula.Id);
+        //matricula.AdicionarCertificado(certificado);
         matricula.Concluir();
+        _alunoRepository.AtualizarMatricula(matricula);
+        _alunoRepository.AdicionarCertifficado(certificado);
 
         // O Entity Framework vai persistir o Certificado por causa do relacionamento
         // Mas se precisar, podemos dicionar um método _alunoRepository.AdicionarCertificado(certificado) na interface

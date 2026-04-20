@@ -60,4 +60,9 @@ public class Matricula : Entity
     {
         _progressoAulas.Add(progresso);
     }
+
+    public void AdicionarCertificado(Certificado certificado)
+    {
+        Certificado = certificado;
+    }
 }
