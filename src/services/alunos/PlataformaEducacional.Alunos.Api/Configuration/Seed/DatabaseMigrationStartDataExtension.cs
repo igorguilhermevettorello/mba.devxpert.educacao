@@ -43,6 +43,8 @@ public static class DatabaseMigrationStartDataExtension
 
         AddAlunos(context);
         AddMatriculas(context);
+        AddProgressoAulas(context);
+        //AddCertificadoConclusao(context);
         await context.SaveChangesAsync();
     }
 
@@ -65,10 +67,35 @@ public static class DatabaseMigrationStartDataExtension
         var matricula1 = new Matricula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedUsuario.ALUNO1_ID, SeedConteudo.CURSO_FUNDAMENTOS_CSHARP_ID);
         var matricula2 = new Matricula(SeedMatriculas.MATRICULA_ALUNO2_ID, SeedUsuario.ALUNO2_ID, SeedConteudo.CURSO_SQL_ID);
 
-        matricula1.Ativar();
+        matricula1.Concluir();  //Este aluno terá concluido todas as aulas do curso
         matricula2.Ativar();
 
         context.Matriculas.Add(matricula1);
         context.Matriculas.Add(matricula2);
+    }
+
+    private static void AddProgressoAulas(AlunosContext context)
+    {
+        var progressoAulas = new List<ProgressoAula>()
+        {
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_01_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_02_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_03_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_04_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_05_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_06_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_07_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_08_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_09_ID),
+            new ProgressoAula(SeedMatriculas.MATRICULA_ALUNO1_ID, SeedConteudo.AULA_10_ID),
+        };
+
+        context.ProgressoAulas.AddRange(progressoAulas);
+    }
+
+    private static void AddCertificadoConclusao(AlunosContext context)
+    {
+        var certificado = new Certificado(SeedMatriculas.MATRICULA_ALUNO1_ID);
+        context.Certificados.Add(certificado);
     }
 }

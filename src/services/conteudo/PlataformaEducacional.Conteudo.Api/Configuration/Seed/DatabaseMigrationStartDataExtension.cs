@@ -257,16 +257,16 @@ namespace PlataformaEducacional.Conteudo.Api.Configuration.Seed
 
             var aulasCSharp = new List<Aula>
             {
-                new Aula("Introdução ao C# e .NET", "Visão geral da linguagem C#, história do .NET e configuração do ambiente de desenvolvimento.", 45, 1),
-                new Aula("Tipos de Dados e Variáveis", "Aprenda sobre tipos primitivos, conversões, constantes e variáveis em C#.", 60, 2),
-                new Aula("Estruturas de Controle", "Dominando if/else, switch, loops (for, while, foreach) e controle de fluxo.", 55, 3),
-                new Aula("Métodos e Funções", "Criação de métodos, parâmetros, retorno de valores, sobrecarga e métodos de extensão.", 50, 4),
-                new Aula("Programação Orientada a Objetos - Classes", "Conceitos fundamentais de POO: classes, objetos, encapsulamento e propriedades.", 70, 5),
-                new Aula("POO - Herança e Polimorfismo", "Trabalhando com herança, classes abstratas, interfaces e polimorfismo.", 65, 6),
-                new Aula("Coleções e Genéricos", "Arrays, List, Dictionary, HashSet e trabalhando com tipos genéricos.", 60, 7),
-                new Aula("LINQ - Language Integrated Query", "Consultas em coleções usando LINQ: where, select, orderby, join e agregações.", 75, 8),
-                new Aula("Tratamento de Exceções", "Exception handling, try/catch/finally, exceções customizadas e best practices.", 50, 9),
-                new Aula("Async/Await e Programação Assíncrona", "Dominando async/await, Task, operações assíncronas e paralelismo.", 80, 10)
+                new Aula(SeedConteudo.AULA_01_ID, "Introdução ao C# e .NET", "Visão geral da linguagem C#, história do .NET e configuração do ambiente de desenvolvimento.", 45, 1),
+                new Aula(SeedConteudo.AULA_02_ID,"Tipos de Dados e Variáveis", "Aprenda sobre tipos primitivos, conversões, constantes e variáveis em C#.", 60, 2),
+                new Aula(SeedConteudo.AULA_03_ID, "Estruturas de Controle", "Dominando if/else, switch, loops (for, while, foreach) e controle de fluxo.", 55, 3),
+                new Aula(SeedConteudo.AULA_04_ID, "Métodos e Funções", "Criação de métodos, parâmetros, retorno de valores, sobrecarga e métodos de extensão.", 50, 4),
+                new Aula(SeedConteudo.AULA_05_ID, "Programação Orientada a Objetos - Classes", "Conceitos fundamentais de POO: classes, objetos, encapsulamento e propriedades.", 70, 5),
+                new Aula(SeedConteudo.AULA_06_ID, "POO - Herança e Polimorfismo", "Trabalhando com herança, classes abstratas, interfaces e polimorfismo.", 65, 6),
+                new Aula(SeedConteudo.AULA_07_ID, "Coleções e Genéricos", "Arrays, List, Dictionary, HashSet e trabalhando com tipos genéricos.", 60, 7),
+                new Aula(SeedConteudo.AULA_08_ID, "LINQ - Language Integrated Query", "Consultas em coleções usando LINQ: where, select, orderby, join e agregações.", 75, 8),
+                new Aula(SeedConteudo.AULA_09_ID, "Tratamento de Exceções", "Exception handling, try/catch/finally, exceções customizadas e best practices.", 50, 9),
+                new Aula(SeedConteudo.AULA_10_ID, "Async/Await e Programação Assíncrona", "Dominando async/await, Task, operações assíncronas e paralelismo.", 80, 10)
             };
 
             foreach (var aula in aulasCSharp)

@@ -29,6 +29,23 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
             Ativa = true;
         }
 
+        //construtor p/ seed
+        public Aula(Guid id, string titulo, string descricao, int duracaoMinutos, int ordem)
+        {
+            ValidarTitulo(titulo);
+            ValidarDescricao(descricao);
+            ValidarDuracao(duracaoMinutos);
+            ValidarOrdem(ordem);
+
+            Id = id;
+            Titulo = titulo;
+            Descricao = descricao;
+            DuracaoMinutos = duracaoMinutos;
+            Ordem = ordem;
+            DataCriacao = DateTime.UtcNow;
+            Ativa = true;
+        }
+
         public void AtualizarTitulo(string novoTitulo)
         {
             ValidarTitulo(novoTitulo);
