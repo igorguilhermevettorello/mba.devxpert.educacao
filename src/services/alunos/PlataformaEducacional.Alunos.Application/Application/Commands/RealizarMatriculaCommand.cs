@@ -7,6 +7,7 @@ public class RealizarMatriculaCommand : Command
 {
     public RealizarMatriculaCommand(Guid alunoId, Guid cursoId)
     {
+        AggregateId = alunoId;
         AlunoId = alunoId;
         CursoId = cursoId;
     }

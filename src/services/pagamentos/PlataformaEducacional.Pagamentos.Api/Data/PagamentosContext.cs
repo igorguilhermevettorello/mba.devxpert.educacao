@@ -21,6 +21,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.UseCollation("NOCASE");
             modelBuilder.Ignore<ValidationResult>();
             modelBuilder.Ignore<Event>();
 
@@ -38,5 +39,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Data
         {
             return await SaveChangesAsync() > 0;
         }
+
+
     }
 }

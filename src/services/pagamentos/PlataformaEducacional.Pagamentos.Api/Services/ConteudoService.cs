@@ -44,7 +44,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/Alunos/matriculas/{id}");
+                var response = await _httpClient.GetAsync($"/api/alunos/matriculas/{id}");
 
                 if (!response.IsSuccessStatusCode)
                     return null;

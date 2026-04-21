@@ -7,7 +7,6 @@ using PlataformaEducacional.Alunos.Api.DTOs.Matriculas;
 using PlataformaEducacional.Alunos.Api.DTOs.Progresso;
 using PlataformaEducacional.Alunos.Application.Commands;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
-using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.WebApi.Core.Controllers;
 using PlataformaEducacional.WebApi.Core.User;
 
@@ -49,7 +48,8 @@ public class AlunosController : MainController
         if (!result.IsValid)
             return CustomResponse(result);
 
-        return Created();
+        var retorno = new { Success = true, Message = "Matricula realizada com sucesso" };
+        return CreatedAtAction(nameof(ObterMatriculaPorId), new { id = command.AggregateId }, retorno);
     }
 
     [Tags("2. Progresso de Aulas")]
@@ -137,9 +137,9 @@ public class AlunosController : MainController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterMatriculaPorId(Guid matriculaId)
+    public async Task<IActionResult> ObterMatriculaPorId(Guid id)
     {
-        var matricula = await _alunosRepository.ObterMatriculaPorId(matriculaId);
+        var matricula = await _alunosRepository.ObterMatriculaPorId(id);
 
         if (matricula is null)
             return NotFound();

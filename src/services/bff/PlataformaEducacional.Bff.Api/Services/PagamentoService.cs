@@ -15,7 +15,7 @@ namespace PlataformaEducacional.Bff.Api.Services
         ///<inheritdoc/>
         public async Task<bool> RealizarPagamentoAsync(RealizarPagamentoDto model)
         {
-            var response = await _httpClient.PostAsJsonAsync("/processar-pagamento", model);
+            var response = await _httpClient.PostAsJsonAsync("/api/pagamentos", model);
             if (response.IsSuccessStatusCode)
                 return true;
             TratarErrosResponse(response);
