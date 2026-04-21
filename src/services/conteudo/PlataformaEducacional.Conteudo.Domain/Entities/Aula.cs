@@ -15,10 +15,6 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
         private Aula() { }
         public Aula(string titulo, string descricao, int duracaoMinutos, int ordem)
         {
-            ValidarTitulo(titulo);
-            ValidarDescricao(descricao);
-            ValidarDuracao(duracaoMinutos);
-            ValidarOrdem(ordem);
 
             Id = Guid.NewGuid();
             Titulo = titulo;
@@ -32,10 +28,6 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
         //construtor p/ seed
         public Aula(Guid id, string titulo, string descricao, int duracaoMinutos, int ordem)
         {
-            ValidarTitulo(titulo);
-            ValidarDescricao(descricao);
-            ValidarDuracao(duracaoMinutos);
-            ValidarOrdem(ordem);
 
             Id = id;
             Titulo = titulo;
@@ -48,34 +40,30 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
 
         public void AtualizarTitulo(string novoTitulo)
         {
-            ValidarTitulo(novoTitulo);
+
             Titulo = novoTitulo;
         }
 
         public void AtualizarDescricao(string novaDescricao)
         {
-            ValidarDescricao(novaDescricao);
+
             Descricao = novaDescricao;
         }
 
         public void AtualizarDuracao(int novaDuracao)
         {
-            ValidarDuracao(novaDuracao);
+
             DuracaoMinutos = novaDuracao;
         }
 
         public void AtualizarOrdem(int novaOrdem)
         {
-            ValidarOrdem(novaOrdem);
+
             Ordem = novaOrdem;
         }
 
         public void AtualizarInformacoes(string titulo, string descricao, int duracaoMinutos, int ordem)
         {
-            ValidarTitulo(titulo);
-            ValidarDescricao(descricao);
-            ValidarDuracao(duracaoMinutos);
-            ValidarOrdem(ordem);
 
             Titulo = titulo;
             Descricao = descricao;
@@ -109,47 +97,6 @@ namespace PlataformaEducacional.Conteudo.Domain.Entities
             return progressoPercentual >= 100;
         }
 
-        // Métodos de validação privados
-        private static void ValidarTitulo(string titulo)
-        {
-            if (string.IsNullOrWhiteSpace(titulo))
-                throw new ArgumentException("Título da aula é obrigatório", nameof(titulo));
 
-            if (titulo.Length < 3)
-                throw new ArgumentException("Título da aula deve ter no mínimo 3 caracteres", nameof(titulo));
-
-            if (titulo.Length > 200)
-                throw new ArgumentException("Título da aula deve ter no máximo 200 caracteres", nameof(titulo));
-        }
-
-        private static void ValidarDescricao(string descricao)
-        {
-            if (string.IsNullOrWhiteSpace(descricao))
-                throw new ArgumentException("Descrição da aula é obrigatória", nameof(descricao));
-
-            if (descricao.Length < 10)
-                throw new ArgumentException("Descrição da aula deve ter no mínimo 10 caracteres", nameof(descricao));
-
-            if (descricao.Length > 1000)
-                throw new ArgumentException("Descrição da aula deve ter no máximo 1000 caracteres", nameof(descricao));
-        }
-
-        private static void ValidarDuracao(int duracaoMinutos)
-        {
-            if (duracaoMinutos <= 0)
-                throw new ArgumentException("Duração deve ser maior que zero", nameof(duracaoMinutos));
-
-            if (duracaoMinutos > 600) // 10 horas
-                throw new ArgumentException("Duração da aula não pode exceder 600 minutos (10 horas)", nameof(duracaoMinutos));
-        }
-
-        private static void ValidarOrdem(int ordem)
-        {
-            if (ordem <= 0)
-                throw new ArgumentException("Ordem deve ser maior que zero", nameof(ordem));
-
-            if (ordem > 9999)
-                throw new ArgumentException("Ordem não pode exceder 9999", nameof(ordem));
-        }
     }
 }
