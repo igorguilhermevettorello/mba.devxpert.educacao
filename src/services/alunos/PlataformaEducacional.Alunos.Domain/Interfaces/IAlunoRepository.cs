@@ -21,6 +21,8 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// </summary>
     void AtualizarMatricula(Matricula matricula);
 
+    void AttachMatricula(Matricula matricula);
+
     /// <summary>
     /// Adiciona progresso de uma aula concluída.
     /// </summary>

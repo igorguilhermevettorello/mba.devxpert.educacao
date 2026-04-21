@@ -155,13 +155,9 @@ public class AlunoCommandHandler : CommandHandler,
         }
 
         var certificado = new Certificado(matricula.Id);
-        //matricula.AdicionarCertificado(certificado);
         matricula.Concluir();
-        _alunoRepository.AtualizarMatricula(matricula);
+        _alunoRepository.AttachMatricula(matricula);
         _alunoRepository.AdicionarCertifficado(certificado);
-
-        // O Entity Framework vai persistir o Certificado por causa do relacionamento
-        // Mas se precisar, podemos dicionar um método _alunoRepository.AdicionarCertificado(certificado) na interface
 
         return await PersistData(_alunoRepository.UnitOfWork);
     }

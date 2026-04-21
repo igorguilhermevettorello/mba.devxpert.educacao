@@ -68,6 +68,12 @@ public class AlunoRepository : IAlunoRepository
         _context.Matriculas.Update(matricula);
     }
 
+    public void AttachMatricula(Matricula matricula)
+    {
+        _context.Matriculas.Attach(matricula);
+        _context.Entry(matricula).State = EntityState.Modified;
+    }
+
     public void AdicionarCertifficado(Certificado certificado)
     {
         _context.Certificados.Add(certificado);
@@ -77,6 +83,7 @@ public class AlunoRepository : IAlunoRepository
     public async Task<Matricula?> ObterMatriculaPorId(Guid id)
     {
         return await _context.Matriculas
+           .AsNoTracking()
            .Include(m => m.Aluno)
            .Include(m => m.ProgressoAulas)
            .Include(m => m.Certificado)
@@ -115,7 +122,7 @@ public class AlunoRepository : IAlunoRepository
         return await _context.Certificados.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    
+
     public void Dispose()
     {
         _context.Dispose();
