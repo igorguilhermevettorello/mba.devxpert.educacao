@@ -25,7 +25,10 @@ public abstract class ServiceBase
         var jsonString = await responseMessage.Content.ReadAsStringAsync();
         var result = JsonSerializer.Deserialize<T>(jsonString, options);
 
-        if (result is null)
+        if (result is null
+            && responseMessage.StatusCode != HttpStatusCode.Created
+            && responseMessage.StatusCode != HttpStatusCode.NoContent
+            && responseMessage.StatusCode != HttpStatusCode.OK)
         {
             throw new InvalidOperationException("Deserialization returned null.");
         }

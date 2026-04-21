@@ -42,7 +42,7 @@ public class MatriculaService : ServiceBase, IMatriculaService
     ///<inheritdoc/>
     public async Task<MatriculaDto> RealizarMatriculaAsync(RealizarMatriculaDto model)
     {
-        var response = await _httpClient.PostAsJsonAsync("/matricula", model);
+        var response = await _httpClient.PostAsJsonAsync("/api/alunos/matriculas", model);
 
         if (response.StatusCode == HttpStatusCode.NotFound)
             return default!;

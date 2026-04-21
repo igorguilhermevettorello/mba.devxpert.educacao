@@ -14,6 +14,7 @@ using PlataformaEducacional.WebApi.Core.User;
 namespace PlataformaEducacional.Alunos.Api.Controllers;
 
 [Authorize]
+[Route("api/alunos")]
 public class AlunosController : MainController
 {
     private readonly IAlunoRepository _alunosRepository;
@@ -29,7 +30,7 @@ public class AlunosController : MainController
 
     #region > ALUNO <
     [Tags("1. Matrículas")]
-    [HttpPost("matricula")]
+    [HttpPost("matriculas")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RealizarMatricula([FromBody] MatricularAlunoDTO model)
@@ -48,7 +49,7 @@ public class AlunosController : MainController
         if (!result.IsValid)
             return CustomResponse(result);
 
-        return CreatedAtAction(nameof(ObterMatriculaPorId), new { id = command.AggregateId }, new { matriculaId = command.AggregateId });
+        return Created();
     }
 
     [Tags("2. Progresso de Aulas")]

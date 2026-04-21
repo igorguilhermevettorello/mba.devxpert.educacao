@@ -22,12 +22,12 @@ public class HttpClientAuthorizationDelegatingHandler : DelegatingHandler
             request.Headers.Add("Authorization", authorizationHeader.ToArray());
         }
 
-        var token = _aspNetUser.ObterUserToken();
+        //var token = _aspNetUser.ObterUserToken();
 
-        if (token != null)
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
+        //if (token != null)
+        //{
+        //    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        //}
 
         return await base.SendAsync(request, cancellationToken);
     }
