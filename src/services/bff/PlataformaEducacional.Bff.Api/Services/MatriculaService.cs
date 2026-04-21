@@ -14,7 +14,7 @@ public class MatriculaService : ServiceBase, IMatriculaService
     }
 
     ///<inheritdoc/>
-    public async Task<MatriculaDto> ObterMatriculaPendentesAsync()
+    public async Task<MatriculaDto> ObterMatriculaPendentesAsync(Guid alunoId)
     {
         var response = await _httpClient.GetAsync("/pendentes");
 

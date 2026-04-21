@@ -42,12 +42,12 @@ public class CompraController : MainController
     }
 
     //listar matrículas pendentes do aluno
-    [HttpGet("matricula-pendente")]
+    [HttpGet("matricula/{alunoId}/pendente")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ListarMatriculaPendente()
+    public async Task<IActionResult> ListarMatriculaPendente(Guid alunoId)
     {
-        var matriculasPendentes = await _matriculaService.ObterMatriculaPendentesAsync();
+        var matriculasPendentes = await _matriculaService.ObterMatriculaPendentesAsync(alunoId);
         return CustomResponse(matriculasPendentes);
     }
 
