@@ -8,7 +8,7 @@ namespace PlataformaEducacional.Conteudo.Application.Validators
         public AtivarCursoCommandValidator()
         {
             RuleFor(x => x.CursoId)
-                .Empty()
+                .NotEmpty()
                 .WithMessage("Id do curso é obrigatório.");
         }
     }
