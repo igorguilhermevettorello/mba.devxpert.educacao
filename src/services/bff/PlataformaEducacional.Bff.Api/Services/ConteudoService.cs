@@ -17,14 +17,14 @@ public class ConteudoService : ServiceBase, IConteudoService
     }
 
     ///<inheritdoc/>
-    public async Task<IEnumerable<CursoDto>> ObterCursoDisponiveisAsync()
+    public async Task<ResultDto<IEnumerable<CursoDto>>> ObterCursoDisponiveisAsync()
     {
-        var response = await _httpClient.GetAsync("/ativos");
+        var response = await _httpClient.GetAsync("/api/cursos/ativos");
 
         if (response.StatusCode == HttpStatusCode.NotFound) return null;
 
         TratarErrosResponse(response);
 
-        return await DeserializarObjetoResponse<IEnumerable<CursoDto>>(response);
-    }
+        return await DeserializarObjetoResponse<ResultDto<IEnumerable<CursoDto>>>(response);
+    }   
 }

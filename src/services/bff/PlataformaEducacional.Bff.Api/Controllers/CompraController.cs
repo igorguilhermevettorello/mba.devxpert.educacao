@@ -35,6 +35,7 @@ public class CompraController : MainController
     [HttpGet("cursos-disponiveis")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
     public async Task<IActionResult> ListarConteudosDisponiveis()
     {
         var conteudos = await _conteudoService.ObterCursoDisponiveisAsync();
