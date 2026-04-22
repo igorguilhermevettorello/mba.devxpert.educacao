@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PlataformaEducacional.Alunos.Api.DTOs.Certificados;
 using PlataformaEducacional.Alunos.Api.DTOs.Enderecos;
 using PlataformaEducacional.Alunos.Api.DTOs.Matriculas;
 using PlataformaEducacional.Alunos.Api.DTOs.Progresso;
@@ -60,31 +59,64 @@ public class AlunosController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        var command = new RegistrarProgressoCommand(_user.ObterUserId(), progressoDto.AulaId);
+        var matricula = await _alunosRepository.ObterMatriculaPorId(progressoDto.MatriculaId);
+
+        if (matricula == null)
+            return BadRequest();
+
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
+
+        if (!ehAdministrador && matricula.AlunoId != usuarioId)
+            return Forbid();
+
+        var command = new RegistrarProgressoCommand(progressoDto.MatriculaId, progressoDto.AulaId);
 
         return CustomResponse(await _mediator.Send(command));
     }
 
     [Tags("3. Certificados")]
-    [HttpPost("certificado")]
+    [HttpPost("matriculas/{matriculaId:guid}/certificados")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> EmitirCertificado([FromBody] EmitirCertificadoDTO certificadoDto)
+    public async Task<IActionResult> EmitirCertificado(Guid alunoId, Guid matriculaId)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        var command = new EmitirCertificadoCommand(_user.ObterUserId(), certificadoDto.MatriculaId);
+        var matricula = await _alunosRepository.ObterMatriculaPorId(matriculaId);
+
+        if (matricula == null)
+            return BadRequest();
+
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
+
+        if (!ehAdministrador && matricula.AlunoId != usuarioId)
+            return Forbid();
+
+        var command = new EmitirCertificadoCommand(matriculaId);
 
         return CustomResponse(await _mediator.Send(command));
     }
 
     [Tags("4. Histórico")]
-    [HttpGet("historico")]
+    [HttpGet("{id:guid}/historico")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterHistorico()
+    public async Task<IActionResult> ObterHistoricoPorAlunoId(Guid id)
     {
-        var matriculas = await _alunosRepository.ObterMatriculasPorAluno(_user.ObterUserId());
+        var aluno = await _alunosRepository.ObterPorId(id);
+
+        if (aluno == null)
+            return BadRequest();
+
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
+
+        if (!ehAdministrador && aluno.Id != usuarioId)
+            return Forbid();
+
+        var matriculas = await _alunosRepository.ObterMatriculasPorAluno(id);
 
         if (matriculas == null || !matriculas.Any())
             return NotFound("Nenhuma matrícula encontrada para este aluno.");
@@ -94,15 +126,23 @@ public class AlunosController : MainController
 
 
     [Tags("5. Endereço")]
-    [HttpGet("endereco")]
+    [HttpGet("{id:guid}/endereco")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterEndereco()
+    public async Task<IActionResult> ObterEnderecoPorAlunoId(Guid id)
     {
-        if (_user == null)
-            return NotFound();
+        var aluno = await _alunosRepository.ObterPorId(id);
 
-        var address = await _alunosRepository.ObterEnderecoPorAlunoId(_user.ObterUserId());
+        if (aluno == null)
+            return BadRequest();
+
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
+
+        if (!ehAdministrador && aluno.Id != usuarioId)
+            return Forbid();
+
+        var address = await _alunosRepository.ObterEnderecoPorAlunoId(id);
 
         if (address is null)
             return NotFound();
@@ -118,7 +158,19 @@ public class AlunosController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        var aluno = await _alunosRepository.ObterPorId(enderecoDto.AlunoId);
+
+        if (aluno == null)
+            return BadRequest();
+
+        var usuarioId = _user.ObterUserId();
+        var ehAdministrador = _user.PossuiRole("Administrador");
+
+        if (!ehAdministrador && aluno.Id != usuarioId)
+            return Forbid();
+
         var endereco = new AdicionarEnderecoCommand(
+            enderecoDto.AlunoId,
             enderecoDto.Logradouro,
             enderecoDto.Numero,
             enderecoDto.Complemento,
@@ -127,7 +179,7 @@ public class AlunosController : MainController
             enderecoDto.Cidade,
             enderecoDto.Estado
         );
-        endereco.AlunoId = _user.ObterUserId();
+
         return CustomResponse(await _mediator.Send(endereco));
     }
 

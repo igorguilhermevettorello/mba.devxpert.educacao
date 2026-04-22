@@ -31,4 +31,8 @@
     <None Remove="Database-PeAlunos.db" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\Certificados\" />
+  </ItemGroup>
+
 </Project>

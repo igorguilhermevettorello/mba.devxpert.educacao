@@ -5,6 +5,9 @@ namespace PlataformaEducacional.Alunos.Api.DTOs.Progresso
     public class RegistrarProgressoDTO
     {
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public Guid MatriculaId { get; set; }
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public Guid AulaId { get; set; }
     }
 }

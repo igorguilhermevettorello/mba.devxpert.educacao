@@ -128,12 +128,6 @@ public class AlunoCommandHandler : CommandHandler,
 
         var matricula = await _alunoRepository.ObterMatriculaPorId(message.MatriculaId);
 
-        if (matricula == null || matricula.AlunoId != message.AlunoId)
-        {
-            AddError("Matrícula inválida ou não pertence ao aluno.");
-            return ValidationResult;
-        }
-
         if (matricula.Status != StatusMatricula.Ativa && matricula.Status != StatusMatricula.Concluida)
         {
             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");

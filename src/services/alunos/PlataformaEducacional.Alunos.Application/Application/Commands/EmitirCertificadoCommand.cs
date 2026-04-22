@@ -5,12 +5,10 @@ namespace PlataformaEducacional.Alunos.Application.Commands;
 
 public class EmitirCertificadoCommand : Command
 {
-    public Guid AlunoId { get; private set; }
     public Guid MatriculaId { get; private set; }
 
-    public EmitirCertificadoCommand(Guid alunoId, Guid matriculaId)
+    public EmitirCertificadoCommand(Guid matriculaId)
     {
-        AlunoId = alunoId;
         MatriculaId = matriculaId;
     }
 
@@ -25,10 +23,6 @@ public class EmitirCertificadoValidation : AbstractValidator<EmitirCertificadoCo
 {
     public EmitirCertificadoValidation()
     {
-        RuleFor(c => c.AlunoId)
-            .NotEqual(Guid.Empty)
-            .WithMessage("Id do aluno inválido");
-
         RuleFor(c => c.MatriculaId)
             .NotEqual(Guid.Empty)
             .WithMessage("Id da matrícula inválido");
