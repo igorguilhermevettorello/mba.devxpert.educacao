@@ -14,16 +14,16 @@ public class MatriculaService : ServiceBase, IMatriculaService
     }
 
     ///<inheritdoc/>
-    public async Task<MatriculaDto> ObterMatriculaPendentesAsync(Guid alunoId)
+    public async Task<IEnumerable<MatriculaDto>> ObterMatriculaPendentesAsync(Guid alunoId)
     {
-        var response = await _httpClient.GetAsync("/pendentes");
+        var response = await _httpClient.GetAsync($"/api/alunos/{alunoId}/matriculas/pendentes");
 
         if (response.StatusCode == HttpStatusCode.NotFound)
             return default!;
 
         TratarErrosResponse(response);
 
-        return await DeserializarObjetoResponse<MatriculaDto>(response);
+        return await DeserializarObjetoResponse<IEnumerable<MatriculaDto>>(response);
     }
 
     ///<inheritdoc/>
@@ -42,7 +42,7 @@ public class MatriculaService : ServiceBase, IMatriculaService
     ///<inheritdoc/>
     public async Task<MatriculaDto> RealizarMatriculaAsync(RealizarMatriculaDto model)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/alunos/matriculas", model);
+        var response = await _httpClient.PostAsJsonAsync($"/api/alunos/{model.AlunoId}/matriculas", model);
 
         if (response.StatusCode == HttpStatusCode.NotFound)
             return default!;

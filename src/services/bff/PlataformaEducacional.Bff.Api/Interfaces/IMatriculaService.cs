@@ -9,7 +9,7 @@ public interface IMatriculaService
     /// </summary>
     /// <param name="alunoId">O identificador do aluno.</param>
     /// <returns>Uma tarefa que representa a operação assíncrona. O resultado da tarefa contém as matrículas pendentes do aluno.</returns>
-    public Task<MatriculaDto> ObterMatriculaPendentesAsync(Guid alunoId);
+    public Task<IEnumerable<MatriculaDto>> ObterMatriculaPendentesAsync(Guid alunoId);
 
     /// <summary>
     /// Obtém de forma assíncrona uma matrícula pelo seu identificador.
