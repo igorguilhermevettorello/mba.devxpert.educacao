@@ -23,5 +23,5 @@ public interface IMatriculaService
     /// </summary>
     /// <param name="model">O modelo contendo os dados da matrícula.</param>
     /// <returns>Uma tarefa que representa a operação assíncrona. O resultado da tarefa contém a matrícula realizada.</returns>
-    public Task<MatriculaDto> RealizarMatriculaAsync(RealizarMatriculaDto model);
+    public Task<MatriculaDto> RealizarMatriculaAsync(Guid alunoId, RealizarMatriculaDto model);
 }

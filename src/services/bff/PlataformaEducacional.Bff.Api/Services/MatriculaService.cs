@@ -40,9 +40,9 @@ public class MatriculaService : ServiceBase, IMatriculaService
     }
 
     ///<inheritdoc/>
-    public async Task<MatriculaDto> RealizarMatriculaAsync(RealizarMatriculaDto model)
+    public async Task<MatriculaDto> RealizarMatriculaAsync(Guid alunoId, RealizarMatriculaDto model)
     {
-        var response = await _httpClient.PostAsJsonAsync($"/api/alunos/{model.AlunoId}/matriculas", model);
+        var response = await _httpClient.PostAsJsonAsync($"/api/alunos/{alunoId}/matriculas", model);
 
         if (response.StatusCode == HttpStatusCode.NotFound)
             return default!;

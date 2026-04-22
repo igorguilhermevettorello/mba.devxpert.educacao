@@ -43,7 +43,7 @@ public class CompraController : MainController
     }
 
     //listar matrículas pendentes do aluno
-    [HttpGet("matricula/{alunoId}/pendente")]
+    [HttpGet("alunos/{alunoId}/matriculas/pendentes")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarMatriculaPendente(Guid alunoId)
@@ -52,13 +52,13 @@ public class CompraController : MainController
         return CustomResponse(matriculasPendentes);
     }
 
-    [HttpPost("matricula")]
+    [HttpPost("alunos/{alunoId:guid}/matricula")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RealizarMatricula([FromBody] RealizarMatriculaDto model)
+    public async Task<IActionResult> RealizarMatricula([FromRoute] Guid alunoId, [FromBody] RealizarMatriculaDto model)
     {
-        var result = await _matriculaService.RealizarMatriculaAsync(model);
+        var result = await _matriculaService.RealizarMatriculaAsync(alunoId, model);
         return CustomResponse(result);
     }
 

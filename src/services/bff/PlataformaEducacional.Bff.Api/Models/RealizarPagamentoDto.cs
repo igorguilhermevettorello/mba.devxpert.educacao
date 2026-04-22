@@ -20,7 +20,7 @@ public class RealizarPagamentoDto
     [RegularExpression(@"^[\p{L} .'\-]+$", ErrorMessage = "O {0} contém caracteres inválidos")]
     public string TitularCartao { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "O campo {0} é obrigatório")]    
+    [Required(ErrorMessage = "O campo {0} é obrigatório")]
     public string ValidadeCartao { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "O campo {0} é obrigatório")]
