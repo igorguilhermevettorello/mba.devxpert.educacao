@@ -14,8 +14,16 @@ public class AtualizarCursoDto
     [StringLength(1000, MinimumLength = 10, ErrorMessage = "A descrição deve ter entre 10 e 1000 caracteres")]
     public string Descricao { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "O instrutor é obrigatório")]
+    [StringLength(200, MinimumLength = 3, ErrorMessage = "O instrutor deve ter entre 3 e 200 caracteres")]
+    public string Instrutor { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "O nível do curso é obrigatório")]
     public NivelCurso Nivel { get; set; }
+
+    [Required(ErrorMessage = "O valor do curso é obrigatório")]
+    [Range(0, double.MaxValue, ErrorMessage = "O valor do curso deve ser um número positivo")]
+    public decimal Valor { get; set; }
 
     [Required(ErrorMessage = "A chave Conteúdo Programático é obrigatória")]
     public CriarConteudoProgramaticoDto ConteudoProgramatico { get; set; } = new CriarConteudoProgramaticoDto();

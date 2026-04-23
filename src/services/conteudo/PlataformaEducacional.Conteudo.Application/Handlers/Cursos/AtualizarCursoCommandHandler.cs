@@ -48,7 +48,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
 
             try
             {
-                curso.AtualizarInformacoes(request.Titulo, request.Descricao, curso.Instrutor, request.Nivel, curso.Valor);
+                curso.AtualizarInformacoes(request.Titulo, request.Descricao, request.Instrutor, request.Nivel, request.Valor);
 
                 if (request.ConteudoProgramatico != null)
                 {

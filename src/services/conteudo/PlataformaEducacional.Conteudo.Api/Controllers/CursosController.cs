@@ -109,7 +109,9 @@ public class CursosController : MainController
             Titulo = atualizarCursoDto.Titulo,
             Descricao = atualizarCursoDto.Descricao,
             Nivel = atualizarCursoDto.Nivel,
-            ConteudoProgramatico = conteudoProgramaticoCommand
+            ConteudoProgramatico = conteudoProgramaticoCommand,
+            Instrutor = atualizarCursoDto.Instrutor,
+            Valor = atualizarCursoDto.Valor
         };
 
         var resultado = await _mediatorHandler.SendCommand(command);
