@@ -5,8 +5,9 @@ namespace PlataformaEducacional.Alunos.Application.Commands;
 
 public class AdicionarEnderecoCommand : Command
 {
-    public AdicionarEnderecoCommand(string logradouro, string numero, string complemento, string bairro, string cep, string cidade, string estado)
+    public AdicionarEnderecoCommand(Guid alunoId, string logradouro, string numero, string complemento, string bairro, string cep, string cidade, string estado)
     {
+        AlunoId = alunoId;
         Logradouro = logradouro;
         Numero = numero;
         Complemento = complemento;
@@ -16,14 +17,14 @@ public class AdicionarEnderecoCommand : Command
         Estado = estado;
     }
 
-    public string Logradouro { get;  set; }
-    public string Numero { get;  set; }
-    public string Complemento { get;  set; }
-    public string Bairro { get;  set; }
-    public string Cep { get;  set; }
-    public string Cidade { get;  set; }
-    public string Estado { get;  set; }
-    public Guid AlunoId { get;  set; }
+    public string Logradouro { get; set; }
+    public string Numero { get; set; }
+    public string Complemento { get; set; }
+    public string Bairro { get; set; }
+    public string Cep { get; set; }
+    public string Cidade { get; set; }
+    public string Estado { get; set; }
+    public Guid AlunoId { get; set; }
 
     public override bool IsValid()
     {

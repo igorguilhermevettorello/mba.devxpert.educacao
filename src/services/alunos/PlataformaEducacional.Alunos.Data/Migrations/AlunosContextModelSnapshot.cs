@@ -15,7 +15,7 @@ namespace PlataformaEducacional.Alunos.Api.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.23");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
 
             modelBuilder.Entity("PlataformaEducacional.Alunos.Domain.Models.Aluno", b =>
                 {
@@ -41,9 +41,6 @@ namespace PlataformaEducacional.Alunos.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("AlunoId")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("CodigoValidacao")
                         .HasColumnType("TEXT");
 
@@ -54,8 +51,6 @@ namespace PlataformaEducacional.Alunos.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AlunoId");
 
                     b.HasIndex("MatriculaId")
                         .IsUnique();
@@ -203,17 +198,10 @@ namespace PlataformaEducacional.Alunos.Api.Migrations
 
             modelBuilder.Entity("PlataformaEducacional.Alunos.Domain.Models.Certificado", b =>
                 {
-                    b.HasOne("PlataformaEducacional.Alunos.Domain.Models.Aluno", "Aluno")
-                        .WithMany("Certificados")
-                        .HasForeignKey("AlunoId")
-                        .IsRequired();
-
                     b.HasOne("PlataformaEducacional.Alunos.Domain.Models.Matricula", "Matricula")
                         .WithOne("Certificado")
                         .HasForeignKey("PlataformaEducacional.Alunos.Domain.Models.Certificado", "MatriculaId")
                         .IsRequired();
-
-                    b.Navigation("Aluno");
 
                     b.Navigation("Matricula");
                 });
@@ -250,8 +238,6 @@ namespace PlataformaEducacional.Alunos.Api.Migrations
 
             modelBuilder.Entity("PlataformaEducacional.Alunos.Domain.Models.Aluno", b =>
                 {
-                    b.Navigation("Certificados");
-
                     b.Navigation("Endereco")
                         .IsRequired();
 

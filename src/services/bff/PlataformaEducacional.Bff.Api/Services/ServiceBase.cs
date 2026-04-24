@@ -1,0 +1,51 @@
+﻿using PlataformaEducacional.Core.Communication;
+using System.Net;
+using System.Text;
+using System.Text.Json;
+
+namespace PlataformaEducacional.Bff.Api.Services;
+
+public abstract class ServiceBase
+{
+    protected StringContent ObterConteudo(object dado)
+    {
+        return new StringContent(
+            JsonSerializer.Serialize(dado),
+            Encoding.UTF8,
+            "application/json");
+    }
+
+    protected async Task<T> DeserializarObjetoResponse<T>(HttpResponseMessage responseMessage)
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var jsonString = await responseMessage.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<T>(jsonString, options);
+
+        if (result is null
+            && responseMessage.StatusCode != HttpStatusCode.Created
+            && responseMessage.StatusCode != HttpStatusCode.NoContent
+            && responseMessage.StatusCode != HttpStatusCode.OK)
+        {
+            throw new InvalidOperationException("Deserialization returned null.");
+        }
+
+        return result;
+    }
+
+    protected bool TratarErrosResponse(HttpResponseMessage response)
+    {
+        if (response.StatusCode == HttpStatusCode.BadRequest) return false;
+
+        response.EnsureSuccessStatusCode();
+        return true;
+    }
+
+    protected ResponseResult RetornoOk()
+    {
+        return new ResponseResult();
+    }
+}

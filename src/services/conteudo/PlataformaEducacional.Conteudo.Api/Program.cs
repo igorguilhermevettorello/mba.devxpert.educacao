@@ -14,9 +14,12 @@ builder.Services.AddApiConfiguration("Conteudo API");
 
 // Adicionar configuração JWT
 builder.Services.AddJwtConfiguration(builder.Configuration, builder.Environment);
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.CriarCursoCommand).Assembly));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.AtualizarCursoCommand).Assembly));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.LicenseKey = builder.Configuration.GetValue<string>("mediator-license") ?? string.Empty;
+    cfg.RegisterServicesFromAssemblies(typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.CriarCursoCommand).Assembly,
+                                       typeof(PlataformaEducacional.Conteudo.Application.Commands.Cursos.AtualizarCursoCommand).Assembly);
+});
 
 builder.Services.RegisterServices();
 

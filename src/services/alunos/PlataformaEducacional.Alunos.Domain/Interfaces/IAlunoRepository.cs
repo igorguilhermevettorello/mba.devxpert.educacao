@@ -21,6 +21,8 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// </summary>
     void AtualizarMatricula(Matricula matricula);
 
+    void AttachMatricula(Matricula matricula);
+
     /// <summary>
     /// Adiciona progresso de uma aula concluída.
     /// </summary>
@@ -31,6 +33,8 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// </summary>
     /// <param name="endereco">O endereço a ser adicionado.</param>
     void AdicionarEndereco(Endereco endereco);
+
+    void AdicionarCertifficado(Certificado certificado);
 
     /// <summary>
     /// Obtém um aluno pelo seu ID.
@@ -63,7 +67,13 @@ public interface IAlunoRepository : IRepository<Aluno>
     /// Obtém uma matrícula pelo ID.
     /// </summary>
     Task<Matricula?> ObterMatriculaPorId(Guid id);
-        
+
+    /// <summary>
+    /// Obtém a primeira matrícula pendente.
+    /// </summary>
+    /// <returns>A matrícula pendente, ou null se não houver.</returns>
+    Task<IEnumerable<Matricula>> ObterMatriculasPendentesPorAluno(Guid alunoId);
+
     /// <summary>
     /// Obtém todas as matrículas de um aluno.
     /// </summary>

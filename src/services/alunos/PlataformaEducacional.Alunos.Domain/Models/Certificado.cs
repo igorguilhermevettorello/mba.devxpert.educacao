@@ -17,5 +17,4 @@ public class Certificado : Entity
     public Guid CodigoValidacao { get; private set; }
     public DateTime DataEmissao { get; private set; }
     public Matricula Matricula { get; protected set; }
-    public Aluno Aluno { get; protected set; }
 }

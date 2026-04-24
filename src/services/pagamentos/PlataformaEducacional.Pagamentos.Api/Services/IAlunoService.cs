@@ -4,6 +4,6 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 {
     public interface IAlunoService
     {
-        Task<MatriculaDto?> ObterMatriculaPorIdAsync(Guid id);
+        Task<MatriculaDto?> ObterMatriculaPorIdAsync(Guid matriculaId);
     }
 }

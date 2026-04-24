@@ -6,6 +6,7 @@ using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.Core.Messages;
 using PlataformaEducacional.MessageBus;
+using PlataformaEducacional.WebApi.Core.Enumerators;
 
 namespace PlataformaEducacional.Alunos.Application.Commands;
 
@@ -85,7 +86,9 @@ public class AlunoCommandHandler : CommandHandler,
 
         var matricula = new Matricula(message.AlunoId, message.CursoId);
         _alunoRepository.AdicionarMatricula(matricula);
-        return await PersistData(_alunoRepository.UnitOfWork);
+
+        var result = await PersistData(_alunoRepository.UnitOfWork);
+        return result;
     }
 
     public async Task<ValidationResult> Handle(RegistrarProgressoCommand message, CancellationToken cancellationToken)
@@ -100,9 +103,8 @@ public class AlunoCommandHandler : CommandHandler,
         }
 
         var matriculas = await _alunoRepository.ObterMatriculasPorAluno(message.AlunoId);
-        var matriculaAtiva = matriculas.FirstOrDefault(m => m.CursoId == cursoIdRelacionado.Value && m.Status == Domain.Models.EnumStatusMatricula.Ativa);
-
-        if (matriculaAtiva == null)
+        var matriculaAtiva = matriculas.FirstOrDefault(m => m.CursoId.Equals(cursoIdRelacionado.Value) && m.Status == StatusMatricula.Ativa);
+        if (matriculaAtiva is null)
         {
             AddError("Aluno não possui matrícula ativa para o curso desta aula.");
             return ValidationResult;
@@ -126,13 +128,7 @@ public class AlunoCommandHandler : CommandHandler,
 
         var matricula = await _alunoRepository.ObterMatriculaPorId(message.MatriculaId);
 
-        if (matricula == null || matricula.AlunoId != message.AlunoId)
-        {
-            AddError("Matrícula inválida ou não pertence ao aluno.");
-            return ValidationResult;
-        }
-
-        if (matricula.Status != Domain.Models.EnumStatusMatricula.Ativa && matricula.Status != Domain.Models.EnumStatusMatricula.Concluida)
+        if (matricula.Status != StatusMatricula.Ativa && matricula.Status != StatusMatricula.Concluida)
         {
             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
             return ValidationResult;
@@ -151,12 +147,11 @@ public class AlunoCommandHandler : CommandHandler,
             AddError($"O aluno ainda não concluiu todas as {totalAulasCurso} aulas deste curso.");
             return ValidationResult;
         }
-        
+
         var certificado = new Certificado(matricula.Id);
         matricula.Concluir();
-
-        // O Entity Framework vai persistir o Certificado por causa do relacionamento
-        // Mas se precisar, podemos dicionar um método _alunoRepository.AdicionarCertificado(certificado) na interface
+        _alunoRepository.AttachMatricula(matricula);
+        _alunoRepository.AdicionarCertifficado(certificado);
 
         return await PersistData(_alunoRepository.UnitOfWork);
     }

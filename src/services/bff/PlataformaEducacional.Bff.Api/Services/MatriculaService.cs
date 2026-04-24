@@ -1,7 +1,54 @@
 ﻿using PlataformaEducacional.Bff.Api.Interfaces;
+using PlataformaEducacional.Bff.Api.Models;
+using System.Net;
 
 namespace PlataformaEducacional.Bff.Api.Services;
 
-public class MatriculaService : IMatriculaService
+public class MatriculaService : ServiceBase, IMatriculaService
 {
+    private readonly HttpClient _httpClient;
+
+    public MatriculaService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    ///<inheritdoc/>
+    public async Task<IEnumerable<MatriculaDto>> ObterMatriculaPendentesAsync(Guid alunoId)
+    {
+        var response = await _httpClient.GetAsync($"/api/alunos/{alunoId}/matriculas/pendentes");
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return default!;
+
+        TratarErrosResponse(response);
+
+        return await DeserializarObjetoResponse<IEnumerable<MatriculaDto>>(response);
+    }
+
+    ///<inheritdoc/>
+    public async Task<MatriculaDto> ObterMatriculaPorId(Guid id)
+    {
+        var response = await _httpClient.GetAsync($"/matriculas/{id}");
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return default!;
+
+        TratarErrosResponse(response);
+
+        return await DeserializarObjetoResponse<MatriculaDto>(response);
+    }
+
+    ///<inheritdoc/>
+    public async Task<MatriculaDto> RealizarMatriculaAsync(Guid alunoId, RealizarMatriculaDto model)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"/api/alunos/{alunoId}/matriculas", model);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return default!;
+
+        TratarErrosResponse(response);
+
+        return await DeserializarObjetoResponse<MatriculaDto>(response);
+    }
 }

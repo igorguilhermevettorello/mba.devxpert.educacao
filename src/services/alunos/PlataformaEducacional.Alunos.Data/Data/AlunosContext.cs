@@ -28,6 +28,7 @@ public class AlunosContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("NOCASE");
         modelBuilder.Ignore<ValidationResult>();
         modelBuilder.Ignore<Event>();
 

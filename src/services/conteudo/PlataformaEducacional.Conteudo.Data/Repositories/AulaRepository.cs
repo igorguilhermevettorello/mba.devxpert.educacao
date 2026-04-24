@@ -69,7 +69,7 @@ namespace PlataformaEducacional.Conteudo.Data.Repositories
         public async Task<IEnumerable<Aula>> ObterAtivasPorCursoIdAsync(Guid cursoId)
         {
             return await _context.Aulas
-                .Where(a => a.CursoId == cursoId && a.Ativa)
+                .Where(a => a.CursoId == cursoId && a.Ativa == true)
                 .AsNoTracking()
                 .OrderBy(a => a.Ordem)
                 .ToListAsync();

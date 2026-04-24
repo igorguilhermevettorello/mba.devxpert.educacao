@@ -40,11 +40,11 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             _httpClient = httpClient;
         }
 
-        public async Task<MatriculaDto?> ObterMatriculaPorIdAsync(Guid id)
+        public async Task<MatriculaDto?> ObterMatriculaPorIdAsync(Guid matriculaId)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/Alunos/matriculas/{id}");
+                var response = await _httpClient.GetAsync($"/api/alunos/matriculas/{matriculaId}");
 
                 if (!response.IsSuccessStatusCode)
                     return null;

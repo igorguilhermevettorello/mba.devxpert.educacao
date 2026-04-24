@@ -63,7 +63,6 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             return Ok(pagamentoDto);
         }
 
-
         [HttpGet("matricula/{matriculaId:guid}")]
         [ProducesResponseType(typeof(PagamentoDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -100,13 +99,16 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             if (!await UsuarioPodePagarAMatricula(model.MatriculaId))
                 return Forbid();
 
-            var cartaoCredito = CartaoCredito.Criar(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
+            var cartaoCredito = CartaoCredito.TryCreate(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
+
+            if (!cartaoCredito.IsValid)
+                return CustomResponse(cartaoCredito.ValidationResult);
 
             var pagamento = new Pagamento(
                 model.MatriculaId,
-                TipoPagamento.CartaoCredito,    //Tipo pagamento chumbado pois o propósito da api é apenas didático
+                TipoPagamento.CartaoCredito,    //Tipo pagamento chumbado pois o propï¿½sito da api ï¿½ apenas didï¿½tico
                 model.ValorCurso,
-                cartaoCredito);
+                cartaoCredito.Card!);
 
             var responseMessage = await _pagamentoService.AutorizarPagamento(pagamento);
 

@@ -3,6 +3,7 @@ using PlataformaEducacional.Pagamentos.Api.Data;
 using PlataformaEducacional.Pagamentos.Api.Models;
 using PlataformaEducacional.Pagamentos.Api.Models.Enums;
 using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
+using PlataformaEducacional.SeedDados;
 
 namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
 {
@@ -42,33 +43,63 @@ namespace PlataformaEducacional.Pagamentos.Api.Configuration.Seed
             if (await context.Pagamentos.AnyAsync())
                 return;
 
-            var pagamento = GerarPagamento();
+            var pagamento = GerarPagamento(
+                SeedMatriculas.MATRICULA_ALUNO1_ID,
+                299.90M,
+                "João Estudioso",
+                "4539595764370442",
+                "09/26",
+                "982");
+
             context.Pagamentos.Add(pagamento);
             await context.SaveChangesAsync();
         }
 
-        private static Pagamento GerarPagamento()
+        private static Pagamento GerarPagamento(
+            Guid matriculaId,
+            decimal valor,
+            string titular,
+            string numeroCartao,
+            string validade,
+            string cvv)
         {
-            var cartaoCredito = CartaoCredito.Criar("Joaozinho da Silva", "5571 9114 0412 6886", "02/27", "690");
-            var pagamento = new Pagamento(Guid.NewGuid(), TipoPagamento.CartaoCredito, 1500M, cartaoCredito);
+            var cartaoCredito = CartaoCredito.TryCreate(titular, numeroCartao, validade, cvv);
+            var pagamento = new Pagamento(matriculaId, TipoPagamento.CartaoCredito, valor, cartaoCredito.Card!);
+
+            // Adiciona transação ao pagamento
             pagamento.AdicionarTransacao(GerarTransacao(pagamento.Id));
+
             return pagamento;
         }
 
         private static Transacao GerarTransacao(Guid pagamentoId)
         {
+            // Gera IDs aleatórios para TID e NSU (como gerados pelo gateway)
+            var tid = GerarCaminhoAlfanumerico(12);
+            var nsu = GerarCaminhoAlfanumerico(12);
+            var codigoAutorizacao = GerarCaminhoAlfanumerico(10);
+
             var transacao = new Transacao(
-                "JDPL2DUAPM",
-                "MasterCard",
-                DateTime.Now,
-                1500M,
-                2.4M,
+                codigoAutorizacao,
+                "Visa", // Bandeira do cartão
+                DateTime.UtcNow,
+                299.90M,
+                2.4M, // Taxa de transação em %
                 StatusTransacao.Autorizado,
-                "B3DO4XP9XW",
-                "4W6FYCOWMQ",
+                tid,
+                nsu,
                 pagamentoId);
 
             return transacao;
+        }
+
+        private static string GerarCaminhoAlfanumerico(int tamanho)
+        {
+            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Range(0, tamanho)
+                .Select(_ => caracteres[random.Next(caracteres.Length)])
+                .ToArray());
         }
     }
 }
