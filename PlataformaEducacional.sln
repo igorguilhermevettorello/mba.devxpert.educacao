@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.SeedD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Auth.Tests", "src\services\auth\PlataformaEducacional.Auth.Tests\PlataformaEducacional.Auth.Tests.csproj", "{7C80ACCC-2624-47B5-AC98-37DD765D6078}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Conteudo.Tests", "src\services\conteudo\PlataformaEducacional.Conteudo.Tests\PlataformaEducacional.Conteudo.Tests.csproj", "{4B448C2C-1695-4893-8BE6-A41249E7118C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,10 @@ Global
 		{7C80ACCC-2624-47B5-AC98-37DD765D6078}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C80ACCC-2624-47B5-AC98-37DD765D6078}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C80ACCC-2624-47B5-AC98-37DD765D6078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B448C2C-1695-4893-8BE6-A41249E7118C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B448C2C-1695-4893-8BE6-A41249E7118C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B448C2C-1695-4893-8BE6-A41249E7118C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B448C2C-1695-4893-8BE6-A41249E7118C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,6 +176,7 @@ Global
 		{7E2F9A1C-8B4D-4E6F-9A0B-1C2D3E4F5A6B} = {C3BF6112-10CC-47ED-8B33-75D8095ABA30}
 		{02E2AA54-D2D4-47B6-BBE6-F4420C3ACCE5} = {88242EF4-060C-4CD9-AA03-6B3F22B7BFF8}
 		{7C80ACCC-2624-47B5-AC98-37DD765D6078} = {2DD88602-29B5-40F8-9B7D-45DD645282B7}
+		{4B448C2C-1695-4893-8BE6-A41249E7118C} = {3B502EFE-379E-43C3-83A1-3F5491FAE334}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17631DF5-7B17-4179-996A-7BF900F7D95C}
