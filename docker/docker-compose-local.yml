@@ -53,7 +53,7 @@ services:
             context: ../src
             dockerfile: ./services/auth/PlataformaEducacional.Auth.Api/Dockerfile
         ports:
-            - "5000:8080"
+            - "5000:5000"
             #- "5000:80"
             # - "5001:443"
         environment:
