@@ -7,22 +7,21 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/services/alunos/PlataformaEducacional.Alunos.Api/PlataformaEducacional.Alunos.Api.csproj", "src/services/alunos/PlataformaEducacional.Alunos.Api/"]
-COPY ["src/buildingBlocks/PlataformaEducacional.Core/PlataformaEducacional.Core.csproj", "src/buildingBlocks/PlataformaEducacional.Core/"]
-COPY ["src/buildingBlocks/PlataformaEducacional.MessageBus/PlataformaEducacional.MessageBus.csproj", "src/buildingBlocks/PlataformaEducacional.MessageBus/"]
-COPY ["src/buildingBlocks/PlataformaEducacional.WebApi.Core/PlataformaEducacional.WebApi.Core.csproj", "src/buildingBlocks/PlataformaEducacional.WebApi.Core/"]
-COPY ["src/SeedDados/PlataformaEducacional.SeedDados/PlataformaEducacional.SeedDados.csproj", "src/SeedDados/PlataformaEducacional.SeedDados/"]
-COPY ["src/services/alunos/PlataformaEducacional.Alunos.Application/PlataformaEducacional.Alunos.Application.csproj", "src/services/alunos/PlataformaEducacional.Alunos.Application/"]
-COPY ["src/services/alunos/PlataformaEducacional.Alunos.Domain/PlataformaEducacional.Alunos.Domain.csproj", "src/services/alunos/PlataformaEducacional.Alunos.Domain/"]
-COPY ["src/services/alunos/PlataformaEducacional.Alunos.Data/PlataformaEducacional.Alunos.Data.csproj", "src/services/alunos/PlataformaEducacional.Alunos.Data/"]
-RUN dotnet restore "./src/services/alunos/PlataformaEducacional.Alunos.Api/PlataformaEducacional.Alunos.Api.csproj"
+COPY ["./services/alunos/PlataformaEducacional.Alunos.Api/PlataformaEducacional.Alunos.Api.csproj", "services/alunos/PlataformaEducacional.Alunos.Api//"]
+COPY ["./services/alunos/PlataformaEducacional.Alunos.Application/PlataformaEducacional.Alunos.Application.csproj", "services/alunos/PlataformaEducacional.Alunos.Application//"]
+COPY ["./services/alunos/PlataformaEducacional.Alunos.Domain/PlataformaEducacional.Alunos.Domain.csproj", "services/alunos/PlataformaEducacional.Alunos.Domain//"]
+COPY ["./services/alunos/PlataformaEducacional.Alunos.Data/PlataformaEducacional.Alunos.Data.csproj", "services/alunos/PlataformaEducacional.Alunos.Data//"]
+COPY ["./buildingBlocks/PlataformaEducacional.Core/PlataformaEducacional.Core.csproj", "buildingBlocks/PlataformaEducacional.Core//"]
+COPY ["./buildingBlocks/PlataformaEducacional.MessageBus/PlataformaEducacional.MessageBus.csproj", "buildingBlocks/PlataformaEducacional.MessageBus//"]
+COPY ["./buildingBlocks/PlataformaEducacional.WebApi.Core/PlataformaEducacional.WebApi.Core.csproj", "buildingBlocks/PlataformaEducacional.WebApi.Core//"]
+COPY ["./SeedDados/PlataformaEducacional.SeedDados/PlataformaEducacional.SeedDados.csproj", "SeedDados/PlataformaEducacional.SeedDados//"]
+RUN dotnet restore "./services/alunos/PlataformaEducacional.Alunos.Api/PlataformaEducacional.Alunos.Api.csproj"
 COPY . .
-WORKDIR "/src/src/services/alunos/PlataformaEducacional.Alunos.Api"
+WORKDIR "services/alunos/PlataformaEducacional.Alunos.Api"
 RUN dotnet build "./PlataformaEducacional.Alunos.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

@@ -7,17 +7,16 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/services/bff/PlataformaEducacional.Bff.Api/PlataformaEducacional.Bff.Api.csproj", "src/services/bff/PlataformaEducacional.Bff.Api/"]
-COPY ["src/buildingBlocks/PlataformaEducacional.Core/PlataformaEducacional.Core.csproj", "src/buildingBlocks/PlataformaEducacional.Core/"]
-COPY ["src/buildingBlocks/PlataformaEducacional.WebApi.Core/PlataformaEducacional.WebApi.Core.csproj", "src/buildingBlocks/PlataformaEducacional.WebApi.Core/"]
-RUN dotnet restore "./src/services/bff/PlataformaEducacional.Bff.Api/PlataformaEducacional.Bff.Api.csproj"
+COPY ["./services/bff/PlataformaEducacional.Bff.Api/PlataformaEducacional.Bff.Api.csproj", "services/bff/PlataformaEducacional.Bff.Api//"]
+COPY ["./buildingBlocks/PlataformaEducacional.Core/PlataformaEducacional.Core.csproj", "buildingBlocks/PlataformaEducacional.Core//"]
+COPY ["./buildingBlocks/PlataformaEducacional.WebApi.Core/PlataformaEducacional.WebApi.Core.csproj", "buildingBlocks/PlataformaEducacional.WebApi.Core//"]
+RUN dotnet restore "./services/bff/PlataformaEducacional.Bff.Api/PlataformaEducacional.Bff.Api.csproj"
 COPY . .
-WORKDIR "/src/src/services/bff/PlataformaEducacional.Bff.Api"
+WORKDIR "services/bff/PlataformaEducacional.Bff.Api"
 RUN dotnet build "./PlataformaEducacional.Bff.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

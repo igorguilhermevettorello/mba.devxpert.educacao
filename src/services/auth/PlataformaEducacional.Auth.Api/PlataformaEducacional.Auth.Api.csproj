@@ -6,12 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>50f9829c-c5ba-4a2c-82b2-9e9112eca754</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..\..</DockerfileContext>
+    <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
     <None Update="keys\educacao-private.pem">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

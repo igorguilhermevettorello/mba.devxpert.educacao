@@ -1,0 +1,126 @@
+name: mba-devxpert-educacao
+
+# x-common-variables: &common-variables
+#     aspnetcore_environment: docker
+#     ASPNETCORE_URLS: https://+:443;http://+:80
+#     ASPNETCORE_Kestrel__Certificates__Default__Password: 9HoGMnb7Lu8NFdHBz4Vq2rtKivzMhmMXhtvuB4TZcLMmbWfFmDQCjJeLURAJ4GYe
+#     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/devstore.academy-localhost.pfx
+#     AppSettings__DatabaseType: SqlServer
+#     RabbitMqTransportOptions__Host: "rabbitmq"
+#     RabbitMqTransportOptions__Port: 5672
+#     RabbitMqTransportOptions__User: "devstore"
+#     RabbitMqTransportOptions__Pass: "devstore"
+#     RabbitMqTransportOptions__VirtualHost: "/"
+
+#include:
+#    - docker-common-resources.yml
+
+services:    
+    # RabbitMQ
+    rabbitmq:
+        image: rabbitmq:4-management
+        container_name: mba-rabbitmq
+        hostname: mba-rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        expose:
+            - 5672
+            - 15672
+        environment:
+            RABBITMQ_DEFAULT_USER: "mba-devxpert-educacao"
+            RABBITMQ_DEFAULT_PASS: "mba-devxpert-educacao"
+
+    # Sql Server
+    sql-server:
+        image: mba.devxpert.educacao/mba-sql-sever:latest
+        user: "root"
+        container_name: mba-sql-server
+        build:
+            context: ../sql
+            dockerfile: ./Dockerfile
+        ports:
+            - "1433:1433"
+        environment:
+            SA_PASSWORD: "MeuDB@123"
+            ACCEPT_EULA: "Y"    
+
+    # Api de Autenticacao
+    api-auth:
+        image: mba.devxpert.educacao/api-auth:latest
+        container_name: mba-api-auth
+        build:
+            context: ../src
+            dockerfile: ./services/auth/PlataformaEducacional.Auth.Api/Dockerfile
+        ports:
+            - "5000:8080"
+            #- "5000:80"
+            # - "5001:443"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Docker
+            - ASPNETCORE_URLS=http://+:5000
+        depends_on:
+            - rabbitmq
+            - sql-server
+
+    # #Api de Aluno
+    # api-aluno:
+    #     image: mba.devxpert.educacao/api-aluno:latest
+    #     container_name: mba-api-aluno
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/alunos/PlataformaEducacional.Alunos.Api/Dockerfile
+    #     ports:
+    #         - "5005:8080"
+    #         # - "5005:80"
+    #         # - "5006:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5005
+    #     depends_on:
+    #         - api-auth
+
+    # # Api de Conteudo
+    # api-conteudo:
+    #     image: mba.devxpert.educacao/api-conteudo:latest
+    #     container_name: mba-api-conteudo
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/conteudo/PlataformaEducacional.Conteudo.Api/Dockerfile
+    #     ports:
+    #         - "5010:8080"
+    #         - "5010:80"
+    #         - "5011:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5010
+
+    # # Api de Pagamento
+    # api-pagamento:
+    #     image: mba.devxpert.educacao/api-pagamentos:latest
+    #     container_name: mba-api-pagamentos
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/pagamentos/PlataformaEducacional.Pagamentos.Api/Dockerfile
+    #     ports:
+    #         - "5015:8080"
+    #         # - "5015:80"
+    #         # - "5016:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5015
+
+    # # Api BFF
+    # api-bff:
+    #     image: mba.devxpert.educacao/educa-api-bff:latest
+    #     container_name: mba-api-bff
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/bff/PlataformaEducacional.Bff.Api/Dockerfile
+    #     ports:
+    #         - "5030:8080"
+    #         # - "5030:80"
+    #         # - "5031:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5030
