@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false);
 builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
-//builder.Services.AddSingleton<IJwtRsaSigningCredentialsProvider, JwtRsaSigningCredentialsProvider>();
+builder.Services.AddSingleton<IJwtRsaSigningCredentialsProvider, JwtRsaSigningCredentialsProvider>();
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
 

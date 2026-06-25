@@ -21,14 +21,7 @@ BEGIN
         [ProductVersion] nvarchar(32) NOT NULL,
         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
     );
-END;
-GO
 
-BEGIN TRANSACTION;
-GO
-
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
-BEGIN
     CREATE TABLE [AspNetRoles] (
         [Id] nvarchar(450) NOT NULL,
         [Name] nvarchar(256) NULL,
@@ -64,7 +57,7 @@ BEGIN
         CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
         CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
     );
-    
+
     CREATE TABLE [AspNetUserClaims] (
         [Id] int NOT NULL IDENTITY,
         [UserId] nvarchar(450) NOT NULL,
@@ -73,7 +66,7 @@ BEGIN
         CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
         CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
     );
-    
+
     CREATE TABLE [AspNetUserLogins] (
         [LoginProvider] nvarchar(128) NOT NULL,
         [ProviderKey] nvarchar(128) NOT NULL,
@@ -82,7 +75,8 @@ BEGIN
         CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
         CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
     );
-    
+    GO
+
     CREATE TABLE [AspNetUserRoles] (
         [UserId] nvarchar(450) NOT NULL,
         [RoleId] nvarchar(450) NOT NULL,
@@ -99,28 +93,52 @@ BEGIN
         CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name]),
         CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
     );
-    
+
     CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
-    
+
     CREATE UNIQUE INDEX [RoleNameIndex] ON [AspNetRoles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL;
-    
+
     CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
-    
+
     CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
-    
+
     CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
-    
+
     CREATE INDEX [EmailIndex] ON [AspNetUsers] ([NormalizedEmail]);
-    
+
     CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
-    
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260614200446_IdentityStartSql', N'8.0.25');
-    
+
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260623234903_IdentityStart', N'8.0.25');    
+
+    -- INSERT DATA SEED
+    -- ROLES
+    INSERT INTO [dbo].[AspNetRoles]([Id],[Name],[NormalizedName],[ConcurrencyStamp]) VALUES ('73495ED3-3E4A-4E92-99C6-E724C5156754','Administrador', 'ADMINISTRADOR', '73495ED3-3E4A-4E92-99C6-E724C5156754');
+    INSERT INTO [dbo].[AspNetRoles]([Id],[Name],[NormalizedName],[ConcurrencyStamp]) VALUES ('9EF38777-247B-4043-B8A5-C17505BCF637','Aluno', 'ALUNO', '9EF38777-247B-4043-B8A5-C17505BCF637');
+
+    -- USERS
+    -- Admin
+    INSERT INTO [dbo].[AspNetUsers]
+           ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount])
+     VALUES ('fd0ab48e-b395-40c5-ab78-aa68470f9c73', 'admin@educa.com', 'admin@educa.com', 'ADMIN@EDUCA.COM', 'ADMIN@EDUCA.COM', 1, 'Admin@123', NewId(), NewId(), null, 0, 0, null, 1, 0)
+
+    INSERT INTO [dbo].[AspNetUserRoles] ([UserId] , [RoleId]) VALUES ('fd0ab48e-b395-40c5-ab78-aa68470f9c73', '73495ED3-3E4A-4E92-99C6-E724C5156754');
+
+    -- Aluno 1
+    INSERT INTO [dbo].[AspNetUsers]
+           ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount])
+     VALUES ('a2b73c37-c6a9-4582-a397-f0bc020d2fbd', 'joao.estudioso@educa.com', 'João Estudioso da Silva', 'joao.estudioso@educa.com', 'JOAO.ESTUDIOSO@EDUCA.COM', 1, '"Aluno@123', NewId(), NewId(), null, 0, 0, null, 1, 0)
+     
+    INSERT INTO [dbo].[AspNetUserRoles] ([UserId] , [RoleId]) VALUES ('a2b73c37-c6a9-4582-a397-f0bc020d2fbd', '9EF38777-247B-4043-B8A5-C17505BCF637');
+
+    -- Aluno 2
+    INSERT INTO [dbo].[AspNetUsers]
+           ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount])
+     VALUES ('9eec2f27-d99d-4624-8d2e-c98e5e5861f8', 'marcio.iniciante@educa.com', 'Mario Iniciante dos Santos', 'admin@educa.com', 'MARCIO.INICIANTE@EDUCA.COM', 1, '"Aluno@123', NewId(), NewId(), null, 0, 0, null, 1, 0)
+
+    INSERT INTO [dbo].[AspNetUserRoles] ([UserId] , [RoleId]) VALUES ('9eec2f27-d99d-4624-8d2e-c98e5e5861f8', '9EF38777-247B-4043-B8A5-C17505BCF637');
 END;
 GO
 
-COMMIT;
-GO
 
 -- Criando base de dados para Aluno - ApiAluno
 print 'Criando base de dados para Aluno - ApiAluno';
@@ -144,14 +162,7 @@ BEGIN
         [ProductVersion] nvarchar(32) NOT NULL,
         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
     );
-END;
-GO
 
-BEGIN TRANSACTION;
-GO
-
-IF OBJECT_ID(N'[Alunos]') IS NULL
-BEGIN
     CREATE TABLE [Alunos] (
         [Id] uniqueidentifier NOT NULL,
         [Nome] varchar(200) NOT NULL,
@@ -213,10 +224,15 @@ BEGIN
 
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260614205919_AlunoStart', N'8.0.25');
 
-END;
-GO
+    -- Aluno 1
+    INSERT INTO [dbo].[Alunos] ([Id], [Nome], [Email], [Cpf], [Excluido])
+     VALUES ('a2b73c37-c6a9-4582-a397-f0bc020d2fbd', 'João Estudioso da Silva', 'joao.estudioso@educa.com', '26337499093', 0)
 
-COMMIT;
+    -- Aluno 1
+    INSERT INTO [dbo].[Alunos] ([Id], [Nome], [Email], [Cpf], [Excluido])
+     VALUES ('9eec2f27-d99d-4624-8d2e-c98e5e5861f8', 'Mario Iniciante dos Santos', 'marcio.iniciante@educa.com', '11793917051', 0)
+
+END;
 GO
 
 -- Criando base de dados para Conteudo - ApiConteudo
@@ -228,7 +244,6 @@ IF NOT EXISTS (
 )
 BEGIN
     CREATE DATABASE PeConteudo;
-    
 END
 GO
 
@@ -242,14 +257,7 @@ BEGIN
         [ProductVersion] nvarchar(32) NOT NULL,
         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
     );
-END;
-GO
 
-BEGIN TRANSACTION;
-GO
-
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
-BEGIN
     CREATE TABLE [Cursos] (
         [Id] uniqueidentifier NOT NULL,
         [Titulo] varchar(200) NOT NULL,
@@ -286,9 +294,6 @@ BEGIN
 END;
 GO
 
-COMMIT;
-GO
-
 -- Criando base de dados para Pagamento - ApiPagamento
 print 'Criando base de dados para Pagamento - ApiPagamento';
 IF NOT EXISTS (
@@ -311,14 +316,7 @@ BEGIN
         [ProductVersion] nvarchar(32) NOT NULL,
         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
     );
-END;
-GO
 
-BEGIN TRANSACTION;
-GO
-
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
-BEGIN
     CREATE TABLE [Pagamentos] (
         [Id] uniqueidentifier NOT NULL,
         [MatriculaId] uniqueidentifier NOT NULL,
@@ -349,29 +347,102 @@ BEGIN
 END;
 GO
 
-COMMIT;
-GO
-
 IF EXISTS (SELECT name FROM sys.databases WHERE name = N'PeIdentidade')
 BEGIN
     print 'Database PeIdentidade criado com sucesso !'
+    USE PeIdentidade;
+
+    print '   Tabelas';
+    IF OBJECT_ID(N'[AspNetRoles]') IS NOT NULL
+    BEGIN
+        print '    - AspNetRoles - Ok';
+    END
+    IF OBJECT_ID(N'[AspNetUsers]') IS NOT NULL
+    BEGIN
+        print '    - AspNetUsers - Ok';
+    END
+    IF OBJECT_ID(N'[AspNetRoleClaims]') IS NOT NULL
+    BEGIN
+        print '    - AspNetRoleClaims - Ok';
+    END
+    IF OBJECT_ID(N'[AspNetUserClaims]') IS NOT NULL
+    BEGIN
+        print '    - AspNetUserClaims - Ok';
+    END
+    IF OBJECT_ID(N'[AspNetUserLogins]') IS NOT NULL
+    BEGIN
+        print '    - AspNetUserLogins - Ok';
+    END
+    IF OBJECT_ID(N'[AspNetUserRoles]') IS NOT NULL
+    BEGIN
+        print '    - AspNetUserRoles - Ok';
+    END
+    IF OBJECT_ID(N'[AspNetUserTokens]') IS NOT NULL
+    BEGIN
+        print '    - AspNetUserTokens - Ok';
+    END    
 END
 GO
 
 IF EXISTS (SELECT name FROM sys.databases WHERE name = N'PeAlunos')
 BEGIN
     print 'Database PeAlunos criado com sucesso !'
+    USE PeAlunos;
+
+    print '   Tabelas';
+    IF OBJECT_ID(N'[Alunos]') IS NOT NULL
+    BEGIN
+        print '    - Alunos - Ok';
+    END
+    IF OBJECT_ID(N'[Enderecos]') IS NOT NULL
+    BEGIN
+        print '    - Enderecos - Ok';
+    END
+    IF OBJECT_ID(N'[Matriculas]') IS NOT NULL
+    BEGIN
+        print '    - Matriculas - Ok';
+    END
+    IF OBJECT_ID(N'[Certificados]') IS NOT NULL
+    BEGIN
+        print '    - Certificados - Ok';
+    END
+    IF OBJECT_ID(N'[ProgressoAulas]') IS NOT NULL
+    BEGIN
+        print '    - ProgressoAulas - Ok';
+    END
 END
 GO
 
 IF EXISTS (SELECT name FROM sys.databases WHERE name = N'PeConteudo')
 BEGIN
     print 'Database PeConteudo criado com sucesso !'
+    USE PeConteudo;
+
+    print '   Tabelas';
+    IF OBJECT_ID(N'[Cursos]') IS NOT NULL
+    BEGIN
+        print '    - Cursos - Ok';
+    END
+    IF OBJECT_ID(N'[Aulas]') IS NOT NULL
+    BEGIN
+        print '    - Aulas - Ok';
+    END    
 END
 GO
 
 IF EXISTS (SELECT name FROM sys.databases WHERE name = N'PePagamentos')
 BEGIN
     print 'Database PePagamentos criado com sucesso !'
+    USE PePagamentos;
+
+    print '   Tabelas';
+    IF OBJECT_ID(N'[Pagamentos]') IS NOT NULL
+    BEGIN
+        print '    - Pagamentos - Ok';
+    END
+    IF OBJECT_ID(N'[Transacoes]') IS NOT NULL
+    BEGIN
+        print '    - Transacoes - Ok';
+    END
 END
 GO
