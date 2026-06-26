@@ -21,7 +21,11 @@ BEGIN
         [ProductVersion] nvarchar(32) NOT NULL,
         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
     );
+END
+Go
 
+IF OBJECT_ID(N'[AspNetRoles]') IS NULL
+BEGIN
     CREATE TABLE [AspNetRoles] (
         [Id] nvarchar(450) NOT NULL,
         [Name] nvarchar(256) NULL,
@@ -75,7 +79,6 @@ BEGIN
         CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
         CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
     );
-    GO
 
     CREATE TABLE [AspNetUserRoles] (
         [UserId] nvarchar(450) NOT NULL,
@@ -107,7 +110,15 @@ BEGIN
     CREATE INDEX [EmailIndex] ON [AspNetUsers] ([NormalizedEmail]);
 
     CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
+END
+Go
 
+print 'sleep 5 segundos ...'
+WAITFOR DELAY '00:00:05'; 
+print 'Continuando Seed Api Auth...'
+
+IF NOT EXISTS(select 1 from [AspNetRoles])
+BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260623234903_IdentityStart', N'8.0.25');    
 
     -- INSERT DATA SEED
@@ -127,7 +138,7 @@ BEGIN
     INSERT INTO [dbo].[AspNetUsers]
            ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount])
      VALUES ('a2b73c37-c6a9-4582-a397-f0bc020d2fbd', 'joao.estudioso@educa.com', 'João Estudioso da Silva', 'joao.estudioso@educa.com', 'JOAO.ESTUDIOSO@EDUCA.COM', 1, '"Aluno@123', NewId(), NewId(), null, 0, 0, null, 1, 0)
-     
+    
     INSERT INTO [dbo].[AspNetUserRoles] ([UserId] , [RoleId]) VALUES ('a2b73c37-c6a9-4582-a397-f0bc020d2fbd', '9EF38777-247B-4043-B8A5-C17505BCF637');
 
     -- Aluno 2
@@ -223,7 +234,15 @@ BEGIN
     CREATE INDEX [IX_ProgressoAulas_MatriculaId] ON [ProgressoAulas] ([MatriculaId]);
 
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260614205919_AlunoStart', N'8.0.25');
+END
+GO
 
+print 'sleep 5 segundos ...'
+WAITFOR DELAY '00:00:05'; 
+print 'Continuando Seed Api Aluno...'
+
+IF NOT EXISTS(select 1 from [Alunos])
+BEGIN
     -- Aluno 1
     INSERT INTO [dbo].[Alunos] ([Id], [Nome], [Email], [Cpf], [Excluido])
      VALUES ('a2b73c37-c6a9-4582-a397-f0bc020d2fbd', 'João Estudioso da Silva', 'joao.estudioso@educa.com', '26337499093', 0)
@@ -291,8 +310,8 @@ BEGIN
     
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20260618032230_ConteudoStart', N'8.0.25');
 
-END;
-GO
+END
+Go
 
 -- Criando base de dados para Pagamento - ApiPagamento
 print 'Criando base de dados para Pagamento - ApiPagamento';
@@ -445,4 +464,3 @@ BEGIN
         print '    - Transacoes - Ok';
     END
 END
-GO

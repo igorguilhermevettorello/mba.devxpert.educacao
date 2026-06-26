@@ -12,39 +12,11 @@ name: mba-devxpert-educacao
 #     RabbitMqTransportOptions__Pass: "devstore"
 #     RabbitMqTransportOptions__VirtualHost: "/"
 
-#include:
-#    - docker-common-resources.yml
+include:
+   - docker-common-resources.yml
 
 services:    
-    # RabbitMQ
-    rabbitmq:
-        image: rabbitmq:4-management
-        container_name: mba-rabbitmq
-        hostname: mba-rabbitmq
-        ports:
-            - "5672:5672"
-            - "15672:15672"
-        expose:
-            - 5672
-            - 15672
-        environment:
-            RABBITMQ_DEFAULT_USER: "mba-devxpert-educacao"
-            RABBITMQ_DEFAULT_PASS: "mba-devxpert-educacao"
-
-    # Sql Server
-    sql-server:
-        image: mba.devxpert.educacao/mba-sql-sever:latest
-        user: "root"
-        container_name: mba-sql-server
-        build:
-            context: ../sql
-            dockerfile: ./Dockerfile
-        ports:
-            - "1433:1433"
-        environment:
-            SA_PASSWORD: "MeuDB@123"
-            ACCEPT_EULA: "Y"    
-
+    
     # Api de Autenticacao
     api-auth:
         image: mba.devxpert.educacao/api-auth:latest
@@ -63,7 +35,7 @@ services:
             - rabbitmq
             - sql-server
 
-    #Api de Aluno
+    # Api de Aluno
     api-aluno:
         image: mba.devxpert.educacao/api-aluno:latest
         container_name: mba-api-aluno
@@ -78,8 +50,8 @@ services:
             - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_URLS=http://+:5005
         depends_on:
-            - api-auth
             - sql-server
+            - api-auth
 
     # Api de Conteudo
     api-conteudo:
