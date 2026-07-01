@@ -31,6 +31,20 @@ services:
             RABBITMQ_DEFAULT_USER: "mba-devxpert-educacao"
             RABBITMQ_DEFAULT_PASS: "mba-devxpert-educacao"
 
+    # NGINX
+    mba-devexpert-educacao-server:
+        image: mba.devxpert.educacao/mba-dx-educa-sever:latest
+        container_name: mba-dx-educa-server
+        build:
+            context: ./
+            dockerfile: ./nginx/Dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - api-auth
+            - api-bff
+
     # database:
     #     image: mcr.microsoft.com/mssql/server:2022-latest
     #     container_name: mba-mssql

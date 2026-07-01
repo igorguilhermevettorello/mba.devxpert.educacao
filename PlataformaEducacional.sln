@@ -71,7 +71,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{4FC53E93-5E75-4869-BF3E-9BCB72A3CFEB}"
 	ProjectSection(SolutionItems) = preProject
 		docker\nginx\dockerfile = docker\nginx\dockerfile
-		docker\nginx\nginx.conf = docker\nginx\nginx.conf
+		docker\nginx\nginx.prod.conf = docker\nginx\nginx.prod.conf
+		docker\nginx\nginx.test.conf = docker\nginx\nginx.test.conf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Auth.Tests", "src\services\auth\PlataformaEducacional.Auth.Tests\PlataformaEducacional.Auth.Tests.csproj", "{7C80ACCC-2624-47B5-AC98-37DD765D6078}"
