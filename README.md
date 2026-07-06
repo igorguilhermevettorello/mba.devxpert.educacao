@@ -468,6 +468,69 @@ Após iniciar cada API, acesse a documentação Swagger:
 
 ---
 
+## 🐳 Execução com Docker Compose
+
+### Pré-requisitos
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) instalado e em execução
+- [Docker Compose](https://docs.docker.com/compose/install/) (incluído no Docker Desktop)
+
+### Comandos Docker Compose
+
+#### Construir e Iniciar os Containers
+
+Para construir as imagens e iniciar todos os containers da aplicação:
+
+```bash
+docker-compose -f .\docker-compose-local.yml up --build
+```
+
+> **Nota**: O parâmetro `--build` força a reconstrução das imagens Docker. Use-o sempre que houver alterações no código ou nas dependências.
+
+#### Parar Todos os Containers
+
+Para parar todos os containers em execução:
+
+```bash
+docker-compose -f .\docker-compose-local.yml down
+```
+
+> **Nota**: Este comando para e remove os containers, mas mantém as imagens e volumes.
+
+#### Limpar Imagens após Parar os Containers
+
+Para remover todas as imagens Docker não utilizadas e liberar espaço em disco:
+
+```bash
+docker image prune -a
+```
+
+> **⚠️ Atenção**: Este comando remove **todas as imagens Docker não utilizadas** do seu sistema, não apenas as do projeto. Use com cuidado.
+
+### Dicas de Uso
+
+- **Verificar logs dos containers**:
+  ```bash
+  docker-compose -f .\docker-compose-local.yml logs -f
+  ```
+
+- **Verificar status dos containers**:
+  ```bash
+  docker-compose -f .\docker-compose-local.yml ps
+  ```
+
+- **Parar um serviço específico**:
+  ```bash
+  docker-compose -f .\docker-compose-local.yml stop <nome-do-servico>
+  ```
+
+- **Reiniciar um serviço específico**:
+  ```bash
+  docker-compose -f .\docker-compose-local.yml restart <nome-do-servico>
+  ```
+
+---
+
 ## 📦 Build e Deploy
 
 ### Build da Solução
