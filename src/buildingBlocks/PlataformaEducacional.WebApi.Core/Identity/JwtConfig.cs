@@ -31,7 +31,7 @@ public static class JwtConfig
             x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(x =>
         {
-            x.RequireHttpsMetadata = requireHttpsMetadata;
+            x.RequireHttpsMetadata = false; /// requireHttpsMetadata;
             x.SaveToken = true;
 
             if (useAuthority)

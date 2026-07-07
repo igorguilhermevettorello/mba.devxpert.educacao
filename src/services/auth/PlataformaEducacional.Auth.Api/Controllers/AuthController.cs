@@ -189,10 +189,10 @@ public class AuthController : MainController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível");
+            _logger.LogError(ex, "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível\r\n{Message}", ex.GetFullMessage());
             await _userManager.DeleteAsync(usuario);
             var validationResult = new ValidationResult();
-            validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure("RabbitMQ", "Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível"));
+            validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure("RabbitMQ", $"Ocorreu um erro ao tentar enviar para fila, verifique se o RabbitMQ esta acessível\r\n{ex.GetFullMessage()}"));
             return new ResponseMessage(validationResult);
         }
     }

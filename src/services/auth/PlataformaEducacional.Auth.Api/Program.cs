@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.AddDataContextConfiguration();
-builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false);
+builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false, setProxyReverse: builder.Environment.IsEnvironment("Docker"));
 builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
 builder.Services.AddSingleton<IJwtRsaSigningCredentialsProvider, JwtRsaSigningCredentialsProvider>();
 
