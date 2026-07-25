@@ -24,8 +24,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/auth/PlataformaEducacional.Auth.Api/Dockerfile
-        # ports:
-        #     - "5000:5000"
+        ports:
+            - "5000:5000"
         #     - "5000:80"
         #     - "5001:443"
         environment:
@@ -42,8 +42,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/alunos/PlataformaEducacional.Alunos.Api/Dockerfile
-        # ports:
-        #     - "5005:5005"
+        ports:
+            - "5005:5005"
         #     - "5005:80"
         #     - "5006:443"
         environment:
@@ -60,8 +60,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/conteudo/PlataformaEducacional.Conteudo.Api/Dockerfile
-        # ports:
-        #     - "5010:5010"
+        ports:
+            - "5010:5010"
         #     - "5010:80"
         #     - "5011:443"
         environment:
@@ -78,8 +78,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/pagamentos/PlataformaEducacional.Pagamentos.Api/Dockerfile
-        # ports:
-        #     - "5015:5015"
+        ports:
+            - "5015:5015"
         #     - "5015:80"
         #     - "5016:443"
         environment:
@@ -96,8 +96,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/bff/PlataformaEducacional.Bff.Api/Dockerfile
-        # ports:
-        #     - "5030:5030"
+        ports:
+            - "5030:5030"
         #     - "5030:80"
         #     - "5031:443"
         environment:
