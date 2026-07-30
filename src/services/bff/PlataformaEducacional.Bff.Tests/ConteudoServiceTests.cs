@@ -47,9 +47,7 @@ namespace PlataformaEducacional.Bff.Api.Tests
         public async Task ObterCursoDisponiveisAsync_ReturnsResult_OnSuccess()
         {
             var cursos = new List<CursoDto> { new CursoDto { Id = Guid.NewGuid(), Titulo = "T" } };
-
-            var resultDto = new ResultDto<IEnumerable<CursoDto>>(); //{ cursos };
-            resultDto.Data = cursos;
+            var resultDto = new ResultDto<IEnumerable<CursoDto>>() { Data = cursos, Success = true };
 
             //var resultDto = ResultDto<IEnumerable<CursoDto>>.Ok(cursos, "ok");
             var json = JsonSerializer.Serialize(resultDto);
