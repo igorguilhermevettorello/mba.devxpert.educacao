@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using PlataformaEducacional.Pagamentos.Api.Configuration;
 using PlataformaEducacional.Pagamentos.Api.Configuration.Seed;
 using PlataformaEducacional.Pagamentos.Api.Facade;
+using PlataformaEducacional.Pagamentos.Api.HealthChecks;
 using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.Identity;
 
@@ -27,11 +29,19 @@ builder.Services.Configure<PagamentoConfig>(builder.Configuration.GetSection("Pa
 
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseApiConfiguration(app.Environment);
+
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+});
 
 app.UseDatabaseMigrationStartData();
 

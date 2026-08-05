@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using PlataformaEducacional.Alunos.Api.Configuration;
 using PlataformaEducacional.Alunos.Api.Configuration.Seed;
+using PlataformaEducacional.Alunos.Api.HealthChecks;
 using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.Identity;
 
@@ -18,12 +20,20 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseApiConfiguration(app.Environment);
+
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+});
 
 app.UseDatabaseMigrationStartData();
 
