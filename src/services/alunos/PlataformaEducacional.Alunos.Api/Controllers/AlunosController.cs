@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Alunos.Api.DTOs.Enderecos;
 using PlataformaEducacional.Alunos.Api.DTOs.Matriculas;
 using PlataformaEducacional.Alunos.Api.DTOs.Progresso;
@@ -19,12 +20,14 @@ public class AlunosController : MainController
     private readonly IAlunoRepository _alunosRepository;
     private readonly IMediator _mediator;
     private readonly IAspNetUser _user;
+    private readonly ILogger<AlunosController> _logger;
 
-    public AlunosController(IAlunoRepository alunosRepository, IMediator mediator, IAspNetUser user)
+    public AlunosController(IAlunoRepository alunosRepository, IMediator mediator, IAspNetUser user, ILogger<AlunosController> logger)
     {
         _alunosRepository = alunosRepository;
         _mediator = mediator;
         _user = user;
+        _logger = logger;
     }
 
     #region > ALUNO <
@@ -36,20 +39,32 @@ public class AlunosController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        _logger.LogInformation("Solicitação de matrícula recebida para AlunoId {AlunoId} no Curso {CursoId}", alunoId, model.CursoId);
+
         var aluno = await _alunosRepository.ObterPorId(alunoId);
 
         if (aluno is null)
+        {
+            _logger.LogWarning("Tentativa de matrícula para AlunoId {AlunoId} não encontrado", alunoId);
             return NotFound();
+        }
 
         if (!UsuarioPodeVerAluno(alunoId))
+        {
+            _logger.LogWarning("Acesso negado para matrícula do AlunoId {AlunoId} pelo usuário {UserId}", alunoId, _user.ObterUserId());
             return Forbid();
+        }
 
         var command = new RealizarMatriculaCommand(alunoId, model.CursoId);
         var result = await _mediator.Send(command);
 
         if (!result.IsValid)
+        {
+            _logger.LogWarning("Matrícula não validada para AlunoId {AlunoId}: {Errors}", alunoId, string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
             return CustomResponse(result);
+        }
 
+        _logger.LogInformation("Matrícula realizada com sucesso para AlunoId {AlunoId} no Curso {CursoId}", alunoId, model.CursoId);
         var retorno = new { Success = true, Message = "Matricula realizada com sucesso" };
         return CreatedAtAction(nameof(ObterMatriculaPorId), new { id = command.AggregateId }, retorno);
     }
@@ -64,17 +79,30 @@ public class AlunosController : MainController
         if (!ModelState.IsValid)
             return CustomResponse(ModelState);
 
+        _logger.LogInformation("Registro de progresso solicitado para AlunoId {AlunoId}, MatriculaId {MatriculaId}, AulaId {AulaId}", alunoId, matriculaId, progressoDto.AulaId);
+
         var aluno = await _alunosRepository.ObterPorId(alunoId);
 
         if (aluno is null || !aluno.Matriculas.Any(x => x.Id == matriculaId))
+        {
+            _logger.LogWarning("Matrícula {MatriculaId} não encontrada para AlunoId {AlunoId}", matriculaId, alunoId);
             return NotFound();
+        }
 
         if (!UsuarioPodeVerAluno(alunoId))
+        {
+            _logger.LogWarning("Acesso negado para registro de progresso do AlunoId {AlunoId}", alunoId);
             return Forbid();
+        }
 
         var command = new RegistrarProgressoCommand(alunoId, progressoDto.AulaId);
 
         var result = await _mediator.Send(command);
+
+        if (!result.IsValid)
+            _logger.LogWarning("Progresso não validado para AlunoId {AlunoId}: {Errors}", alunoId, string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
+        else
+            _logger.LogInformation("Progresso registrado com sucesso para AlunoId {AlunoId}, AulaId {AulaId}", alunoId, progressoDto.AulaId);
 
         return CustomResponse(result);
     }
@@ -87,17 +115,32 @@ public class AlunosController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        _logger.LogInformation("Emissão de certificado solicitada para AlunoId {AlunoId}, MatriculaId {MatriculaId}", alunoId, matriculaId);
+
         var aluno = await _alunosRepository.ObterPorId(alunoId);
 
         if (aluno is null || !aluno.Matriculas.Any(x => x.Id == matriculaId))
+        {
+            _logger.LogWarning("Matrícula {MatriculaId} não encontrada para emissão de certificado do AlunoId {AlunoId}", matriculaId, alunoId);
             return NotFound();
+        }
 
         if (!UsuarioPodeVerAluno(alunoId))
+        {
+            _logger.LogWarning("Acesso negado para emissão de certificado do AlunoId {AlunoId}", alunoId);
             return Forbid();
+        }
 
         var command = new EmitirCertificadoCommand(matriculaId);
 
-        return CustomResponse(await _mediator.Send(command));
+        var result = await _mediator.Send(command);
+
+        if (!result.IsValid)
+            _logger.LogWarning("Certificado não emitido para MatriculaId {MatriculaId}: {Errors}", matriculaId, string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
+        else
+            _logger.LogInformation("Certificado emitido com sucesso para AlunoId {AlunoId}, MatriculaId {MatriculaId}", alunoId, matriculaId);
+
+        return CustomResponse(result);
     }
 
     [Tags("4. Histórico")]
@@ -150,13 +193,21 @@ public class AlunosController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        _logger.LogInformation("Adição de endereço solicitada para AlunoId {AlunoId}", alunoId);
+
         var aluno = await _alunosRepository.ObterPorId(alunoId);
 
         if (aluno is null)
+        {
+            _logger.LogWarning("AlunoId {AlunoId} não encontrado para adição de endereço", alunoId);
             return NotFound();
+        }
 
         if (!UsuarioPodeVerAluno(alunoId))
+        {
+            _logger.LogWarning("Acesso negado para adição de endereço do AlunoId {AlunoId}", alunoId);
             return Forbid();
+        }
 
         var endereco = new AdicionarEnderecoCommand(
             alunoId,
@@ -169,7 +220,14 @@ public class AlunosController : MainController
             enderecoDto.Estado
         );
 
-        return CustomResponse(await _mediator.Send(endereco));
+        var result = await _mediator.Send(endereco);
+
+        if (!result.IsValid)
+            _logger.LogWarning("Endereço não adicionado para AlunoId {AlunoId}: {Errors}", alunoId, string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
+        else
+            _logger.LogInformation("Endereço adicionado com sucesso para AlunoId {AlunoId}, CEP {Cep}", alunoId, enderecoDto.Cep);
+
+        return CustomResponse(result);
     }
 
     [Tags("6. Matriculas por ID")]

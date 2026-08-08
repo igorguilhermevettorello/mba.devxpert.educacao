@@ -1,6 +1,7 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Conteudo.Api.Controllers;
 using PlataformaEducacional.Conteudo.Api.DTOs.Cursos;
@@ -24,8 +25,11 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
         private readonly Mock<IMapper> _mapper = new();
         private readonly Mock<INotificador> _notificador = new();
 
-        private CursosController CreateController() =>
-            new CursosController(_mediator.Object, _mapper.Object, _repo.Object, _notificador.Object);
+        private CursosController CreateController()
+        {
+            var loggerMock = new Mock<ILogger<CursosController>>();
+            return new CursosController(_mediator.Object, _mapper.Object, _repo.Object, _notificador.Object, loggerMock.Object);
+        }
 
         [Fact]
         public async Task Criar_ReturnsBadRequest_WhenModelInvalid()

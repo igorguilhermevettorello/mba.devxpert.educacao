@@ -1,5 +1,6 @@
-using FluentValidation.Results;
+﻿using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
 using PlataformaEducacional.Conteudo.Domain.ValueObjects;
@@ -12,11 +13,13 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
     {
         private readonly ICursoRepository _cursoRepository;
         private readonly INotificador _notificador;
+        private readonly ILogger<AtualizarCursoCommandHandler> _logger;
 
-        public AtualizarCursoCommandHandler(ICursoRepository cursoRepository, INotificador notificador)
+        public AtualizarCursoCommandHandler(ICursoRepository cursoRepository, INotificador notificador, ILogger<AtualizarCursoCommandHandler> logger)
         {
             _cursoRepository = cursoRepository;
             _notificador = notificador;
+            _logger = logger;
         }
 
         public async Task<ValidationResult> Handle(AtualizarCursoCommand request, CancellationToken cancellationToken)
@@ -38,6 +41,7 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
 
             if (curso == null)
             {
+                _logger.LogWarning("Curso não encontrado - CursoId {CursoId}", request.Id);
                 _notificador.Handle(new Notificacao
                 {
                     Campo = "Id",
@@ -63,10 +67,14 @@ namespace PlataformaEducacional.Conteudo.Application.Handlers.Cursos
                 }
 
                 _cursoRepository.Alterar(curso);
-                return await PersistData(_cursoRepository.UnitOfWork);
+                var result = await PersistData(_cursoRepository.UnitOfWork);
+                if (result.IsValid)
+                    _logger.LogInformation("Curso atualizado com sucesso - CursoId {CursoId}, Titulo {Titulo}", request.Id, request.Titulo);
+                return result;
             }
             catch (ArgumentException ex)
             {
+                _logger.LogWarning(ex, "Erro ao atualizar curso - CursoId {CursoId}", request.Id);
                 _notificador.Handle(new Notificacao
                 {
                     Campo = "Curso",

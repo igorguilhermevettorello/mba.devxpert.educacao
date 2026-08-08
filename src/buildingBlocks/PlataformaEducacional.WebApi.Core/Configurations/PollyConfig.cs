@@ -1,13 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Retry;
 
 namespace PlataformaEducacional.WebApi.Core.Configurations;
 
-public static class PollyConfig
+public class PollyConfig
 {
-    public static IHttpClientBuilder AddRetryAndCircuitBreaker(this IHttpClientBuilder builder)
+    private readonly ILogger<PollyConfig> _logger;
+
+    public PollyConfig(ILogger<PollyConfig> logger)
+    {
+        _logger = logger;
+    }
+
+    public IHttpClientBuilder AddRetryAndCircuitBreaker(IHttpClientBuilder builder)
     {
         builder.AddPolicyHandler(EsperarTentar())
                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
@@ -15,7 +23,7 @@ public static class PollyConfig
         return builder;
     }
 
-    private static AsyncRetryPolicy<HttpResponseMessage> EsperarTentar()
+    private AsyncRetryPolicy<HttpResponseMessage> EsperarTentar()
     {
         var sleepsBeetweenRetries = new[]
         {
@@ -28,21 +36,25 @@ public static class PollyConfig
             .HandleTransientHttpError()
             .WaitAndRetryAsync(sleepsBeetweenRetries, onRetry: (_, span, retryCount, _) =>
             {
-                var previousBackgroundColor = Console.BackgroundColor;
-                var previousForegroundColor = Console.ForegroundColor;
-
-                Console.BackgroundColor = ConsoleColor.Yellow;
-                Console.ForegroundColor = ConsoleColor.Black;
-
-                Console.Out.WriteLineAsync($" ***** {DateTime.Now:HH:mm:ss} | " +
-                    $"Retentativa: {retryCount} | " +
-                    $"Tempo de Espera em segundos: {span.TotalSeconds} **** ");
-
-                Console.BackgroundColor = previousBackgroundColor;
-                Console.ForegroundColor = previousForegroundColor;
+                _logger.LogWarning("Retentativa {RetryCount} de requisição HTTP - Tempo de Espera: {DelaySeconds} segundos", 
+                    retryCount, span.TotalSeconds);
             });
 
         return retry;
     }
-    
+}
+
+public static class PollyConfigExtensions
+{
+    public static IHttpClientBuilder AddRetryAndCircuitBreaker(this IHttpClientBuilder builder)
+    {
+        var services = builder.Services;
+        
+        services.AddSingleton<PollyConfig>();
+        
+        var serviceProvider = services.BuildServiceProvider();
+        var pollyConfig = serviceProvider.GetRequiredService<PollyConfig>();
+        
+        return pollyConfig.AddRetryAndCircuitBreaker(builder);
+    }
 }

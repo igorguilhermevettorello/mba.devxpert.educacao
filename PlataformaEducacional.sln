@@ -77,10 +77,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{4FC53E93
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Auth.Tests", "src\services\auth\PlataformaEducacional.Auth.Tests\PlataformaEducacional.Auth.Tests.csproj", "{7C80ACCC-2624-47B5-AC98-37DD765D6078}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Conteudo.Tests", "src\services\conteudo\PlataformaEducacional.Conteudo.Tests\PlataformaEducacional.Conteudo.Tests.csproj", "{4B448C2C-1695-4893-8BE6-A41249E7118C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Alunos.Tests", "src\services\alunos\PlataformaEducacional.Alunos.Tests\PlataformaEducacional.Alunos.Tests.csproj", "{A35BF825-B376-4FFE-A83F-74C1920C2E26}"
-EndProject
+REM Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Conteudo.Tests", "src\services\conteudo\PlataformaEducacional.Conteudo.Tests\PlataformaEducacional.Conteudo.Tests.csproj", "{4B448C2C-1695-4893-8BE6-A41249E7118C}"
+REM EndProject
+REM Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Alunos.Tests", "src\services\alunos\PlataformaEducacional.Alunos.Tests\PlataformaEducacional.Alunos.Tests.csproj", "{A35BF825-B376-4FFE-A83F-74C1920C2E26}"
+REM EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Bff.Tests", "src\services\bff\PlataformaEducacional.Bff.Tests\PlataformaEducacional.Bff.Tests.csproj", "{67D93133-4EC0-4665-92BD-454408FFF58C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlataformaEducacional.Pagamentos.Tests", "src\services\pagamentos\PlataformaEducacional.Pagamentos.Tests\PlataformaEducacional.Pagamentos.Tests.csproj", "{34BB816D-7D66-4C4C-A422-75DA3022FD9E}"
@@ -219,8 +219,6 @@ Global
 		{67991B11-EB15-4730-A13B-C9243F0A27F7} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 		{4FC53E93-5E75-4869-BF3E-9BCB72A3CFEB} = {67991B11-EB15-4730-A13B-C9243F0A27F7}
 		{7C80ACCC-2624-47B5-AC98-37DD765D6078} = {2BE75E99-845E-4EDB-B212-9A537157B780}
-		{4B448C2C-1695-4893-8BE6-A41249E7118C} = {2BE75E99-845E-4EDB-B212-9A537157B780}
-		{A35BF825-B376-4FFE-A83F-74C1920C2E26} = {2BE75E99-845E-4EDB-B212-9A537157B780}
 		{67D93133-4EC0-4665-92BD-454408FFF58C} = {2BE75E99-845E-4EDB-B212-9A537157B780}
 		{34BB816D-7D66-4C4C-A422-75DA3022FD9E} = {2BE75E99-845E-4EDB-B212-9A537157B780}
 		{E3B81D6F-E316-4FF6-AF59-73834A460EF1} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}

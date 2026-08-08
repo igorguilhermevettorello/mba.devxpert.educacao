@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PlataformaEducacional.Pagamentos.Api.Models;
 using PlataformaEducacional.Pagamentos.Api.Models.Enums;
 using PlataformaEducacional.Pagamentos.EducaPag;
@@ -8,14 +9,18 @@ namespace PlataformaEducacional.Pagamentos.Api.Facade
     public class PagamentoCartaoCreditoFacade : IPagamentoFacade
     {
         private readonly PagamentoConfig _pagamentoConfig;
+        private readonly ILogger<PagamentoCartaoCreditoFacade> _logger;
 
-        public PagamentoCartaoCreditoFacade(IOptions<PagamentoConfig> pagamentoConfig)
+        public PagamentoCartaoCreditoFacade(IOptions<PagamentoConfig> pagamentoConfig, ILogger<PagamentoCartaoCreditoFacade> logger)
         {
             _pagamentoConfig = pagamentoConfig.Value;
+            _logger = logger;
         }
 
         public async Task<Transacao> AutorizarPagamento(Pagamento pagamento)
         {
+            _logger.LogInformation("Iniciando autorização de pagamento com cartão de crédito - Valor {Valor}", pagamento.Valor);
+
             var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey, _pagamentoConfig.DefaultEncryptionKey);
 
             var cardHashGen = new CardHash(educaPagSvc)
@@ -39,25 +44,53 @@ namespace PlataformaEducacional.Pagamentos.Api.Facade
                 Amount = pagamento.Valor
             };
 
-            return ParaTransacao(await transacao.AuthorizeCardTransaction());
+            var transacaoResult = ParaTransacao(await transacao.AuthorizeCardTransaction());
+
+            if (transacaoResult.Status == StatusTransacao.Autorizado)
+                _logger.LogInformation("Pagamento autorizado com sucesso - Valor {Valor}, Código de Autorização {CodigoAuth}",
+                    pagamento.Valor, transacaoResult.CodigoAutorizacao);
+            else
+                _logger.LogWarning("Pagamento recusado - Valor {Valor}, Status {Status}",
+                    pagamento.Valor, transacaoResult.Status);
+
+            return transacaoResult;
 
         }
 
         public async Task<Transacao> CapturarPagamento(Transacao transacao)
         {
+            _logger.LogInformation("Capturando pagamento - Transação {TransacaoId}, Valor {Valor}", transacao.TID, transacao.ValorTotal);
+
             var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey,
                 _pagamentoConfig.DefaultEncryptionKey);
 
             var transaction = ParaTransaction(transacao, educaPagSvc);
 
-            return ParaTransacao(await transaction.CaptureCardTransaction());
+            var transacaoResult = ParaTransacao(await transaction.CaptureCardTransaction());
+
+            if (transacaoResult.Status == StatusTransacao.Pago)
+                _logger.LogInformation("Pagamento capturado com sucesso - Transação {TransacaoId}", transacao.TID);
+            else
+                _logger.LogWarning("Falha ao capturar pagamento - Transação {TransacaoId}, Status {Status}", transacao.TID, transacaoResult.Status);
+
+            return transacaoResult;
         }
 
         public async Task<Transacao> CancelarAutorizacao(Transacao transacao)
         {
+            _logger.LogInformation("Cancelando autorização de pagamento - Transação {TransacaoId}, Valor {Valor}", transacao.TID, transacao.ValorTotal);
+
             var educaPagSvc = new EducaPagService(_pagamentoConfig.DefaultApiKey, _pagamentoConfig.DefaultEncryptionKey);
             var transaction = ParaTransaction(transacao, educaPagSvc);
-            return ParaTransacao(await transaction.CancelAuthorization());
+
+            var transacaoResult = ParaTransacao(await transaction.CancelAuthorization());
+
+            if (transacaoResult.Status == StatusTransacao.Cancelado)
+                _logger.LogInformation("Pagamento cancelado com sucesso - Transação {TransacaoId}", transacao.TID);
+            else
+                _logger.LogWarning("Falha ao cancelar pagamento - Transação {TransacaoId}, Status {Status}", transacao.TID, transacaoResult.Status);
+
+            return transacaoResult;
         }
 
         public static Transacao ParaTransacao(Transaction transaction)
