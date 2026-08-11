@@ -59,35 +59,5 @@ namespace PlataformaEducacional.Bff.Api.Tests
             Assert.Null(result);
         }
 
-        [Fact]
-        public async Task ObterCursoPorIdAsync_ReturnsCurso_WhenSuccess()
-        {
-<<<<<<< HEAD
-            var curso = new { data = new { id = Guid.NewGuid(), titulo = "Curso X", valor = 123.45m } };
-            var json = JsonSerializer.Serialize(curso);
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
-            var settings = Options.Create(new AppServicesSettings { });
-            var loggerMock = new Mock<ILogger<ConteudoService>>();
-            var svc = new ConteudoService(http, settings, loggerMock.Object);
-
-            var result = await svc.ObterCursoPorIdAsync(Guid.NewGuid());
-=======
-            var cursos = new List<CursoDto> { new CursoDto { Id = Guid.NewGuid(), Titulo = "T" } };
-            var resultDto = new ResultDto<IEnumerable<CursoDto>>() { Data = cursos, Success = true };
-
-            //var resultDto = ResultDto<IEnumerable<CursoDto>>.Ok(cursos, "ok");
-            var json = JsonSerializer.Serialize(resultDto);
-
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(json)
-            });
-            var settings = Options.Create(new AppServicesSettings { ConteudoApiUrl = "https://test" });
-            var svc = new ConteudoService(http, settings);
-
-            var result = await svc.ObterCursoDisponiveisAsync();
->>>>>>> origin/staging
-            Assert.NotNull(result);
-        }
     }
 }

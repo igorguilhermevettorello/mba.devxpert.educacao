@@ -6,6 +6,18 @@ using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+// Add services
+builder.Configuration.AddUserSecrets<Program>(optional: true, reloadOnChange: true);
+
+if (builder.Environment.IsEnvironment("Docker"))
+{
+    var dockerSecretsPath = Environment.GetEnvironmentVariable("DOCKER_SECRETS_PATH");
+
+    if (!string.IsNullOrWhiteSpace(dockerSecretsPath))
+    {
+        builder.Configuration.AddJsonFile(dockerSecretsPath, optional: true, reloadOnChange: false);
+    }
+}
 
 builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Alunos API");
