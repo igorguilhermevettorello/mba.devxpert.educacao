@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using PlataformaEducacional.Pagamentos.Api.Services;
@@ -40,7 +41,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
                 Content = new StringContent(json)
             });
 
-            var svc = new ConteudoService(http);
+            var loggerMock = new Mock<ILogger<ConteudoService>>();
+            var svc = new ConteudoService(http, loggerMock.Object);
 
             var result = await svc.ObterCursoPorIdAsync(Guid.NewGuid());
 
@@ -53,7 +55,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
         public async Task ObterCursoPorIdAsync_ReturnsNull_OnNonSuccessStatus()
         {
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
-            var svc = new ConteudoService(http);
+            var loggerMock = new Mock<ILogger<ConteudoService>>();
+            var svc = new ConteudoService(http, loggerMock.Object);
 
             var result = await svc.ObterCursoPorIdAsync(Guid.NewGuid());
 
@@ -74,7 +77,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
                .ThrowsAsync(new HttpRequestException("fail"));
 
             var http = new HttpClient(handlerMock.Object) { BaseAddress = new Uri("https://test") };
-            var svc = new ConteudoService(http);
+            var loggerMock = new Mock<ILogger<ConteudoService>>();
+            var svc = new ConteudoService(http, loggerMock.Object);
 
             var result = await svc.ObterCursoPorIdAsync(Guid.NewGuid());
 

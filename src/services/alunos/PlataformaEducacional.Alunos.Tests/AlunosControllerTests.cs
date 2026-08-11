@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -124,3 +126,4 @@ namespace PlataformaEducacional.Alunos.Tests
         }
     }
 }
+>>>>>>> origin/staging

@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Bff.Api.Controllers;
 using PlataformaEducacional.Bff.Api.Interfaces;
@@ -21,8 +22,11 @@ namespace PlataformaEducacional.Bff.Api.Tests
         private readonly Mock<IMatriculaService> _matricula = new();
         private readonly Mock<IPagamentoService> _pagamento = new();
 
-        private CompraController CreateController() =>
-            new CompraController(_mediator.Object, _user.Object, _conteudo.Object, _matricula.Object, _pagamento.Object);
+        private CompraController CreateController()
+        {
+            var loggerMock = new Mock<ILogger<CompraController>>();
+            return new CompraController(_mediator.Object, _user.Object, _conteudo.Object, _matricula.Object, _pagamento.Object, loggerMock.Object);
+        }
 
         [Fact]
         public async Task ListarConteudosDisponiveis_ReturnsOk_WithValue()
@@ -65,25 +69,21 @@ namespace PlataformaEducacional.Bff.Api.Tests
         {
             var controller = CreateController();
 
-            // empty matricula id -> returns custom response with message (OK result containing string)
             var badModel = new RealizarPagamentoDto { MatriculaId = Guid.Empty, ValorCurso = 10m };
             var res1 = await controller.RealizarPagamento(Guid.NewGuid(), badModel);
             var ok1 = Assert.IsType<BadRequestObjectResult>(res1);
             Assert.IsType<ValidationProblemDetails>(ok1.Value);
 
-            // mismatched id
             var id = Guid.NewGuid();
             var badModel2 = new RealizarPagamentoDto { MatriculaId = Guid.NewGuid(), ValorCurso = 10m };
             var res2 = await controller.RealizarPagamento(id, badModel2);
             var ok2 = Assert.IsType<BadRequestObjectResult>(res2);
             Assert.IsType<ValidationProblemDetails>(ok2.Value);
 
-            // invalid model state
             controller.ModelState.AddModelError("X", "err");
             var res3 = await controller.RealizarPagamento(id, badModel2);
             Assert.IsType<BadRequestObjectResult>(res3);
 
-            // successful flow
             controller.ModelState.Clear();
             var validModel = new RealizarPagamentoDto { MatriculaId = id, ValorCurso = 10m, NumeroCartao = "4111111111111111", TitularCartao = "T", ValidadeCartao = "12/30", CodigoSegurancaCartao = "123" };
             _pagamento.Setup(p => p.RealizarPagamentoAsync(validModel)).ReturnsAsync(true);

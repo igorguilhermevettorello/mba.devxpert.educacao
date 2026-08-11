@@ -1,5 +1,6 @@
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Alunos.Application.Events;
 using PlataformaEducacional.Alunos.Application.Services;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
@@ -20,12 +21,14 @@ public class AlunoCommandHandler : CommandHandler,
     private readonly IAlunoRepository _alunoRepository;
     private readonly IMessageBus _bus;
     private readonly IConteudoService _conteudoService;
+    private readonly ILogger<AlunoCommandHandler> _logger;
 
-    public AlunoCommandHandler(IAlunoRepository alunoRepository, IMessageBus bus, IConteudoService conteudoService)
+    public AlunoCommandHandler(IAlunoRepository alunoRepository, IMessageBus bus, IConteudoService conteudoService, ILogger<AlunoCommandHandler> logger)
     {
         _alunoRepository = alunoRepository;
         _bus = bus;
         _conteudoService = conteudoService;
+        _logger = logger;
     }
 
     public async Task<ValidationResult> Handle(AdicionarEnderecoCommand message, CancellationToken cancellationToken)
@@ -35,7 +38,12 @@ public class AlunoCommandHandler : CommandHandler,
         var endereco = new Endereco(message.Logradouro, message.Numero, message.Complemento, message.Bairro, message.Cep, message.Cidade, message.Estado, message.AlunoId);
         _alunoRepository.AdicionarEndereco(endereco);
 
-        return await PersistData(_alunoRepository.UnitOfWork);
+        var result = await PersistData(_alunoRepository.UnitOfWork);
+
+        if (result.IsValid)
+            _logger.LogInformation("Endereço adicionado com sucesso para AlunoId {AlunoId}", message.AlunoId);
+
+        return result;
     }
 
     public async Task<ValidationResult> Handle(RegistrarAlunoCommand message, CancellationToken cancellationToken)
@@ -47,6 +55,7 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (alunoExistente != null)
         {
+            _logger.LogWarning("Tentativa de registrar aluno com CPF duplicado: {Cpf}", aluno.Cpf.Numero);
             AddError("Este CPF já está em uso.");
             return ValidationResult;
         }
@@ -55,7 +64,12 @@ public class AlunoCommandHandler : CommandHandler,
 
         aluno.AddEvent(new AlunoRegistradoEvent(message.Id, message.Nome, message.Email, message.Cpf));
 
-        return await PersistData(_alunoRepository.UnitOfWork);
+        var result = await PersistData(_alunoRepository.UnitOfWork);
+
+        if (result.IsValid)
+            _logger.LogInformation("Aluno registrado com sucesso - AlunoId {AlunoId}, Nome {Nome}", message.Id, message.Nome);
+
+        return result;
     }
 
     public async Task<ValidationResult> Handle(RealizarMatriculaCommand message, CancellationToken cancellationToken)
@@ -67,6 +81,7 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (aluno == null)
         {
+            _logger.LogWarning("Matrícula não realizada - Aluno {AlunoId} não encontrado", message.AlunoId);
             AddError("Aluno não encontrado.");
             return ValidationResult;
         }
@@ -74,12 +89,14 @@ public class AlunoCommandHandler : CommandHandler,
         var cursoExiste = await _conteudoService.CursoExisteAsync(message.CursoId);
         if (!cursoExiste)
         {
+            _logger.LogWarning("Matrícula não realizada - Curso {CursoId} não encontrado ou indisponível para AlunoId {AlunoId}", message.CursoId, message.AlunoId);
             AddError("Curso não encontrado ou indisponível.");
             return ValidationResult;
         }
 
         if (aluno.Matriculas.Any(x => x.CursoId == message.CursoId))
         {
+            _logger.LogWarning("Matrícula não realizada - Aluno {AlunoId} já possui matrícula no Curso {CursoId}", message.AlunoId, message.CursoId);
             AddError($"Aluno já possui matricula no curso {message.CursoId}");
             return ValidationResult;
         }
@@ -88,6 +105,10 @@ public class AlunoCommandHandler : CommandHandler,
         _alunoRepository.AdicionarMatricula(matricula);
 
         var result = await PersistData(_alunoRepository.UnitOfWork);
+
+        if (result.IsValid)
+            _logger.LogInformation("Matrícula realizada com sucesso - AlunoId {AlunoId}, CursoId {CursoId}", message.AlunoId, message.CursoId);
+
         return result;
     }
 
@@ -98,6 +119,7 @@ public class AlunoCommandHandler : CommandHandler,
         var cursoIdRelacionado = await _conteudoService.ObterCursoIdPorAulaAsync(message.AulaId);
         if (cursoIdRelacionado == null)
         {
+            _logger.LogWarning("Progresso não registrado - Aula {AulaId} não encontrada na API de Conteúdos para AlunoId {AlunoId}", message.AulaId, message.AlunoId);
             AddError("A aula informada não foi encontrada na API de Conteúdos.");
             return ValidationResult;
         }
@@ -106,12 +128,14 @@ public class AlunoCommandHandler : CommandHandler,
         var matriculaAtiva = matriculas.FirstOrDefault(m => m.CursoId.Equals(cursoIdRelacionado.Value) && m.Status == StatusMatricula.Ativa);
         if (matriculaAtiva is null)
         {
+            _logger.LogWarning("Progresso não registrado - Aluno {AlunoId} não possui matrícula ativa para Aula {AulaId}", message.AlunoId, message.AulaId);
             AddError("Aluno não possui matrícula ativa para o curso desta aula.");
             return ValidationResult;
         }
 
         if (matriculaAtiva.ProgressoAulas.Any(p => p.AulaId == message.AulaId))
         {
+            _logger.LogWarning("Progresso não registrado - Aula {AulaId} já registrada para MatriculaId {MatriculaId}", message.AulaId, matriculaAtiva.Id);
             AddError("O progresso desta aula já foi registrado anteriormente.");
             return ValidationResult;
         }
@@ -119,7 +143,12 @@ public class AlunoCommandHandler : CommandHandler,
         var progresso = new ProgressoAula(matriculaAtiva.Id, message.AulaId);
         _alunoRepository.AdicionarProgresso(progresso);
 
-        return await PersistData(_alunoRepository.UnitOfWork);
+        var result = await PersistData(_alunoRepository.UnitOfWork);
+
+        if (result.IsValid)
+            _logger.LogInformation("Progresso registrado com sucesso - AlunoId {AlunoId}, AulaId {AulaId}", message.AlunoId, message.AulaId);
+
+        return result;
     }
 
     public async Task<ValidationResult> Handle(EmitirCertificadoCommand message, CancellationToken cancellationToken)
@@ -130,12 +159,14 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (matricula.Status != StatusMatricula.Ativa && matricula.Status != StatusMatricula.Concluida)
         {
+            _logger.LogWarning("Certificado não emitido - Matrícula {MatriculaId} com status {Status} (requer Ativa ou Concluída)", message.MatriculaId, matricula.Status);
             AddError("A matrícula precisa estar ativa ou concluída para emitir o certificado.");
             return ValidationResult;
         }
 
         if (matricula.Certificado != null)
         {
+            _logger.LogWarning("Certificado não emitido - Certificado já existe para MatriculaId {MatriculaId}", message.MatriculaId);
             AddError("Certificado já emitido para esta matrícula.");
             return ValidationResult;
         }
@@ -144,6 +175,8 @@ public class AlunoCommandHandler : CommandHandler,
 
         if (totalAulasCurso == 0 || matricula.ProgressoAulas.Count < totalAulasCurso)
         {
+            _logger.LogWarning("Certificado não emitido - AlunoId {AlunoId} completou {ProgressoCount} de {TotalAulas} aulas do Curso {CursoId}",
+                matricula.AlunoId, matricula.ProgressoAulas.Count, totalAulasCurso, matricula.CursoId);
             AddError($"O aluno ainda não concluiu todas as {totalAulasCurso} aulas deste curso.");
             return ValidationResult;
         }
@@ -153,6 +186,12 @@ public class AlunoCommandHandler : CommandHandler,
         _alunoRepository.AttachMatricula(matricula);
         _alunoRepository.AdicionarCertifficado(certificado);
 
-        return await PersistData(_alunoRepository.UnitOfWork);
+        var result = await PersistData(_alunoRepository.UnitOfWork);
+
+        if (result.IsValid)
+            _logger.LogInformation("Certificado emitido com sucesso - AlunoId {AlunoId}, MatriculaId {MatriculaId}, CursoId {CursoId}",
+                matricula.AlunoId, message.MatriculaId, matricula.CursoId);
+
+        return result;
     }
 }

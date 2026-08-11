@@ -47,6 +47,8 @@ public class AuthController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        _logger.LogInformation("Solicitação de registro para Email {Email}", usuarioRegistro.Email);
+
         var user = new IdentityUser
         {
             UserName = usuarioRegistro.Email,
@@ -58,18 +60,26 @@ public class AuthController : MainController
 
         if (result.Succeeded)
         {
+            _logger.LogInformation("Usuário criado com sucesso - Email {Email}, UserId {UserId}", usuarioRegistro.Email, user.Id);
+
             await _userManager.AddToRoleAsync(user, TipoUsuario.Aluno.GetDescription().ToUpperInvariant());
 
             var clienteResult = await RegistrarAluno(usuarioRegistro);
 
             if (!clienteResult.ValidationResult.IsValid)
             {
+                _logger.LogWarning("Falha ao registrar aluno na fila - Email {Email}: {Errors}", usuarioRegistro.Email,
+                    string.Join(", ", clienteResult.ValidationResult.Errors.Select(e => e.ErrorMessage)));
                 await _userManager.DeleteAsync(user);
                 return CustomResponse(clienteResult.ValidationResult);
             }
 
+            _logger.LogInformation("Registro completo com sucesso - Email {Email}, JWT gerado", usuarioRegistro.Email);
             return CustomResponse(await GerarJwt(usuarioRegistro.Email));
         }
+
+        _logger.LogWarning("Falha ao criar usuário - Email {Email}: {Errors}", usuarioRegistro.Email,
+            string.Join(", ", result.Errors.Select(e => e.Description)));
 
         foreach (var error in result.Errors)
         {
@@ -84,19 +94,24 @@ public class AuthController : MainController
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        _logger.LogInformation("Tentativa de login para Email {Email}", usuarioLogin.Email);
+
         var result = await _signInManager.PasswordSignInAsync(usuarioLogin.Email, usuarioLogin.Senha, false, true);
 
         if (result.Succeeded)
         {
+            _logger.LogInformation("Login bem-sucedido para Email {Email}, JWT gerado", usuarioLogin.Email);
             return CustomResponse(await GerarJwt(usuarioLogin.Email));
         }
 
         if (result.IsLockedOut)
         {
+            _logger.LogWarning("Usuário bloqueado por tentativas inválidas - Email {Email}", usuarioLogin.Email);
             AdicionarErroProcessamento("Usuário temporariamente bloqueado por tentativas inválidas");
             return CustomResponse();
         }
 
+        _logger.LogWarning("Falha de autenticação - Email ou Senha incorretos para {Email}", usuarioLogin.Email);
         AdicionarErroProcessamento("Usuário ou Senha incorretos");
         return CustomResponse();
     }

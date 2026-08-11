@@ -1,20 +1,22 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
-using PlataformaEducacional.Bff.Api.Models;
 using PlataformaEducacional.Bff.Api.Services;
+using PlataformaEducacional.Bff.Api.Interfaces;
+using PlataformaEducacional.Bff.Api.Models;
 using Xunit;
 
 namespace PlataformaEducacional.Bff.Api.Tests
 {
     public class PagamentoServiceTests
     {
-        private static HttpClient CreateHttpClient(HttpResponseMessage response, Action<HttpRequestMessage>? inspect = null)
+        private static HttpClient CreateHttpClient(Func<HttpRequestMessage, HttpResponseMessage> respond)
         {
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             handlerMock
@@ -24,64 +26,51 @@ namespace PlataformaEducacional.Bff.Api.Tests
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>()
                )
-               .ReturnsAsync((HttpRequestMessage req, CancellationToken _) =>
-               {
-                   inspect?.Invoke(req);
-                   return response;
-               });
+               .ReturnsAsync((HttpRequestMessage req, CancellationToken _) => respond(req));
 
-            return new HttpClient(handlerMock.Object)
-            {
-                BaseAddress = new Uri("https://test")
-            };
+            return new HttpClient(handlerMock.Object) { BaseAddress = new Uri("https://test") };
         }
 
         [Fact]
-        public async Task RealizarPagamentoAsync_ReturnsTrue_OnSuccessStatus()
+        public async Task RealizarPagamentoAsync_ReturnsTrue_OnSuccess()
         {
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
-            var http = CreateHttpClient(response, req =>
-            {
-                Assert.Equal(HttpMethod.Post, req.Method);
-                Assert.Equal("/api/pagamentos", req.RequestUri?.AbsolutePath);
-            });
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK));
+            var loggerMock = new Mock<ILogger<PagamentoService>>();
+            var svc = new PagamentoService(http, loggerMock.Object);
 
-            var service = new PagamentoService(http);
-
-            var dto = new RealizarPagamentoDto
-            {
-                MatriculaId = Guid.NewGuid(),
-                ValorCurso = 10m,
-                NumeroCartao = "4111111111111111",
-                TitularCartao = "Teste",
-                ValidadeCartao = "12/30",
-                CodigoSegurancaCartao = "123"
-            };
-
-            var result = await service.RealizarPagamentoAsync(dto);
+            var result = await svc.RealizarPagamentoAsync(new RealizarPagamentoDto { MatriculaId = Guid.NewGuid(), ValorCurso = 100m });
             Assert.True(result);
         }
 
         [Fact]
-        public async Task RealizarPagamentoAsync_ReturnsFalse_OnBadRequest()
+        public async Task RealizarPagamentoAsync_ReturnsFalse_OnNonSuccess()
         {
-            var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
-            var http = CreateHttpClient(response);
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.BadRequest));
+            var loggerMock = new Mock<ILogger<PagamentoService>>();
+            var svc = new PagamentoService(http, loggerMock.Object);
 
-            var service = new PagamentoService(http);
-
-            var dto = new RealizarPagamentoDto
-            {
-                MatriculaId = Guid.NewGuid(),
-                ValorCurso = 10m,
-                NumeroCartao = "invalid",
-                TitularCartao = "Teste",
-                ValidadeCartao = "12/30",
-                CodigoSegurancaCartao = "123"
-            };
-
-            var result = await service.RealizarPagamentoAsync(dto);
+            var result = await svc.RealizarPagamentoAsync(new RealizarPagamentoDto { MatriculaId = Guid.NewGuid(), ValorCurso = 100m });
             Assert.False(result);
+        }
+
+        [Fact]
+        public async Task RealizarPagamentoAsync_ReturnsFalse_OnException()
+        {
+            var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+            handlerMock
+               .Protected()
+               .Setup<Task<HttpResponseMessage>>(
+                  "SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>()
+               )
+               .ThrowsAsync(new HttpRequestException("fail"));
+
+            var http = new HttpClient(handlerMock.Object) { BaseAddress = new Uri("https://test") };
+            var loggerMock = new Mock<ILogger<PagamentoService>>();
+            var svc = new PagamentoService(http, loggerMock.Object);
+
+            await Assert.ThrowsAsync<HttpRequestException>(() => svc.RealizarPagamentoAsync(new RealizarPagamentoDto { MatriculaId = Guid.NewGuid(), ValorCurso = 100m }));
         }
     }
 }

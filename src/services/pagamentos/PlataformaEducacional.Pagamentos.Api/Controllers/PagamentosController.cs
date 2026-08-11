@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Core.Enumerators;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.Core.Notifications;
@@ -24,6 +25,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IAspNetUser _user;
         private readonly IAlunoService _alunoService;
+        private readonly ILogger<PagamentosController> _logger;
 
         public PagamentosController(
             IPagamentoRepository pagamentoRepository,
@@ -31,13 +33,15 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             IPagamentoService pagamentoService,
             INotificador notificador,
             IAspNetUser user,
-            IAlunoService alunoService) : base(notificador)
+            IAlunoService alunoService,
+            ILogger<PagamentosController> logger) : base(notificador)
         {
             _pagamentoRepository = pagamentoRepository;
             _mapper = mapper;
             _pagamentoService = pagamentoService;
             _user = user;
             _alunoService = alunoService;
+            _logger = logger;
         }
 
         [HttpGet("{id:guid}")]
@@ -47,18 +51,23 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId([FromRoute] Guid id)
         {
+            _logger.LogInformation("Solicitação para obter Pagamento {PagamentoId}", id);
+
             var pagamento = await _pagamentoRepository.ObterPorId(id);
 
             if (pagamento == null)
             {
+                _logger.LogWarning("Pagamento {PagamentoId} não encontrado", id);
                 return NotFound();
             }
 
             if (!await UsuarioPodeVerPagamento(pagamento))
             {
+                _logger.LogWarning("Acesso negado para Pagamento {PagamentoId} pelo usuário {UserId}", id, ObterIdUsuario());
                 return Forbid();
             }
 
+            _logger.LogInformation("Pagamento {PagamentoId} obtido com sucesso", id);
             var pagamentoDto = _mapper.Map<PagamentoDto>(pagamento);
             return Ok(pagamentoDto);
         }
@@ -96,13 +105,22 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
+            _logger.LogInformation("Solicitação para realizar Pagamento - MatriculaId {MatriculaId}, Valor {Valor}", model.MatriculaId, model.ValorCurso);
+
             if (!await UsuarioPodePagarAMatricula(model.MatriculaId))
+            {
+                _logger.LogWarning("Acesso negado para pagar Matrícula {MatriculaId} pelo usuário {UserId}", model.MatriculaId, ObterIdUsuario());
                 return Forbid();
+            }
 
             var cartaoCredito = CartaoCredito.TryCreate(model.TitularCartao, model.NumeroCartao, model.ValidadeCartao, model.CodigoSegurancaCartao);
 
             if (!cartaoCredito.IsValid)
+            {
+                _logger.LogWarning("Cartão de crédito inválido para Matrícula {MatriculaId}: {Errors}", model.MatriculaId,
+                    string.Join(", ", cartaoCredito.ValidationResult.Errors.Select(e => e.ErrorMessage)));
                 return CustomResponse(cartaoCredito.ValidationResult);
+            }
 
             var pagamento = new Pagamento(
                 model.MatriculaId,
@@ -114,10 +132,14 @@ namespace PlataformaEducacional.Pagamentos.Api.Controllers
 
             if (!responseMessage.ValidationResult.IsValid)
             {
+                _logger.LogWarning("Falha ao autorizar Pagamento {PagamentoId} para Matrícula {MatriculaId}: {Errors}", pagamento.Id, model.MatriculaId,
+                    string.Join(", ", responseMessage.ValidationResult.Errors.Select(e => e.ErrorMessage)));
                 NotificarErros(responseMessage);
                 return CustomResponse();
             }
 
+            _logger.LogInformation("Pagamento autorizado com sucesso - PagamentoId {PagamentoId}, MatriculaId {MatriculaId}, Valor {Valor}",
+                pagamento.Id, model.MatriculaId, model.ValorCurso);
             return CreatedAtAction(nameof(ObterPorId), new { id = pagamento.Id }, _mapper.Map<PagamentoDto>(pagamento));
         }
 

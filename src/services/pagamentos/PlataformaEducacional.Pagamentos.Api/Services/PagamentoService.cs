@@ -1,4 +1,5 @@
 ﻿using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Core.DomainObjects;
 using PlataformaEducacional.Core.Messages.Integration;
 using PlataformaEducacional.MessageBus;
@@ -15,34 +16,42 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
         private readonly IMessageBus _bus;
         private readonly IConteudoService _conteudoService;
         private readonly IAlunoService _alunoService;
+        private readonly ILogger<PagamentoService> _logger;
 
-        public PagamentoService(IPagamentoFacade pagamentoFacade, IPagamentoRepository pagamentoRepository, IMessageBus bus, IConteudoService conteudoService, IAlunoService alunoService)
+        public PagamentoService(IPagamentoFacade pagamentoFacade, IPagamentoRepository pagamentoRepository, IMessageBus bus, IConteudoService conteudoService, IAlunoService alunoService, ILogger<PagamentoService> logger)
         {
             _pagamentoFacade = pagamentoFacade;
             _pagamentoRepository = pagamentoRepository;
             _bus = bus;
             _conteudoService = conteudoService;
             _alunoService = alunoService;
+            _logger = logger;
         }
 
         public async Task<ResponseMessage> AutorizarPagamento(Pagamento pagamento)
         {
             var validationResult = new ValidationResult();
 
+            _logger.LogInformation("Iniciando autorização de Pagamento {PagamentoId} para Matrícula {MatriculaId}, Valor {Valor}",
+                pagamento.Id, pagamento.MatriculaId, pagamento.Valor);
+
             if (!await MatriculaExiste(pagamento.MatriculaId))
             {
+                _logger.LogWarning("Matrícula {MatriculaId} não encontrada para Pagamento {PagamentoId}", pagamento.MatriculaId, pagamento.Id);
                 validationResult.Errors.Add(new ValidationFailure("Matricula", $"Matrícula {pagamento.MatriculaId} não encontrada"));
                 return new ResponseMessage(validationResult);
             }
 
             if (await ExistePagamentoParaAMatricula(pagamento.MatriculaId))
             {
+                _logger.LogWarning("Já existe pagamento para Matrícula {MatriculaId}", pagamento.MatriculaId);
                 validationResult.Errors.Add(new ValidationFailure("Pagamento", $"Já existe pagamento para a matrícula {pagamento.MatriculaId}"));
                 return new ResponseMessage(validationResult);
             }
 
             if (!await ValidarValorDoPagamento(pagamento))
             {
+                _logger.LogWarning("Valor do pagamento {Valor} não corresponde ao preço do curso para Matrícula {MatriculaId}", pagamento.Valor, pagamento.MatriculaId);
                 validationResult.Errors.Add(new ValidationFailure("Pagamento", "Valor do pagamento não corresponde ao preço do curso"));
                 return new ResponseMessage(validationResult);
             }
@@ -51,6 +60,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
             if (transacao.Status != StatusTransacao.Autorizado)
             {
+                _logger.LogWarning("Pagamento recusado - Transação {TransacaoId} com status {Status} para Matrícula {MatriculaId}",
+                    transacao.Id, transacao.Status, pagamento.MatriculaId);
                 validationResult.Errors.Add(new ValidationFailure("Pagamento", "Pagamento recusado, entre em contato com a sua operadora de cartão"));
                 return new ResponseMessage(validationResult);
             }
@@ -60,13 +71,18 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
 
             if (!await _pagamentoRepository.UnitOfWork.Commit())
             {
+                _logger.LogError("Erro ao persistir Pagamento {PagamentoId} para Matrícula {MatriculaId}", pagamento.Id, pagamento.MatriculaId);
                 validationResult.Errors.Add(new ValidationFailure("Pagamento", "Houve um erro ao realizar o pagamento."));
                 await CancelarPagamento(pagamento.MatriculaId);
                 return new ResponseMessage(validationResult);
             }
 
+            _logger.LogInformation("Pagamento autorizado com sucesso - PagamentoId {PagamentoId}, MatriculaId {MatriculaId}, Transação {TransacaoId}",
+                pagamento.Id, pagamento.MatriculaId, transacao.Id);
+
             if (!PublicarEventoPagamentoConfirmado(pagamento))
             {
+                _logger.LogWarning("Falha ao publicar evento de pagamento confirmado para Matrícula {MatriculaId}", pagamento.MatriculaId);
                 await CancelarPagamento(pagamento.MatriculaId);
             }
 
@@ -145,10 +161,12 @@ namespace PlataformaEducacional.Pagamentos.Api.Services
             try
             {
                 _bus.Publish<PagamentoConfirmadoIntegrationEvent>(pagamentoConfirmadoEvent);
+                _logger.LogInformation("Evento de pagamento confirmado publicado com sucesso para MatriculaId {MatriculaId}", pagamento.MatriculaId);
                 return true;
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Falha ao publicar evento de pagamento confirmado para MatriculaId {MatriculaId}", pagamento.MatriculaId);
                 return false;
             }
         }
