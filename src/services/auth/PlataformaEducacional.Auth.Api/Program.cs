@@ -8,6 +8,7 @@ using PlataformaEducacional.WebApi.Core.Configurations;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Configuration.AddUserSecrets<Program>(optional: true, reloadOnChange: true);
 builder.AddDataContextConfiguration();
 builder.Services.AddApiConfiguration("Auth API", authenticationRequired: false, setProxyReverse: builder.Environment.IsEnvironment("Docker"));
 builder.Services.AddIdentityConfiguration(builder.Configuration, builder.Environment);
@@ -15,7 +16,7 @@ builder.Services.AddSingleton<IJwtRsaSigningCredentialsProvider, JwtRsaSigningCr
 
 builder.Services.AddMessageBusConfiguration(builder.Configuration);
 builder.Services.AddHealthChecks()
-    .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
+       .AddCheck<DatabaseHealthCheck>("database", tags: ["ready"]);
 
 var app = builder.Build();
 
