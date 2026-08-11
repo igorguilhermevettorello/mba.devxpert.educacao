@@ -8,7 +8,11 @@ public static class DependencyInjectionExtensions
     {
         if (string.IsNullOrEmpty(connection)) throw new ArgumentNullException();
 
-        services.AddSingleton<IMessageBus>(new MessageBus(connection));
+        services.AddSingleton<IMessageBus>(serviceProvider =>
+        {
+            var logger = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<MessageBus>>();
+            return new MessageBus(connection, logger);
+        });
 
         return services;
     }

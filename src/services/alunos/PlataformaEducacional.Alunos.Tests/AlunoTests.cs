@@ -12,12 +12,12 @@ namespace PlataformaEducacional.Alunos.Tests
         public void Ctor_InitializesProperties()
         {
             var id = Guid.NewGuid();
-            var aluno = new Aluno(id, "Nome", "email@example.com", "12345678901");
+            var aluno = new Aluno(id, "Nome", "email@example.com", "09044871056");
 
             Assert.Equal(id, aluno.Id);
             Assert.Equal("Nome", aluno.Nome);
             Assert.Equal("email@example.com", aluno.Email.Endereco);
-            Assert.Equal("12345678901", aluno.Cpf.Numero);
+            Assert.Equal("09044871056", aluno.Cpf.Numero);
             Assert.False(aluno.Excluido);
             Assert.NotNull(aluno.Matriculas);
         }
@@ -25,7 +25,7 @@ namespace PlataformaEducacional.Alunos.Tests
         [Fact]
         public void TrocarEmail_UpdatesEmail()
         {
-            var aluno = new Aluno(Guid.NewGuid(), "Nome", "old@example.com", "12345678901");
+            var aluno = new Aluno(Guid.NewGuid(), "Nome", "old@example.com", "09044871056");
             aluno.TrocarEmail("new@example.com");
             Assert.Equal("new@example.com", aluno.Email.Endereco);
         }
@@ -33,7 +33,7 @@ namespace PlataformaEducacional.Alunos.Tests
         [Fact]
         public void AtribuirEndereco_AssignsEndereco()
         {
-            var aluno = new Aluno(Guid.NewGuid(), "Nome", "email@example.com", "12345678901");
+            var aluno = new Aluno(Guid.NewGuid(), "Nome", "email@example.com", "09044871056");
             var endereco = new Endereco("R", "1", "", "B", "00000-000", "C", "SP", aluno.Id);
 
             aluno.AtribuirEndereco(endereco);
@@ -45,7 +45,7 @@ namespace PlataformaEducacional.Alunos.Tests
         public void Certificados_ReflectsMatriculas()
         {
             var alunoId = Guid.NewGuid();
-            var aluno = new Aluno(alunoId, "Nome", "email@example.com", "12345678901");
+            var aluno = new Aluno(alunoId, "Nome", "email@example.com", "09044871056");
 
             var m1 = new Matricula(Guid.NewGuid(), alunoId, Guid.NewGuid());
             var m2 = new Matricula(Guid.NewGuid(), alunoId, Guid.NewGuid());

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Alunos.Application.Services.Models;
 
 namespace PlataformaEducacional.Alunos.Application.Services;
@@ -6,10 +7,12 @@ namespace PlataformaEducacional.Alunos.Application.Services;
 public class ConteudoService : IConteudoService
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<ConteudoService> _logger;
 
-    public ConteudoService(HttpClient httpClient)
+    public ConteudoService(HttpClient httpClient, ILogger<ConteudoService> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     public async Task<bool> CursoExisteAsync(Guid cursoId)
@@ -17,10 +20,15 @@ public class ConteudoService : IConteudoService
         try
         {
             var response = await _httpClient.GetAsync($"/api/cursos/{cursoId}");
+
+            if (!response.IsSuccessStatusCode)
+                _logger.LogWarning("Curso {CursoId} não encontrado na API de Conteúdos - Status {StatusCode}", cursoId, response.StatusCode);
+
             return response.IsSuccessStatusCode;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Falha ao consultar /api/cursos/{CursoId} na API de Conteúdos", cursoId);
             return false;
         }
     }
@@ -31,14 +39,18 @@ public class ConteudoService : IConteudoService
         {
             var response = await _httpClient.GetAsync($"/api/aulas/{aulaId}");
             if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("Aula {AulaId} não encontrada na API de Conteúdos - Status {StatusCode}", aulaId, response.StatusCode);
                 return null;
+            }
 
             var result = await response.Content.ReadFromJsonAsync<ResultWrapper<AulaDto>>();
-            
+
             return result?.Data?.CursoId;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Falha ao consultar /api/aulas/{AulaId} na API de Conteúdos", aulaId);
             return null;
         }
     }
@@ -49,14 +61,18 @@ public class ConteudoService : IConteudoService
         {
             var response = await _httpClient.GetAsync($"/api/aulas/curso/{cursoId}");
             if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("Aulas do Curso {CursoId} não encontradas na API de Conteúdos - Status {StatusCode}", cursoId, response.StatusCode);
                 return 0;
+            }
 
             var result = await response.Content.ReadFromJsonAsync<ResultWrapper<IEnumerable<AulaDto>>>();
-            
+
             return result?.Data?.Count() ?? 0;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Falha ao consultar /api/aulas/curso/{CursoId} na API de Conteúdos", cursoId);
             return 0;
         }
     }
