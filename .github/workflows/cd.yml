@@ -1,0 +1,65 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - master
+      - staging
+      - gustavo/setup-cd # Incluído para testar a branch atual
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Auth API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/services/auth/PlataformaEducacional.Auth.Api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/api-auth:latest,${{ secrets.DOCKER_USERNAME }}/api-auth:${{ github.sha }}
+
+      - name: Build and Push Aluno API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/services/alunos/PlataformaEducacional.Alunos.Api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/api-aluno:latest,${{ secrets.DOCKER_USERNAME }}/api-aluno:${{ github.sha }}
+
+      - name: Build and Push Conteudo API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/services/conteudo/PlataformaEducacional.Conteudo.Api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/api-conteudo:latest,${{ secrets.DOCKER_USERNAME }}/api-conteudo:${{ github.sha }}
+
+      - name: Build and Push Pagamentos API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/services/pagamentos/PlataformaEducacional.Pagamentos.Api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/api-pagamentos:latest,${{ secrets.DOCKER_USERNAME }}/api-pagamentos:${{ github.sha }}
+
+      - name: Build and Push BFF API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: ./src/services/bff/PlataformaEducacional.Bff.Api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/educa-api-bff:latest,${{ secrets.DOCKER_USERNAME }}/educa-api-bff:${{ github.sha }}
