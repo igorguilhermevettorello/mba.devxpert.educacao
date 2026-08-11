@@ -44,44 +44,8 @@ services:
         depends_on:
             - api-auth
             - api-bff
+            - api-conteudo
 
-    # database:
-    #     image: mcr.microsoft.com/mssql/server:2022-latest
-    #     container_name: mba-mssql
-    #     ports:
-    #         - "1433:1433"
-    #     expose:
-    #         - 1433
-    #     environment:
-    #         SA_PASSWORD: "MyDB@123"
-    #         ACCEPT_EULA: "Y"
-    #     healthcheck:
-    #         test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P MyDB@123 -Q 'SELECT 1'" ]
-    #         interval: 3s
-    #         timeout: 5s
-    #         retries: 10
-    #         start_period: 5s            
-    
-    # rabbitmq:
-    #     image: rabbitmq:4-management
-    #     container_name: mba-rabbitmq
-    #     hostname: mba-rabbitmq
-    #     ports:
-    #         - "5672:5672"
-    #         - "15672:15672"
-    #     expose:
-    #         - 5672
-    #         - 15672
-    #     environment:
-    #         RABBITMQ_DEFAULT_USER: "mba-devxpert-educacao"
-    #         RABBITMQ_DEFAULT_PASS: "mba-devxpert-educacao"
-    #     healthcheck: # Add health check to ensure RabbitMQ is ready
-    #         test: [ "CMD", "rabbitmqctl", "status" ]
-    #         interval: 3s
-    #         timeout: 5s
-    #         retries: 10
-    #         start_period: 5s
-    
     # logging:
     #     image: datalust/seq:2025.1
     #     container_name: mba-devxpert-educacao-seq

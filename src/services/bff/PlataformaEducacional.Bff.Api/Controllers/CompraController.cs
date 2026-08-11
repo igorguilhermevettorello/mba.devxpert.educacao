@@ -97,6 +97,7 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RealizarPagamento(Guid id, [FromBody] RealizarPagamentoDto model)
     {
+<<<<<<< HEAD
         _logger.LogInformation("Solicitação para realizar pagamento - MatriculaId {MatriculaId}, Valor {Valor}", id, model.ValorCurso);
 
         if (model.MatriculaId == Guid.Empty)
@@ -112,6 +113,18 @@ public class CompraController : MainController
         }
 
         if (!ModelState.IsValid) return CustomResponse(ModelState);
+=======
+        if (model.MatriculaId == Guid.Empty)
+            ModelState.AddModelError("MatriculaId", "MatriculaId é obrigatório.");
+
+        if (model.MatriculaId != id)
+            ModelState.AddModelError("MatriculaId", "Matricula invalida.");
+
+        if (!ModelState.IsValid)
+            return CustomResponse(ModelState);
+
+
+>>>>>>> origin/staging
 
         var result = await _pagamentoService.RealizarPagamentoAsync(model);
 

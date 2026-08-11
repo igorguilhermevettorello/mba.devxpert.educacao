@@ -23,10 +23,16 @@ namespace PlataformaEducacional.Auth.Api.Tests
             var result = controller.OpenIdConfiguration(jwtSettings) as OkObjectResult;
             Assert.NotNull(result);
 
-            // dynamic object returned
-            dynamic obj = result.Value!;
-            Assert.Equal("https://issuer.example.com", (string)obj.issuer);
-            Assert.Equal("https://issuer.example.com/.well-known/jwks.json", (string)obj.jwks_uri);
+            var value = result.Value!;
+            var issuerProp = value.GetType().GetProperty("issuer");
+            Assert.NotNull(issuerProp);
+            var issuer = (string)issuerProp.GetValue(value)!;
+            Assert.Equal("https://issuer.example.com", issuer);
+
+            var jwksProp = value.GetType().GetProperty("jwks_uri");
+            Assert.NotNull(jwksProp);
+            var jwks = (string)jwksProp.GetValue(value)!;
+            Assert.Equal("https://issuer.example.com/.well-known/jwks.json", jwks);
         }
 
         [Fact]

@@ -71,14 +71,14 @@ namespace PlataformaEducacional.Bff.Api.Tests
 
             var badModel = new RealizarPagamentoDto { MatriculaId = Guid.Empty, ValorCurso = 10m };
             var res1 = await controller.RealizarPagamento(Guid.NewGuid(), badModel);
-            var ok1 = Assert.IsType<OkObjectResult>(res1);
-            Assert.IsType<string>(ok1.Value);
+            var ok1 = Assert.IsType<BadRequestObjectResult>(res1);
+            Assert.IsType<ValidationProblemDetails>(ok1.Value);
 
             var id = Guid.NewGuid();
             var badModel2 = new RealizarPagamentoDto { MatriculaId = Guid.NewGuid(), ValorCurso = 10m };
             var res2 = await controller.RealizarPagamento(id, badModel2);
-            var ok2 = Assert.IsType<OkObjectResult>(res2);
-            Assert.IsType<string>(ok2.Value);
+            var ok2 = Assert.IsType<BadRequestObjectResult>(res2);
+            Assert.IsType<ValidationProblemDetails>(ok2.Value);
 
             controller.ModelState.AddModelError("X", "err");
             var res3 = await controller.RealizarPagamento(id, badModel2);

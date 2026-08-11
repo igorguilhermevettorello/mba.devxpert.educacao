@@ -33,6 +33,10 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
         [Fact]
         public async Task Criar_ReturnsBadRequest_WhenModelInvalid()
         {
+            //configura retornos
+            _notificador.Setup(n => n.TemNotificacao()).Returns(true);
+            _notificador.Setup(n => n.ObterNotificacoes()).Returns(new List<Notificacao>());
+
             var controller = CreateController();
             controller.ModelState.AddModelError("Titulo", "required");
             var dto = new CriarAulaDto();

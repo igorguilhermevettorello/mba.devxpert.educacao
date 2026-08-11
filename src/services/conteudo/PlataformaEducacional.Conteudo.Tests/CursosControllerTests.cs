@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Conteudo.Api.Controllers;
 using PlataformaEducacional.Conteudo.Api.DTOs.Cursos;
-using PlataformaEducacional.Conteudo.Application.Commands.Aulas;
+using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
 using PlataformaEducacional.Conteudo.Domain.Entities;
 using PlataformaEducacional.Conteudo.Domain.Interfaces.Repositories;
 using PlataformaEducacional.Core.Mediator;
@@ -34,6 +34,10 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
         [Fact]
         public async Task Criar_ReturnsBadRequest_WhenModelInvalid()
         {
+            //configura retornos
+            _notificador.Setup(n => n.TemNotificacao()).Returns(true);
+            _notificador.Setup(n => n.ObterNotificacoes()).Returns(new List<Notificacao>());
+
             var controller = CreateController();
             controller.ModelState.AddModelError("Titulo", "required");
 
@@ -56,7 +60,7 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
                 Valor = 10m
             };
 
-            _mediator.Setup(m => m.SendCommand(It.IsAny<CriarAulaCommand>()))
+            _mediator.Setup(m => m.SendCommand(It.IsAny<CriarCursoCommand>()))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
             var result = await controller.Criar(dto);
@@ -68,6 +72,10 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
         [Fact]
         public async Task Criar_ReturnsBadRequest_WhenMediatorReturnsErrors()
         {
+            //configura retornos
+            _notificador.Setup(n => n.TemNotificacao()).Returns(true);
+            _notificador.Setup(n => n.ObterNotificacoes()).Returns(new List<Notificacao>());
+
             var controller = CreateController();
             var dto = new CriarCursoDto
             {
@@ -81,7 +89,7 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
             var validation = new ValidationResult();
             validation.Errors.Add(new FluentValidation.Results.ValidationFailure("Prop", "err"));
 
-            _mediator.Setup(m => m.SendCommand(It.IsAny<CriarAulaCommand>()))
+            _mediator.Setup(m => m.SendCommand(It.IsAny<CriarCursoCommand>()))
                 .ReturnsAsync(validation);
 
 

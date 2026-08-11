@@ -54,7 +54,7 @@ namespace PlataformaEducacional.Alunos.Tests
         {
             await using var context = CreateInMemoryContext();
 
-            context.Alunos.Add(new PlataformaEducacional.Alunos.Domain.Models.Aluno(Guid.NewGuid(), "N", "e@e.com", "12345678901"));
+            context.Alunos.Add(new PlataformaEducacional.Alunos.Domain.Models.Aluno(Guid.NewGuid(), "N", "exemplo@exemplo.com", "09044871056"));
             await context.SaveChangesAsync();
 
             var method = GetPrivateStatic("EnsureSeedAlunos");
