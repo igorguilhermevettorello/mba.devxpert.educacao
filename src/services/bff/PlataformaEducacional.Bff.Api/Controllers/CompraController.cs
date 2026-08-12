@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Bff.Api.Interfaces;
 using PlataformaEducacional.Bff.Api.Models;
 using PlataformaEducacional.WebApi.Core.Controllers;
@@ -97,11 +96,21 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RealizarPagamento(Guid id, [FromBody] RealizarPagamentoDto model)
     {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+        
+        _logger.LogInformation("Solicitação para realizar pagamento - MatriculaId {MatriculaId}, Valor {Valor}", id, model.ValorCurso);
+
         if (model.MatriculaId == Guid.Empty)
+        {
+            _logger.LogWarning("MatriculaId vazio na solicitação de pagamento");
             ModelState.AddModelError("MatriculaId", "MatriculaId é obrigatório.");
+        }
 
         if (model.MatriculaId != id)
+        {
+            _logger.LogWarning("MatriculaId inconsistente - Rota: {RotaId}, Body: {BodyId}", id, model.MatriculaId);
             ModelState.AddModelError("MatriculaId", "Matricula invalida.");
+        }
 
         if (!ModelState.IsValid)
             return CustomResponse(ModelState);
