@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+ï»¿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using PlataformaEducacional.Conteudo.Api.Configuration;
 using PlataformaEducacional.Conteudo.Api.Configuration.Seed;
 using PlataformaEducacional.Conteudo.Api.HealthChecks;
@@ -14,7 +14,7 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 // Add services to the container.
 builder.Services.AddApiConfiguration("Conteudo API");
 
-// Adicionar configuração JWT
+// Adicionar configuraÃ§Ã£o JWT
 builder.Services.AddJwtConfiguration(builder.Configuration, builder.Environment);
 builder.Services.AddMediatR(cfg =>
 {

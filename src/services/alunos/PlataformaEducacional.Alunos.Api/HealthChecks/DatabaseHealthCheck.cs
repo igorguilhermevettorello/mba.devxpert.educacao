@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+ï»¿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using PlataformaEducacional.Alunos.Data;
 
@@ -11,7 +11,7 @@ public class DatabaseHealthCheck(AlunosContext dbContext) : IHealthCheck
         var canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
 
         return canConnect
-            ? HealthCheckResult.Healthy("Banco de dados acessível.")
-            : HealthCheckResult.Unhealthy("Banco de dados indisponível.");
+            ? HealthCheckResult.Healthy("Banco de dados acessÃ­vel.")
+            : HealthCheckResult.Unhealthy("Banco de dados indisponÃ­vel.");
     }
 }

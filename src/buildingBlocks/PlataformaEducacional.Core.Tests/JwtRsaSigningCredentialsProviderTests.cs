@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+Ôªøusing System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
@@ -25,7 +25,7 @@ namespace PlataformaEducacional.Auth.Api.Tests
             env.SetupGet(e => e.ContentRootPath).Returns(Path.GetTempPath());
 
             var ex = Assert.Throws<InvalidOperationException>(() => new JwtRsaSigningCredentialsProvider(settings, env.Object));
-            Assert.Contains("SigningKeyPath È obrigatÛrio", ex.Message);
+            Assert.Contains("SigningKeyPath √© obrigat√≥rio", ex.Message);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace PlataformaEducacional.Auth.Api.Tests
             env.SetupGet(e => e.ContentRootPath).Returns(Path.GetTempPath());
 
             var ex = Assert.Throws<InvalidOperationException>(() => new JwtRsaSigningCredentialsProvider(settings, env.Object));
-            Assert.Contains("SigningKeyId È obrigatÛrio", ex.Message);
+            Assert.Contains("SigningKeyId √© obrigat√≥rio", ex.Message);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace PlataformaEducacional.Auth.Api.Tests
             env.SetupGet(e => e.ContentRootPath).Returns(tempRoot);
 
             var ex = Assert.Throws<InvalidOperationException>(() => new JwtRsaSigningCredentialsProvider(settings, env.Object));
-            Assert.Contains("Chave JWT n„o encontrada", ex.Message);
+            Assert.Contains("Chave JWT n√£o encontrada", ex.Message);
 
             Directory.Delete(tempRoot, recursive: true);
         }
