@@ -38,64 +38,64 @@ services:
             - auth-api-segredo
     
     # Api de Aluno
-    api-aluno:
-        image: mba.devxpert.educacao/api-aluno:latest
-        container_name: mba-api-aluno
-        build:
-            context: ../src
-            dockerfile: ./services/alunos/PlataformaEducacional.Alunos.Api/Dockerfile
-        ports:
-            - "5005:5005"
-        #     - "5005:80"
-        #     - "5006:443"
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Docker
-            - ASPNETCORE_URLS=http://+:5005
-        depends_on:
-            - sql-server
-            - api-auth
-        secrets:
-            - aluno-api-segredo
+    # api-aluno:
+    #     image: mba.devxpert.educacao/api-aluno:latest
+    #     container_name: mba-api-aluno
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/alunos/PlataformaEducacional.Alunos.Api/Dockerfile
+    #     ports:
+    #         - "5005:5005"
+    #     #     - "5005:80"
+    #     #     - "5006:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5005
+    #     depends_on:
+    #         - sql-server
+    #         - api-auth
+    #     secrets:
+    #         - aluno-api-segredo
     
     # Api de Conteudo
-    api-conteudo:
-        image: mba.devxpert.educacao/api-conteudo:latest
-        container_name: mba-api-conteudo
-        build:
-            context: ../src
-            dockerfile: ./services/conteudo/PlataformaEducacional.Conteudo.Api/Dockerfile
-        ports:
-            - "5010:5010"
-        #     - "5010:80"
-        #     - "5011:443"
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Docker
-            - ASPNETCORE_URLS=http://+:5010
-        depends_on:
-            - api-auth
-            - sql-server
-        secrets:
-            - conteudo-api-segredo
+    # api-conteudo:
+    #     image: mba.devxpert.educacao/api-conteudo:latest
+    #     container_name: mba-api-conteudo
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/conteudo/PlataformaEducacional.Conteudo.Api/Dockerfile
+    #     ports:
+    #         - "5010:5010"
+    #     #     - "5010:80"
+    #     #     - "5011:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5010
+    #     depends_on:
+    #         - api-auth
+    #         - sql-server
+    #     secrets:
+    #         - conteudo-api-segredo
 
     # Api de Pagamento
-    api-pagamento:
-        image: mba.devxpert.educacao/api-pagamentos:latest
-        container_name: mba-api-pagamentos
-        build:
-            context: ../src
-            dockerfile: ./services/pagamentos/PlataformaEducacional.Pagamentos.Api/Dockerfile
-        ports:
-            - "5015:5015"
-        #     - "5015:80"
-        #     - "5016:443"
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Docker
-            - ASPNETCORE_URLS=http://+:5015
-        depends_on:
-            - api-auth
-            - sql-server
-        secrets:
-            - pagamento-api-segredo
+    # api-pagamento:
+    #     image: mba.devxpert.educacao/api-pagamentos:latest
+    #     container_name: mba-api-pagamentos
+    #     build:
+    #         context: ../src
+    #         dockerfile: ./services/pagamentos/PlataformaEducacional.Pagamentos.Api/Dockerfile
+    #     ports:
+    #         - "5015:5015"
+    #     #     - "5015:80"
+    #     #     - "5016:443"
+    #     environment:
+    #         - ASPNETCORE_ENVIRONMENT=Docker
+    #         - ASPNETCORE_URLS=http://+:5015
+    #     depends_on:
+    #         - api-auth
+    #         - sql-server
+    #     secrets:
+    #         - pagamento-api-segredo
 
     # Api BFF
     # api-bff:
