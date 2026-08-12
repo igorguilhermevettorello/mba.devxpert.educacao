@@ -43,7 +43,7 @@ jobs:
         run: |
           shopt -s globstar
           for proj in src/**/*.Tests.csproj; do
-            dotnet test "$proj" --no-restore -c Release \
+            dotnet test "$proj" -c Release \
               --logger "trx" --results-directory TestResults \
               --collect:"XPlat Code Coverage"
           done

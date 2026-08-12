@@ -39,24 +39,23 @@ namespace PlataformaEducacional.Bff.Api.Tests
         {
             var json = JsonSerializer.Serialize(new { data = new object[] { } });
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
-            var settings = Options.Create(new AppServicesSettings { });
+            var settings = Options.Create(new AppServicesSettings { ConteudoApiUrl = "https://test" });
             var loggerMock = new Mock<ILogger<ConteudoService>>();
             var svc = new ConteudoService(http, settings, loggerMock.Object);
 
             var result = await svc.ObterCursoDisponiveisAsync();
-            Assert.Null(result?.Data);
+            Assert.Empty(result?.Data);
         }
 
         [Fact]
-        public async Task ObterCursoDisponiveisAsync_ReturnsNull_OnNonSuccess()
+        public async Task ObterCursoDisponiveisAsync_Throws_OnNonSuccess()
         {
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.BadRequest));
-            var settings = Options.Create(new AppServicesSettings { });
+            var settings = Options.Create(new AppServicesSettings { ConteudoApiUrl = "https://test" });
             var loggerMock = new Mock<ILogger<ConteudoService>>();
             var svc = new ConteudoService(http, settings, loggerMock.Object);
 
-            var result = await svc.ObterCursoDisponiveisAsync();
-            Assert.Null(result);
+            await Assert.ThrowsAsync<JsonException>(() => svc.ObterCursoDisponiveisAsync());
         }
 
         [Fact]

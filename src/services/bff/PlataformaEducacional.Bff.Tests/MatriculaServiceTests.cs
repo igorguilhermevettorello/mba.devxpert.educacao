@@ -92,14 +92,13 @@ namespace PlataformaEducacional.Bff.Api.Tests
         }
 
         [Fact]
-        public async Task RealizarMatriculaAsync_ReturnsNull_OnNonSuccess()
+        public async Task RealizarMatriculaAsync_Throws_OnNonSuccess()
         {
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.BadRequest));
             var loggerMock = new Mock<ILogger<MatriculaService>>();
             var svc = new MatriculaService(http, loggerMock.Object);
 
-            var result = await svc.RealizarMatriculaAsync(Guid.NewGuid(), new RealizarMatriculaDto { CursoId = Guid.NewGuid() });
-            Assert.Null(result);
+            await Assert.ThrowsAsync<JsonException>(() => svc.RealizarMatriculaAsync(Guid.NewGuid(), new RealizarMatriculaDto { CursoId = Guid.NewGuid() }));
         }
     }
 }

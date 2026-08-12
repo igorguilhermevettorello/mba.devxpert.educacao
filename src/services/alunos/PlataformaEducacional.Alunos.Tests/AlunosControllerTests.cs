@@ -1,8 +1,7 @@
-<<<<<<< HEAD
-=======
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Alunos.Api.Controllers;
 using PlataformaEducacional.Alunos.Api.DTOs.Matriculas;
@@ -17,8 +16,9 @@ namespace PlataformaEducacional.Alunos.Tests
         private readonly Mock<IAlunoRepository> _repo = new();
         private readonly Mock<IMediator> _mediator = new();
         private readonly Mock<IAspNetUser> _user = new();
+        private readonly Mock<ILogger<AlunosController>> _logger = new();
 
-        private AlunosController CreateController() => new AlunosController(_repo.Object, _mediator.Object, _user.Object);
+        private AlunosController CreateController() => new AlunosController(_repo.Object, _mediator.Object, _user.Object, _logger.Object);
 
         [Fact]
         public async Task RealizarMatricula_ReturnsBadRequest_WhenModelInvalid()
@@ -126,4 +126,3 @@ namespace PlataformaEducacional.Alunos.Tests
         }
     }
 }
->>>>>>> origin/staging
