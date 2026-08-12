@@ -1,4 +1,4 @@
-name: CI
+name: Continuous Integration
 
 on:
   push:
@@ -39,9 +39,14 @@ jobs:
         run: dotnet build PlataformaEducacional.sln --no-restore -c Release
 
       - name: Test
-        run: dotnet test 'src/**/*.Tests.csproj' --no-restore -c Release \
-          --logger "trx" --results-directory TestResults \
-          --collect:"XPlat Code Coverage"
+        shell: bash
+        run: |
+          shopt -s globstar
+          for proj in src/**/*.Tests.csproj; do
+            dotnet test "$proj" --no-restore -c Release \
+              --logger "trx" --results-directory TestResults \
+              --collect:"XPlat Code Coverage"
+          done
 
       - name: Upload test results & coverage
         if: always()
