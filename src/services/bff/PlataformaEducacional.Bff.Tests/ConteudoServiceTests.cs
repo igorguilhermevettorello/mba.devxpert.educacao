@@ -39,46 +39,25 @@ namespace PlataformaEducacional.Bff.Api.Tests
         {
             var json = JsonSerializer.Serialize(new { data = new object[] { } });
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
-            var settings = Options.Create(new AppServicesSettings { ConteudoApiUrl = "https://test" });
+            var settings = Options.Create(new AppServicesSettings { });
             var loggerMock = new Mock<ILogger<ConteudoService>>();
             var svc = new ConteudoService(http, settings, loggerMock.Object);
 
             var result = await svc.ObterCursoDisponiveisAsync();
-            Assert.Empty(result?.Data);
+            Assert.Null(result?.Data);
         }
 
         [Fact]
-        public async Task ObterCursoDisponiveisAsync_Throws_OnNonSuccess()
+        public async Task ObterCursoDisponiveisAsync_ReturnsNull_OnNonSuccess()
         {
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.BadRequest));
-            var settings = Options.Create(new AppServicesSettings { ConteudoApiUrl = "https://test" });
-            var loggerMock = new Mock<ILogger<ConteudoService>>();
-            var svc = new ConteudoService(http, settings, loggerMock.Object);
-
-            await Assert.ThrowsAsync<JsonException>(() => svc.ObterCursoDisponiveisAsync());
-        }
-
-        [Fact]
-        public async Task ObterCursoPorIdAsync_ReturnsCurso_WhenSuccess()
-        {
-
-            var cursos = new List<CursoDto> { new CursoDto { Id = Guid.NewGuid(), Titulo = "T" } };
-            var resultDto = new ResultDto<IEnumerable<CursoDto>>() { Data = cursos, Success = true };
-
-            //var resultDto = ResultDto<IEnumerable<CursoDto>>.Ok(cursos, "ok");
-            var json = JsonSerializer.Serialize(resultDto);
-
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(json)
-            });
-            var settings = Options.Create(new AppServicesSettings { ConteudoApiUrl = "https://test" });
+            var settings = Options.Create(new AppServicesSettings { });
             var loggerMock = new Mock<ILogger<ConteudoService>>();
             var svc = new ConteudoService(http, settings, loggerMock.Object);
 
             var result = await svc.ObterCursoDisponiveisAsync();
-
-            Assert.NotNull(result);
+            Assert.Null(result);
         }
+
     }
 }

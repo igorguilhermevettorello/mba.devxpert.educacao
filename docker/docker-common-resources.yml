@@ -5,7 +5,6 @@ services:
     # Sql Server
     sql-server:
         image: mba.devxpert.educacao/mba-sql-sever:latest
-        user: "root"
         container_name: mba-sql-server
         build:
             context: ../sql
