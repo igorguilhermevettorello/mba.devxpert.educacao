@@ -5,7 +5,6 @@ services:
     # Sql Server
     sql-server:
         image: mba.devxpert.educacao/mba-sql-sever:latest
-        user: "root"
         container_name: mba-sql-server
         build:
             context: ../sql
@@ -32,19 +31,19 @@ services:
             RABBITMQ_DEFAULT_PASS: "mba-devxpert-educacao"
 
     # NGINX
-    # mba-devexpert-educacao-server:
-    #     image: mba.devxpert.educacao/mba-dx-educa-sever:latest
-    #     container_name: mba-dx-educa-server
-    #     build:
-    #         context: ./
-    #         dockerfile: ./nginx/Dockerfile
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #     depends_on:
-    #         - api-auth
-    #         - api-bff
-    #         - api-conteudo
+    mba-devexpert-educacao-server:
+        image: mba.devxpert.educacao/mba-dx-educa-sever:latest
+        container_name: mba-dx-educa-server
+        build:
+            context: ./
+            dockerfile: ./nginx/Dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - api-auth
+            - api-bff
+            - api-conteudo
 
     # logging:
     #     image: datalust/seq:2025.1

@@ -1,3 +1,6 @@
+Use Master
+Go
+
 -- Criando base de dados para Indentity - ApiAuth
 print 'Criando base de dados para Indentity - ApiAuth';
 IF NOT EXISTS (
