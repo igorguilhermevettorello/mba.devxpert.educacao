@@ -36,7 +36,7 @@ public class PollyConfig
             .HandleTransientHttpError()
             .WaitAndRetryAsync(sleepsBeetweenRetries, onRetry: (_, span, retryCount, _) =>
             {
-                _logger.LogWarning("Retentativa {RetryCount} de requisição HTTP - Tempo de Espera: {DelaySeconds} segundos", 
+                _logger.LogWarning("Retentativa {RetryCount} de requisição HTTP - Tempo de Espera: {DelaySeconds} segundos",
                     retryCount, span.TotalSeconds);
             });
 
@@ -49,12 +49,12 @@ public static class PollyConfigExtensions
     public static IHttpClientBuilder AddRetryAndCircuitBreaker(this IHttpClientBuilder builder)
     {
         var services = builder.Services;
-        
+
         services.AddSingleton<PollyConfig>();
-        
+
         var serviceProvider = services.BuildServiceProvider();
         var pollyConfig = serviceProvider.GetRequiredService<PollyConfig>();
-        
+
         return pollyConfig.AddRetryAndCircuitBreaker(builder);
     }
 }

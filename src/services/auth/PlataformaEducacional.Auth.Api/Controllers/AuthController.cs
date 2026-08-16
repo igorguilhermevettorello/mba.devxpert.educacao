@@ -135,7 +135,7 @@ public class AuthController : MainController
 
     private async Task<ClaimsIdentity> ObterClaimsUsuario(ICollection<Claim> claims, IdentityUser user)
     {
-        if(user == null || string.IsNullOrEmpty(user.Email))
+        if (user == null || string.IsNullOrEmpty(user.Email))
         {
             throw new ApplicationException("Usuário não encontrado.");
         }

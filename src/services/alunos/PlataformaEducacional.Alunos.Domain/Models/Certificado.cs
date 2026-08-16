@@ -5,7 +5,7 @@ namespace PlataformaEducacional.Alunos.Domain.Models;
 public class Certificado : Entity
 {
     protected Certificado() { }
-    
+
     public Certificado(Guid matriculaId)
     {
         MatriculaId = matriculaId;
