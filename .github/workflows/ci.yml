@@ -53,34 +53,34 @@ jobs:
       # ETAPAS DO SONARCLOUD (DESATIVADAS TEMPORARIAMENTE)
       # Para reativar quando configurar os segredos no GitHub:
       # ==========================================
-      # - name: Setup Java 17 (Prerequisito SonarCloud)
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: 'temurin'
-      #     java-version: '17'
-      #
-      # - name: Cache SonarCloud packages
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.sonar/cache
-      #     key: ${{ runner.os }}-sonar
-      #     restore-keys: ${{ runner.os }}-sonar
-      #
-      # - name: Install SonarScanner Tool
-      #   run: dotnet tool install --global dotnet-sonarscanner || dotnet tool update --global dotnet-sonarscanner
-      #
-      # - name: Begin SonarCloud Analysis
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: |
-      #     dotnet-sonarscanner begin \
-      #       /k:"${{ secrets.SONAR_PROJECT_KEY || 'crmmvio_MBA.EducaOn' }}" \
-      #       /o:"${{ secrets.SONAR_ORGANIZATION || 'crmmvio' }}" \
-      #       /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-      #       /d:sonar.host.url="https://sonarcloud.io" \
-      #       /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" \
-      #       /d:sonar.cs.vstest.reportsPaths="TestResults/*.trx"
+      - name: Setup Java 17 (Prerequisito SonarCloud)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      
+      - name: Install SonarScanner Tool
+        run: dotnet tool install --global dotnet-sonarscanner || dotnet tool update --global dotnet-sonarscanner
+      
+      - name: Begin SonarCloud Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet-sonarscanner begin \
+            /k:"${{ secrets.SONAR_PROJECT_KEY || 'crmmvio_MBA.EducaOn' }}" \
+            /o:"${{ secrets.SONAR_ORGANIZATION || 'crmmvio' }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" \
+            /d:sonar.cs.vstest.reportsPaths="TestResults/*.trx"
       # ==========================================
 
       - name: Restore Dependencies
@@ -106,11 +106,11 @@ jobs:
             --results-directory ./TestResults \
             --collect:"XPlat Code Coverage"
 
-      # - name: End SonarCloud Analysis
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: End SonarCloud Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Upload Test Results & Coverage
         if: always()
