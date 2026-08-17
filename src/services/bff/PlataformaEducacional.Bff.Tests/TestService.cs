@@ -25,7 +25,7 @@ namespace PlataformaEducacional.Bff.Api.Tests
     public class ServiceBaseTests
     {
         [Fact]
-        public void ObterConteudo_SerializesObject_WithJsonContentType()
+        public async Task ObterConteudo_SerializesObject_WithJsonContentType()
         {
             var svc = new TestService();
             var obj = new { Id = 123, Nome = "Teste" };
@@ -33,7 +33,7 @@ namespace PlataformaEducacional.Bff.Api.Tests
             var content = svc.ObterConteudoPublic(obj);
 
             Assert.Equal("application/json", content.Headers.ContentType?.MediaType);
-            var json = content.ReadAsStringAsync().Result;
+            var json = await content.ReadAsStringAsync();
             Assert.Contains("\"Id\":", json);
             Assert.Contains("\"Nome\":", json);
         }

@@ -29,5 +29,5 @@ public class Endereco : Entity
     public Guid AlunoId { get; private set; }
 
     public Aluno Aluno { get; protected set; }
-    
+
 }
