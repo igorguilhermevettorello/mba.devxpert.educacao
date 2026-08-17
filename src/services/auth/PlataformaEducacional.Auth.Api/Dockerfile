@@ -7,6 +7,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+ENV DOCKER_SECRETS_PATH=/run/secrets/auth-api-segredo
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build

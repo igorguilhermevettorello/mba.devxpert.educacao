@@ -18,7 +18,7 @@ public static class ExceptionExtesions
         {
             message.AppendLine(exception.InnerException.GetFullMessage());
         }
-        
+
         return message.ToString();
     }
 }

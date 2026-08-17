@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Alunos.Api.Controllers;
 using PlataformaEducacional.Alunos.Api.DTOs.Matriculas;
 using PlataformaEducacional.Alunos.Domain.Interfaces;
 using PlataformaEducacional.Alunos.Domain.Models;
 using PlataformaEducacional.WebApi.Core.User;
-using Xunit;
 
 namespace PlataformaEducacional.Alunos.Tests
 {
@@ -21,8 +16,9 @@ namespace PlataformaEducacional.Alunos.Tests
         private readonly Mock<IAlunoRepository> _repo = new();
         private readonly Mock<IMediator> _mediator = new();
         private readonly Mock<IAspNetUser> _user = new();
+        private readonly Mock<ILogger<AlunosController>> _logger = new();
 
-        private AlunosController CreateController() => new AlunosController(_repo.Object, _mediator.Object, _user.Object);
+        private AlunosController CreateController() => new AlunosController(_repo.Object, _mediator.Object, _user.Object, _logger.Object);
 
         [Fact]
         public async Task RealizarMatricula_ReturnsBadRequest_WhenModelInvalid()
@@ -50,7 +46,7 @@ namespace PlataformaEducacional.Alunos.Tests
         public async Task RealizarMatricula_ReturnsForbid_WhenUserCannotView()
         {
             var alunoId = Guid.NewGuid();
-            var aluno = new Aluno(alunoId, "N", "e@e.com", "12345678901");
+            var aluno = new Aluno(alunoId, "N", "fulano@educa.com", "09044871056");
             _repo.Setup(r => r.ObterPorId(alunoId)).ReturnsAsync(aluno);
 
             _user.Setup(u => u.PossuiRole("Administrador")).Returns(false);
@@ -67,7 +63,7 @@ namespace PlataformaEducacional.Alunos.Tests
         public async Task RealizarMatricula_Created_WhenMediatorSucceeds()
         {
             var alunoId = Guid.NewGuid();
-            var aluno = new Aluno(alunoId, "N", "e@e.com", "12345678901");
+            var aluno = new Aluno(alunoId, "N", "fulano@educa.com", "09044871056");
             _repo.Setup(r => r.ObterPorId(alunoId)).ReturnsAsync(aluno);
 
             _user.Setup(u => u.PossuiRole("Administrador")).Returns(false);
@@ -99,7 +95,7 @@ namespace PlataformaEducacional.Alunos.Tests
         public async Task ObterEnderecoPorAlunoId_ReturnsForbid_WhenCannotView()
         {
             var alunoId = Guid.NewGuid();
-            var aluno = new Aluno(alunoId, "N", "e@e.com", "12345678901");
+            var aluno = new Aluno(alunoId, "N", "fulano@educa.com", "09044871056");
             _repo.Setup(r => r.ObterPorId(alunoId)).ReturnsAsync(aluno);
 
             _user.Setup(u => u.PossuiRole("Administrador")).Returns(false);
@@ -116,7 +112,7 @@ namespace PlataformaEducacional.Alunos.Tests
         public async Task ObterEnderecoPorAlunoId_ReturnsNotFound_WhenNoEndereco()
         {
             var alunoId = Guid.NewGuid();
-            var aluno = new Aluno(alunoId, "N", "e@e.com", "12345678901");
+            var aluno = new Aluno(alunoId, "N", "fulano@educa.com", "09044871056");
             _repo.Setup(r => r.ObterPorId(alunoId)).ReturnsAsync(aluno);
             _user.Setup(u => u.PossuiRole("Administrador")).Returns(true);
 

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Conteudo.Api.DTOs;
 using PlataformaEducacional.Conteudo.Api.DTOs.Aulas;
 using PlataformaEducacional.Conteudo.Application.Commands.Aulas;
@@ -20,16 +21,19 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         private readonly IMediatorHandler _mediatorHandler;
         private readonly IAulaRepository _aulaRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<AulasController> _logger;
 
         public AulasController(
             IMediatorHandler mediatorHandler,
             IMapper mapper,
             IAulaRepository aulaRepository,
-            INotificador notificador) : base(notificador)
+            INotificador notificador,
+            ILogger<AulasController> logger) : base(notificador)
         {
             _aulaRepository = aulaRepository;
             _mediatorHandler = mediatorHandler;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -43,6 +47,8 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
+            _logger.LogInformation("Solicitação para criar nova Aula no Curso {CursoId}: {Titulo}", criarAulaDto.CursoId, criarAulaDto.Titulo);
+
             var command = new CriarAulaCommand(
                 criarAulaDto.CursoId,
                 criarAulaDto.Titulo,
@@ -55,11 +61,15 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
 
             if (!resultado.IsValid)
             {
+                _logger.LogWarning("Falha ao criar Aula no Curso {CursoId}: {Errors}", criarAulaDto.CursoId,
+                    string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
                 foreach (var erro in resultado.Errors)
                     NotificarErro(erro.PropertyName, erro.ErrorMessage);
                 return CustomResponse();
             }
 
+            _logger.LogInformation("Aula criada com sucesso - AulaId {AulaId}, CursoId {CursoId}, Titulo {Titulo}",
+                command.AggregateId, criarAulaDto.CursoId, criarAulaDto.Titulo);
             var response = ResultDto.Ok(command.AggregateId, "Aula criada com sucesso");
             return CreatedAtAction(nameof(ObterPorId), new { id = command.AggregateId }, response);
         }
@@ -76,6 +86,8 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
             if (!ModelState.IsValid)
                 return CustomResponse(ModelState);
 
+            _logger.LogInformation("Solicitação para atualizar Aula {AulaId}: {Titulo}", id, atualizarAulaDto.Titulo);
+
             var command = new AtualizarAulaCommand
             {
                 Id = id,
@@ -88,8 +100,13 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
             var resultado = await _mediatorHandler.SendCommand(command);
 
             if (!resultado.IsValid)
+            {
+                _logger.LogWarning("Falha ao atualizar Aula {AulaId}: {Errors}", id,
+                    string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
                 return CustomResponse();
+            }
 
+            _logger.LogInformation("Aula atualizada com sucesso - AulaId {AulaId}", id);
             var response = ResultDto.Ok("Aula atualizada com sucesso");
             return CustomResponse(response);
         }
@@ -116,7 +133,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<IEnumerable<AulaDto>>), StatusCodes.Status200OK)]
         public async Task<ActionResult> Listar(
-            [FromQuery] Guid? cursoId = null, 
+            [FromQuery] Guid? cursoId = null,
             [FromQuery] bool apenasAtivas = false)
         {
             var command = new ListarAulasCommand(cursoId, apenasAtivas);
@@ -152,12 +169,19 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Deletar(Guid id)
         {
+            _logger.LogInformation("Solicitação para deletar Aula {AulaId}", id);
+
             var command = new DeletarAulaCommand(id);
             var resultado = await _mediatorHandler.SendCommand(command);
 
             if (!resultado.IsValid)
+            {
+                _logger.LogWarning("Falha ao deletar Aula {AulaId}: {Errors}", id,
+                    string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
                 return CustomResponse();
+            }
 
+            _logger.LogInformation("Aula deletada com sucesso - AulaId {AulaId}", id);
             var response = ResultDto.Ok("Aula deletada com sucesso");
             return CustomResponse(response);
         }

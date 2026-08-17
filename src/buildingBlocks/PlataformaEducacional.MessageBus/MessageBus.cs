@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Core.Messages.Integration;
 using Polly;
 using RabbitMQ.Client.Exceptions;
@@ -11,10 +12,12 @@ public class MessageBus : IMessageBus
     private IAdvancedBus _advancedBus;
 
     private readonly string _connectionString;
+    private readonly ILogger<MessageBus> _logger;
 
-    public MessageBus(string connectionString)
+    public MessageBus(string connectionString, ILogger<MessageBus> logger)
     {
         _connectionString = connectionString;
+        _logger = logger;
         TryConnect();
     }
 
@@ -56,11 +59,11 @@ public class MessageBus : IMessageBus
         where TRequest : IntegrationEvent where TResponse : ResponseMessage
     {
         TryConnect();
-        
+
         // Adicionar timeout de 30 segundos
         var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-        
-        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request, 
+
+        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request,
             configure => configure.WithQueueName("PedidoIniciado"),
             cancellationTokenSource.Token);
     }
@@ -83,22 +86,44 @@ public class MessageBus : IMessageBus
     {
         if (IsConnected) return;
 
+        _logger.LogInformation("Tentando conectar ao RabbitMQ com string: {ConnectionString}", _connectionString);
+
+        var retryCount = 0;
         var policy = Policy.Handle<EasyNetQException>()
             .Or<BrokerUnreachableException>()
             .WaitAndRetry(3, retryAttempt =>
-                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                {
+                    retryCount++;
+                    var delay = TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
+                    _logger.LogWarning("Tentativa {RetryCount} de conexão ao RabbitMQ - aguardando {DelaySeconds} segundos", retryCount, delay.TotalSeconds);
+                    return delay;
+                },
+                onRetry: (exception, timespan, retryAttempt, context) =>
+                {
+                    _logger.LogWarning(exception, "Falha na tentativa {RetryCount} ao conectar ao RabbitMQ", retryAttempt);
+                });
 
-        policy.Execute(() =>
+        try
         {
-            _bus = RabbitHutch.CreateBus(_connectionString, s => s.EnableSystemTextJson());
-            _advancedBus = _bus.Advanced;
-            _advancedBus.Disconnected += OnDisconnect;
-        });
+            policy.Execute(() =>
+            {
+                _bus = RabbitHutch.CreateBus(_connectionString, s => s.EnableSystemTextJson());
+                _advancedBus = _bus.Advanced;
+                _advancedBus.Disconnected += OnDisconnect;
+                _logger.LogInformation("Conectado ao RabbitMQ com sucesso");
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Falha ao conectar ao RabbitMQ após todas as tentativas");
+            throw;
+        }
     }
 
-    // Update the OnDisconnect method signature to match the EventHandler<DisconnectedEventArgs> delegate
     private void OnDisconnect(object? s, DisconnectedEventArgs e)
     {
+        _logger.LogWarning("Desconectado do RabbitMQ - tentando reconectar");
+
         var policy = Policy.Handle<EasyNetQException>()
             .Or<BrokerUnreachableException>()
             .RetryForever();

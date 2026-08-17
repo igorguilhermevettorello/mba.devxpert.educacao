@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using PlataformaEducacional.Conteudo.Domain.Entities;
 using Xunit;
 
@@ -53,7 +53,7 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
             a.AssociarCurso(cursoId);
             Assert.Equal(cursoId, a.CursoId);
 
-            // associar a outro curso deve lan�ar
+            // associar a outro curso deve lançar
             var outro = Guid.NewGuid();
             Assert.Throws<InvalidOperationException>(() => a.AssociarCurso(outro));
         }

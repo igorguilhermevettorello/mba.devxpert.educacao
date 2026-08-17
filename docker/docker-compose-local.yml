@@ -1,22 +1,9 @@
 name: mba-devxpert-educacao
 
-# x-common-variables: &common-variables
-#     aspnetcore_environment: docker
-#     ASPNETCORE_URLS: https://+:443;http://+:80
-#     ASPNETCORE_Kestrel__Certificates__Default__Password: 9HoGMnb7Lu8NFdHBz4Vq2rtKivzMhmMXhtvuB4TZcLMmbWfFmDQCjJeLURAJ4GYe
-#     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/devstore.academy-localhost.pfx
-#     AppSettings__DatabaseType: SqlServer
-#     RabbitMqTransportOptions__Host: "rabbitmq"
-#     RabbitMqTransportOptions__Port: 5672
-#     RabbitMqTransportOptions__User: "devstore"
-#     RabbitMqTransportOptions__Pass: "devstore"
-#     RabbitMqTransportOptions__VirtualHost: "/"
-
 include:
    - docker-common-resources.yml
 
-services:    
-    
+services:
     # Api de Autenticacao
     api-auth:
         image: mba.devxpert.educacao/api-auth:latest
@@ -24,8 +11,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/auth/PlataformaEducacional.Auth.Api/Dockerfile
-        # ports:
-        #     - "5000:5000"
+        ports:
+            - "5000:5000"
         #     - "5000:80"
         #     - "5001:443"
         environment:
@@ -34,7 +21,9 @@ services:
         depends_on:
             - rabbitmq
             - sql-server
-
+        secrets:
+            - auth-api-segredo
+    
     # Api de Aluno
     api-aluno:
         image: mba.devxpert.educacao/api-aluno:latest
@@ -42,8 +31,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/alunos/PlataformaEducacional.Alunos.Api/Dockerfile
-        # ports:
-        #     - "5005:5005"
+        ports:
+            - "5005:5005"
         #     - "5005:80"
         #     - "5006:443"
         environment:
@@ -52,7 +41,9 @@ services:
         depends_on:
             - sql-server
             - api-auth
-
+        secrets:
+            - aluno-api-segredo
+    
     # Api de Conteudo
     api-conteudo:
         image: mba.devxpert.educacao/api-conteudo:latest
@@ -60,8 +51,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/conteudo/PlataformaEducacional.Conteudo.Api/Dockerfile
-        # ports:
-        #     - "5010:5010"
+        ports:
+            - "5010:5010"
         #     - "5010:80"
         #     - "5011:443"
         environment:
@@ -70,6 +61,8 @@ services:
         depends_on:
             - api-auth
             - sql-server
+        secrets:
+            - conteudo-api-segredo
 
     # Api de Pagamento
     api-pagamento:
@@ -78,8 +71,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/pagamentos/PlataformaEducacional.Pagamentos.Api/Dockerfile
-        # ports:
-        #     - "5015:5015"
+        ports:
+            - "5015:5015"
         #     - "5015:80"
         #     - "5016:443"
         environment:
@@ -88,6 +81,8 @@ services:
         depends_on:
             - api-auth
             - sql-server
+        secrets:
+            - pagamento-api-segredo
 
     # Api BFF
     api-bff:
@@ -96,8 +91,8 @@ services:
         build:
             context: ../src
             dockerfile: ./services/bff/PlataformaEducacional.Bff.Api/Dockerfile
-        # ports:
-        #     - "5030:5030"
+        ports:
+            - "5030:5030"
         #     - "5030:80"
         #     - "5031:443"
         environment:
@@ -108,3 +103,13 @@ services:
             - api-aluno
             - api-conteudo
             - api-pagamento
+
+secrets:
+    auth-api-segredo:
+        file: ./secrets/auth-api/secrets.json
+    aluno-api-segredo:
+        file: ./secrets/aluno-api/secrets.json
+    conteudo-api-segredo:
+        file: ./secrets/conteudo-api/secrets.json
+    pagamento-api-segredo:
+        file: ./secrets/pagamento-api/secrets.json

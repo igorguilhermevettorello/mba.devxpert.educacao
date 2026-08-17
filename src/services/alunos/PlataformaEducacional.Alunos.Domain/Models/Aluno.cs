@@ -28,7 +28,7 @@ public class Aluno : Entity, IAggregateRoot
     private readonly List<Matricula> _matriculas;
     public IReadOnlyCollection<Matricula> Matriculas => _matriculas;
 
-    public IEnumerable<Certificado> Certificados => Matriculas.Select(x => x.Certificado);
+    public IEnumerable<Certificado> Certificados => Matriculas.Where(x => x.Certificado is not null).Select(x => x.Certificado);
 
     public void TrocarEmail(string email)
     {

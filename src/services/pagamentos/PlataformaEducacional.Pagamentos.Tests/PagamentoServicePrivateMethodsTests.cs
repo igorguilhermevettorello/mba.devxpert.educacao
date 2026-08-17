@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Pagamentos.Api.Facade;
 using PlataformaEducacional.Pagamentos.Api.Models;
@@ -26,7 +27,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
             conteudoMock = new Mock<IConteudoService>();
             alunoMock = new Mock<IAlunoService>();
 
-            return new PagamentoService(facadeMock.Object, repoMock.Object, busMock.Object, conteudoMock.Object, alunoMock.Object);
+            var loggerMock = new Mock<Microsoft.Extensions.Logging.ILogger<PagamentoService>>();
+            return new PagamentoService(facadeMock.Object, repoMock.Object, busMock.Object, conteudoMock.Object, alunoMock.Object, loggerMock.Object);
         }
 
         [Fact]
@@ -35,7 +37,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
             var service = CreateService(out _, out _, out _, out _, out var alunoMock);
             alunoMock.Setup(a => a.ObterMatriculaPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((MatriculaDto?)null);
 
-            var method = typeof(PagamentoService).GetMethod("MatriculaExiste", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            var method = typeof(PagamentoService).GetMethod("MatriculaExiste", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             var task = (Task<bool>)method.Invoke(service, new object[] { Guid.NewGuid() })!;
             var result = await task;
 
@@ -48,7 +50,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
             var service = CreateService(out _, out _, out _, out _, out var alunoMock);
             alunoMock.Setup(a => a.ObterMatriculaPorIdAsync(It.IsAny<Guid>())).ReturnsAsync(new MatriculaDto { Id = Guid.NewGuid() });
 
-            var method = typeof(PagamentoService).GetMethod("MatriculaExiste", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            var method = typeof(PagamentoService).GetMethod("MatriculaExiste", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             var task = (Task<bool>)method.Invoke(service, new object[] { Guid.NewGuid() })!;
             var result = await task;
 
@@ -71,13 +73,12 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
             var cartao = CartaoCredito.TryCreate("T", "4111111111111111", "12/30", "123").Card!;
             var pagamento = new Pagamento(matriculaId, Models.Enums.TipoPagamento.CartaoCredito, 50m, cartao);
 
-            var method = typeof(PagamentoService).GetMethod("ValidarValorDoPagamento", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            var method = typeof(PagamentoService).GetMethod("ValidarValorDoPagamento", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             var task = (Task<bool>)method.Invoke(service, new object[] { pagamento })!;
             var result = await task;
 
             Assert.True(result);
 
-            // now mismatch price
             var pagamento2 = new Pagamento(matriculaId, Models.Enums.TipoPagamento.CartaoCredito, 100m, cartao);
             var task2 = (Task<bool>)method.Invoke(service, new object[] { pagamento2 })!;
             var result2 = await task2;

@@ -47,7 +47,7 @@ namespace PlataformaEducacional.Auth.Api.Tests
                 null, null, null, null);
 
             _jwtSigningMock = new Mock<IJwtRsaSigningCredentialsProvider>();
-            var key = Encoding.UTF8.GetBytes("test-key-should-be-long-enough");
+            var key = Encoding.UTF8.GetBytes("test-key-should-be-long-enough-and-extra-1234567890");
             _jwtSigningMock.SetupGet(x => x.SigningCredentials)
                 .Returns(new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256));
             _jwtSigningMock.SetupGet(x => x.JwksJson).Returns("{\"keys\":[]}");
@@ -248,8 +248,7 @@ namespace PlataformaEducacional.Auth.Api.Tests
             _userManagerMock.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((IdentityUser?)null);
 
             var task = (Task)method.Invoke(_controller, new object[] { "noone@example.com" })!;
-            await Assert.ThrowsAsync<TargetInvocationException>(async () => await task);
-            // Invocation wraps in TargetInvocationException; inner should be ApplicationException
+            await Assert.ThrowsAsync<ApplicationException>(async () => await task);
         }
 
         [Fact]

@@ -17,18 +17,21 @@ public class CompraController : MainController
     private readonly IConteudoService _conteudoService;
     private readonly IMatriculaService _matriculaService;
     private readonly IPagamentoService _pagamentoService;
+    private readonly ILogger<CompraController> _logger;
 
     public CompraController(IMediator mediator,
         IAspNetUser aspNetUser,
         IConteudoService conteudoService,
         IMatriculaService matriculaService,
-        IPagamentoService pagamentoService)
+        IPagamentoService pagamentoService,
+        ILogger<CompraController> logger)
     {
         _mediator = mediator;
         _user = aspNetUser;
         _conteudoService = conteudoService;
         _matriculaService = matriculaService;
         _pagamentoService = pagamentoService;
+        _logger = logger;
     }
 
     //Listar Conteúdos disponíveis para compra
@@ -38,7 +41,15 @@ public class CompraController : MainController
     [AllowAnonymous]
     public async Task<IActionResult> ListarConteudosDisponiveis()
     {
+        _logger.LogInformation("Solicitação para listar cursos disponíveis");
+
         var conteudos = await _conteudoService.ObterCursoDisponiveisAsync();
+
+        if (conteudos?.Data == null || !conteudos.Data.Any())
+            _logger.LogWarning("Nenhum curso disponível encontrado");
+        else
+            _logger.LogInformation("Cursos disponíveis obtidos com sucesso - Total: {Total}", conteudos.Data.Count());
+
         return CustomResponse(conteudos);
     }
 
@@ -48,7 +59,15 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarMatriculaPendente(Guid alunoId)
     {
+        _logger.LogInformation("Solicitação para listar matrículas pendentes - AlunoId {AlunoId}", alunoId);
+
         var matriculasPendentes = await _matriculaService.ObterMatriculaPendentesAsync(alunoId);
+
+        if (matriculasPendentes == null || !matriculasPendentes.Any())
+            _logger.LogWarning("Nenhuma matrícula pendente encontrada para AlunoId {AlunoId}", alunoId);
+        else
+            _logger.LogInformation("Matrículas pendentes obtidas - AlunoId {AlunoId}, Total: {Total}", alunoId, matriculasPendentes.Count());
+
         return CustomResponse(matriculasPendentes);
     }
 
@@ -58,7 +77,15 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RealizarMatricula([FromRoute] Guid alunoId, [FromBody] RealizarMatriculaDto model)
     {
+        _logger.LogInformation("Solicitação para realizar matrícula - AlunoId {AlunoId}, CursoId {CursoId}", alunoId, model.CursoId);
+
         var result = await _matriculaService.RealizarMatriculaAsync(alunoId, model);
+
+        if (result != null)
+            _logger.LogInformation("Matrícula realizada com sucesso - AlunoId {AlunoId}, CursoId {CursoId}", alunoId, model.CursoId);
+        else
+            _logger.LogWarning("Falha ao realizar matrícula - AlunoId {AlunoId}", alunoId);
+
         return CustomResponse(result);
     }
 
@@ -69,11 +96,31 @@ public class CompraController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RealizarPagamento(Guid id, [FromBody] RealizarPagamentoDto model)
     {
-        if (model.MatriculaId == Guid.Empty) return CustomResponse("MatriculaId é obrigatório.");
-        if (model.MatriculaId != id) return CustomResponse("Matricula invalida.");
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+        _logger.LogInformation("Solicitação para realizar pagamento - MatriculaId {MatriculaId}, Valor {Valor}", id, model.ValorCurso);
+
+        if (model.MatriculaId == Guid.Empty)
+        {
+            _logger.LogWarning("MatriculaId vazio na solicitação de pagamento");
+            ModelState.AddModelError("MatriculaId", "MatriculaId é obrigatório.");
+        }
+
+        if (model.MatriculaId != id)
+        {
+            _logger.LogWarning("MatriculaId inconsistente - Rota: {RotaId}, Body: {BodyId}", id, model.MatriculaId);
+            ModelState.AddModelError("MatriculaId", "Matricula invalida.");
+        }
+
+        if (!ModelState.IsValid)
+            return CustomResponse(ModelState);
+
         var result = await _pagamentoService.RealizarPagamentoAsync(model);
+
+        if (result)
+            _logger.LogInformation("Pagamento realizado com sucesso - MatriculaId {MatriculaId}, Valor {Valor}", id, model.ValorCurso);
+        else
+            _logger.LogWarning("Falha ao realizar pagamento - MatriculaId {MatriculaId}", id);
 
         return CustomResponse(result);
     }

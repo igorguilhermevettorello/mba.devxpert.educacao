@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using PlataformaEducacional.Bff.Api.Configurations;
 using PlataformaEducacional.WebApi.Core.Configurations;
 using PlataformaEducacional.WebApi.Core.Identity;
@@ -15,10 +17,18 @@ builder.Services.AddMediatR(cfg =>
 });
 
 builder.Services.RegisterServices(builder.Configuration);
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["ready"]);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseApiConfiguration(app.Environment);
+
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+});
 
 app.Run();

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PlataformaEducacional.Conteudo.Api.DTOs;
 using PlataformaEducacional.Conteudo.Api.DTOs.Cursos;
 using PlataformaEducacional.Conteudo.Application.Commands.Cursos;
@@ -20,16 +21,19 @@ public class CursosController : MainController
     private readonly IMediatorHandler _mediatorHandler;
     private readonly ICursoRepository _cursoRepository;
     private readonly IMapper _mapper;
+    private readonly ILogger<CursosController> _logger;
 
     public CursosController(
         IMediatorHandler mediatorHandler,
         IMapper mapper,
         ICursoRepository cursoRepository,
-        INotificador notificador) : base(notificador)
+        INotificador notificador,
+        ILogger<CursosController> logger) : base(notificador)
     {
         _cursoRepository = cursoRepository;
         _mediatorHandler = mediatorHandler;
         _mapper = mapper;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -42,6 +46,8 @@ public class CursosController : MainController
     {
         if (!ModelState.IsValid)
             return CustomResponse(ModelState);
+
+        _logger.LogInformation("Solicitação para criar novo Curso: {Titulo}", criarCursoDto.Titulo);
 
         ConteudoProgramaticoCommand? conteudoProgramaticoCommand = null;
 
@@ -69,11 +75,14 @@ public class CursosController : MainController
 
         if (!resultado.IsValid)
         {
+            _logger.LogWarning("Falha ao criar Curso {Titulo}: {Errors}", criarCursoDto.Titulo,
+                string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
             foreach (var erro in resultado.Errors)
                 NotificarErro(erro.PropertyName, erro.ErrorMessage);
             return CustomResponse();
         }
 
+        _logger.LogInformation("Curso criado com sucesso - CursoId {CursoId}, Titulo {Titulo}", command.AggregateId, criarCursoDto.Titulo);
         var response = ResultDto.Ok(command.AggregateId, "Curso criado com sucesso");
         return CreatedAtAction(nameof(ObterPorId), new { id = command.AggregateId }, response);
     }
@@ -89,6 +98,8 @@ public class CursosController : MainController
     {
         if (!ModelState.IsValid)
             return CustomResponse(ModelState);
+
+        _logger.LogInformation("Solicitação para atualizar Curso {CursoId}: {Titulo}", id, atualizarCursoDto.Titulo);
 
         ConteudoProgramaticoCommand? conteudoProgramaticoCommand = null;
 
@@ -117,8 +128,13 @@ public class CursosController : MainController
         var resultado = await _mediatorHandler.SendCommand(command);
 
         if (!resultado.IsValid)
+        {
+            _logger.LogWarning("Falha ao atualizar Curso {CursoId}: {Errors}", id,
+                string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
             return CustomResponse();
+        }
 
+        _logger.LogInformation("Curso atualizado com sucesso - CursoId {CursoId}", id);
         var response = ResultDto.Ok("Curso atualizado com sucesso");
         return CustomResponse(response);
     }
@@ -175,12 +191,19 @@ public class CursosController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Deletar(Guid id)
     {
+        _logger.LogInformation("Solicitação para deletar Curso {CursoId}", id);
+
         var command = new DeletarCursoCommand(id);
         var resultado = await _mediatorHandler.SendCommand(command);
 
         if (!resultado.IsValid)
+        {
+            _logger.LogWarning("Falha ao deletar Curso {CursoId}: {Errors}", id,
+                string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
             return CustomResponse();
+        }
 
+        _logger.LogInformation("Curso deletado com sucesso - CursoId {CursoId}", id);
         var response = ResultDto.Ok("Curso deletado com sucesso");
         return CustomResponse(response);
     }
@@ -194,12 +217,19 @@ public class CursosController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Ativar(Guid id)
     {
+        _logger.LogInformation("Solicitação para ativar Curso {CursoId}", id);
+
         var command = new AtivarCursoCommand { CursoId = id };
         var resultado = await _mediatorHandler.SendCommand(command);
 
         if (!resultado.IsValid)
+        {
+            _logger.LogWarning("Falha ao ativar Curso {CursoId}: {Errors}", id,
+                string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
             return CustomResponse();
+        }
 
+        _logger.LogInformation("Curso ativado com sucesso - CursoId {CursoId}", id);
         var response = ResultDto.Ok("Curso ativado com sucesso");
         return CustomResponse(response);
     }
@@ -213,12 +243,19 @@ public class CursosController : MainController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Inativar(Guid id)
     {
+        _logger.LogInformation("Solicitação para inativar Curso {CursoId}", id);
+
         var command = new InativarCursoCommand(id);
         var resultado = await _mediatorHandler.SendCommand(command);
 
         if (!resultado.IsValid)
+        {
+            _logger.LogWarning("Falha ao inativar Curso {CursoId}: {Errors}", id,
+                string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
             return CustomResponse();
+        }
 
+        _logger.LogInformation("Curso inativado com sucesso - CursoId {CursoId}", id);
         var response = ResultDto.Ok("Curso inativado com sucesso");
         return CustomResponse(response);
     }

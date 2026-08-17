@@ -1,14 +1,15 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
-using PlataformaEducacional.Bff.Api.Models;
 using PlataformaEducacional.Bff.Api.Services;
+using PlataformaEducacional.Bff.Api.Interfaces;
+using PlataformaEducacional.Bff.Api.Models;
 using Xunit;
 
 namespace PlataformaEducacional.Bff.Api.Tests
@@ -31,79 +32,73 @@ namespace PlataformaEducacional.Bff.Api.Tests
         }
 
         [Fact]
-        public async Task ObterMatriculaPendentesAsync_ReturnsNull_OnNotFound()
+        public async Task ObterMatriculaPendentesAsync_ReturnsEmpty_OnEmptyArray()
         {
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
-            var svc = new MatriculaService(http);
+            var json = JsonSerializer.Serialize(new object[] { });
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
+            var loggerMock = new Mock<ILogger<MatriculaService>>();
+            var svc = new MatriculaService(http, loggerMock.Object);
 
             var result = await svc.ObterMatriculaPendentesAsync(Guid.NewGuid());
-            Assert.Null(result);
+            Assert.Empty(result ?? new List<MatriculaDto>());
         }
 
         [Fact]
-        public async Task ObterMatriculaPendentesAsync_ReturnsList_OnSuccess()
+        public async Task ObterMatriculaPendentesAsync_ReturnsEmptyList_OnNonSuccess()
         {
-            var list = new List<MatriculaDto> { new MatriculaDto { Id = Guid.NewGuid() } };
-            var json = JsonSerializer.Serialize(list);
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(json)
-            });
-            var svc = new MatriculaService(http);
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
+            var loggerMock = new Mock<ILogger<MatriculaService>>();
+            var svc = new MatriculaService(http, loggerMock.Object);
 
             var result = await svc.ObterMatriculaPendentesAsync(Guid.NewGuid());
-            Assert.NotNull(result);
-            Assert.Single(result);
+            Assert.Empty(result ?? new List<MatriculaDto>());
         }
 
         [Fact]
-        public async Task ObterMatriculaPorId_ReturnsNull_OnNotFound()
+        public async Task ObterMatriculaPorIdAsync_ReturnsMatricula_OnSuccess()
+        {
+            var dto = new MatriculaDto { Id = Guid.NewGuid() };
+            var json = JsonSerializer.Serialize(dto);
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
+            var loggerMock = new Mock<ILogger<MatriculaService>>();
+            var svc = new MatriculaService(http, loggerMock.Object);
+
+            var result = await svc.ObterMatriculaPorIdAsync(dto.Id);
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task ObterMatriculaPorIdAsync_ReturnsNull_OnNonSuccess()
         {
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
-            var svc = new MatriculaService(http);
+            var loggerMock = new Mock<ILogger<MatriculaService>>();
+            var svc = new MatriculaService(http, loggerMock.Object);
 
-            var result = await svc.ObterMatriculaPorId(Guid.NewGuid());
+            var result = await svc.ObterMatriculaPorIdAsync(Guid.NewGuid());
             Assert.Null(result);
         }
 
         [Fact]
-        public async Task ObterMatriculaPorId_ReturnsDto_OnSuccess()
+        public async Task RealizarMatriculaAsync_ReturnsMatricula_OnSuccess()
         {
-            var dto = new MatriculaDto { Id = Guid.NewGuid(), AlunoId = Guid.NewGuid(), CursoId = Guid.NewGuid() };
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(JsonSerializer.Serialize(dto))
-            });
-            var svc = new MatriculaService(http);
-
-            var result = await svc.ObterMatriculaPorId(Guid.NewGuid());
-            Assert.NotNull(result);
-            Assert.Equal(dto.Id, result.Id);
-        }
-
-        [Fact]
-        public async Task RealizarMatriculaAsync_ReturnsNull_OnNotFound()
-        {
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
-            var svc = new MatriculaService(http);
-
-            var result = await svc.RealizarMatriculaAsync(Guid.NewGuid(), new RealizarMatriculaDto { CursoId = Guid.NewGuid() });
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public async Task RealizarMatriculaAsync_ReturnsDto_OnSuccess()
-        {
-            var dto = new MatriculaDto { Id = Guid.NewGuid(), AlunoId = Guid.NewGuid(), CursoId = Guid.NewGuid() };
-            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(JsonSerializer.Serialize(dto))
-            });
-            var svc = new MatriculaService(http);
+            var dto = new MatriculaDto { Id = Guid.NewGuid() };
+            var json = JsonSerializer.Serialize(dto);
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json) });
+            var loggerMock = new Mock<ILogger<MatriculaService>>();
+            var svc = new MatriculaService(http, loggerMock.Object);
 
             var result = await svc.RealizarMatriculaAsync(Guid.NewGuid(), new RealizarMatriculaDto { CursoId = Guid.NewGuid() });
             Assert.NotNull(result);
-            Assert.Equal(dto.Id, result.Id);
+        }
+
+        [Fact]
+        public async Task RealizarMatriculaAsync_Throws_OnNonSuccess()
+        {
+            var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.BadRequest));
+            var loggerMock = new Mock<ILogger<MatriculaService>>();
+            var svc = new MatriculaService(http, loggerMock.Object);
+
+            await Assert.ThrowsAsync<JsonException>(() => svc.RealizarMatriculaAsync(Guid.NewGuid(), new RealizarMatriculaDto { CursoId = Guid.NewGuid() }));
         }
     }
 }

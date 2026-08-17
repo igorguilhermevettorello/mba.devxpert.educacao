@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using FluentValidation.Results;
 using PlataformaEducacional.Pagamentos.Api.Models.ValueObjects;
 using Xunit;
@@ -11,7 +11,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
         public void TryCreate_ReturnsValid_ForKnownGoodCard()
         {
             // Use widely-known test Visa number
-            var (isValid, card, validation) = CartaoCredito.TryCreate("Jo„o Silva", "4111111111111111", "12/30", "123");
+            var (isValid, card, validation) = CartaoCredito.TryCreate("Jo√£o Silva", "4111111111111111", "12/30", "123");
 
             Assert.True(isValid);
             Assert.NotNull(card);
@@ -21,7 +21,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
         [Fact]
         public void TryCreate_ReturnsInvalid_ForExpiredCard()
         {
-            var (isValid, card, validation) = CartaoCredito.TryCreate("Jo„o Silva", "4111111111111111", "01/20", "123");
+            var (isValid, card, validation) = CartaoCredito.TryCreate("Jo√£o Silva", "4111111111111111", "01/20", "123");
 
             Assert.False(isValid);
             Assert.Null(card);
@@ -31,7 +31,7 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
         [Fact]
         public void TryCreate_ReturnsInvalid_ForInvalidNumber()
         {
-            var (isValid, card, validation) = CartaoCredito.TryCreate("Jo„o Silva", "1234567890123456", "12/30", "123");
+            var (isValid, card, validation) = CartaoCredito.TryCreate("Jo√£o Silva", "1234567890123456", "12/30", "123");
 
             Assert.False(isValid);
             Assert.Null(card);

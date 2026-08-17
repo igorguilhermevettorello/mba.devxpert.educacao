@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using PlataformaEducacional.Pagamentos.Api.Services;
@@ -40,7 +41,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
                 Content = new StringContent(json)
             });
 
-            var svc = new AlunoService(http);
+            var loggerMock = new Mock<ILogger<AlunoService>>();
+            var svc = new AlunoService(http, loggerMock.Object);
 
             var result = await svc.ObterMatriculaPorIdAsync(dto.Id);
 
@@ -52,7 +54,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
         public async Task ObterMatriculaPorIdAsync_ReturnsNull_OnNonSuccess()
         {
             var http = CreateHttpClient(_ => new HttpResponseMessage(HttpStatusCode.BadRequest));
-            var svc = new AlunoService(http);
+            var loggerMock = new Mock<ILogger<AlunoService>>();
+            var svc = new AlunoService(http, loggerMock.Object);
 
             var result = await svc.ObterMatriculaPorIdAsync(Guid.NewGuid());
 
@@ -73,7 +76,8 @@ namespace PlataformaEducacional.Pagamentos.Api.Tests
                .ThrowsAsync(new Exception("network"));
 
             var http = new HttpClient(handlerMock.Object) { BaseAddress = new Uri("https://test") };
-            var svc = new AlunoService(http);
+            var loggerMock = new Mock<ILogger<AlunoService>>();
+            var svc = new AlunoService(http, loggerMock.Object);
 
             var result = await svc.ObterMatriculaPorIdAsync(Guid.NewGuid());
 

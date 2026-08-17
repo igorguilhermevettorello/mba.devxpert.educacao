@@ -19,6 +19,13 @@ public interface IMatriculaService
     public Task<MatriculaDto> ObterMatriculaPorId(Guid id);
 
     /// <summary>
+    /// Obtém de forma assíncrona uma matrícula pelo seu identificador.
+    /// </summary>
+    /// <param name="id">O identificador da matrícula.</param>
+    /// <returns>Uma tarefa que representa a operação assíncrona. O resultado da tarefa contém a matrícula correspondente ao identificador fornecido ou null se não encontrada.</returns>
+    public Task<MatriculaDto> ObterMatriculaPorIdAsync(Guid id);
+
+    /// <summary>
     /// Realiza de forma assíncrona a matrícula em um curso.
     /// </summary>
     /// <param name="model">O modelo contendo os dados da matrícula.</param>

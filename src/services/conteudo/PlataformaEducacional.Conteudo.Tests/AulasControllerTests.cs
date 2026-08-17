@@ -1,6 +1,7 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PlataformaEducacional.Conteudo.Api.Controllers;
 using PlataformaEducacional.Conteudo.Api.DTOs.Aulas;
@@ -23,12 +24,19 @@ namespace PlataformaEducacional.Conteudo.Api.Tests
         private readonly Mock<IMapper> _mapper = new();
         private readonly Mock<INotificador> _notificador = new();
 
-        private AulasController CreateController() =>
-            new AulasController(_mediator.Object, _mapper.Object, _repo.Object, _notificador.Object);
+        private AulasController CreateController()
+        {
+            var loggerMock = new Mock<ILogger<AulasController>>();
+            return new AulasController(_mediator.Object, _mapper.Object, _repo.Object, _notificador.Object, loggerMock.Object);
+        }
 
         [Fact]
         public async Task Criar_ReturnsBadRequest_WhenModelInvalid()
         {
+            //configura retornos
+            _notificador.Setup(n => n.TemNotificacao()).Returns(true);
+            _notificador.Setup(n => n.ObterNotificacoes()).Returns(new List<Notificacao>());
+
             var controller = CreateController();
             controller.ModelState.AddModelError("Titulo", "required");
             var dto = new CriarAulaDto();
