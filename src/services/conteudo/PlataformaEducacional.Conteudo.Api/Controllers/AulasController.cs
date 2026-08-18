@@ -133,7 +133,7 @@ namespace PlataformaEducacional.Conteudo.Api.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(ResultDto<IEnumerable<AulaDto>>), StatusCodes.Status200OK)]
         public async Task<ActionResult> Listar(
-            [FromQuery] Guid? cursoId = null, 
+            [FromQuery] Guid? cursoId = null,
             [FromQuery] bool apenasAtivas = false)
         {
             var command = new ListarAulasCommand(cursoId, apenasAtivas);

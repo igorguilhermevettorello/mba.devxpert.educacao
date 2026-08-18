@@ -59,11 +59,11 @@ public class MessageBus : IMessageBus
         where TRequest : IntegrationEvent where TResponse : ResponseMessage
     {
         TryConnect();
-        
+
         // Adicionar timeout de 30 segundos
         var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-        
-        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request, 
+
+        return await _bus.Rpc.RequestAsync<TRequest, TResponse>(request,
             configure => configure.WithQueueName("PedidoIniciado"),
             cancellationTokenSource.Token);
     }
@@ -123,7 +123,7 @@ public class MessageBus : IMessageBus
     private void OnDisconnect(object? s, DisconnectedEventArgs e)
     {
         _logger.LogWarning("Desconectado do RabbitMQ - tentando reconectar");
-        
+
         var policy = Policy.Handle<EasyNetQException>()
             .Or<BrokerUnreachableException>()
             .RetryForever();

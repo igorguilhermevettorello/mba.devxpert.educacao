@@ -57,7 +57,7 @@ public static class DependencyInjectionConfig
         services.AddHttpClient<IPagamentoService, PagamentoService>(client =>
         {
             client.BaseAddress = new Uri(pagamentoUrl); // URL da Pagamento API
-        }) 
+        })
         .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
         .AddRetryAndCircuitBreaker();
     }

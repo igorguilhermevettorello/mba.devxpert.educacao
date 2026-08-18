@@ -1,12 +1,31 @@
 name: Continuous Integration
 
 on:
+  workflow_dispatch: 
   push:
-    branches: [master, staging]
+    branches:
+      - master
+      - staging
+      - 'gustavo/**'
+      - 'feature/**'
+      - 'teste*'
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+      - '.gitattributes'
   pull_request:
+    branches:
+      - master
+      - staging
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
 
 permissions:
   contents: read
+  checks: write
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -14,41 +33,82 @@ concurrency:
 
 jobs:
   build-and-test:
+    name: Build, Quality & Test
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
 
-      - name: Cache NuGet
-        uses: actions/cache@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/*.csproj'
 
-      - name: Restore
-        run: dotnet restore
+      - name: Setup Java 17 (Prerequisito SonarCloud)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      
+      - name: Install SonarScanner Tool
+        run: dotnet tool install --global dotnet-sonarscanner || dotnet tool update --global dotnet-sonarscanner
+      
+      - name: Begin SonarCloud Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet-sonarscanner begin \
+            /k:"${{ secrets.SONAR_PROJECT_KEY || 'crmmvio_MBA.EducaOn' }}" \
+            /o:"${{ secrets.SONAR_ORGANIZATION || 'crmmvio' }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
+            /d:sonar.cs.vstest.reportsPaths="**/TestResults/**/*.trx"
 
-      - name: Build
+      - name: Restore Dependencies
+        run: dotnet restore PlataformaEducacional.sln
+
+      - name: Verify Code Formatting
+        run: dotnet format PlataformaEducacional.sln --verify-no-changes --verbosity minimal
+        continue-on-error: true
+
+      - name: Check Vulnerable Packages
+        run: dotnet list PlataformaEducacional.sln package --vulnerable --include-transitive
+        continue-on-error: true
+
+      - name: Build Solution
         run: dotnet build PlataformaEducacional.sln --no-restore -c Release
 
-      - name: Test
-        shell: bash
+      - name: Run Tests & Collect Coverage
         run: |
-          shopt -s globstar
-          for proj in src/**/*.Tests.csproj; do
-            dotnet test "$proj" -c Release \
-              --logger "trx" --results-directory TestResults \
-              --collect:"XPlat Code Coverage"
-          done
+          dotnet test PlataformaEducacional.sln \
+            --no-build \
+            -c Release \
+            --logger "trx;LogFileName=test-results.trx" \
+            --results-directory ./TestResults \
+            --collect:"XPlat Code Coverage" \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover,cobertura
 
-      - name: Upload test results & coverage
+      - name: End SonarCloud Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Upload Test Results & Coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:

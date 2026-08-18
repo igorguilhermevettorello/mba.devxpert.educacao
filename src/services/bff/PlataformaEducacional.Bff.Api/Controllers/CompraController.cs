@@ -97,7 +97,7 @@ public class CompraController : MainController
     public async Task<IActionResult> RealizarPagamento(Guid id, [FromBody] RealizarPagamentoDto model)
     {
         if (!ModelState.IsValid) return CustomResponse(ModelState);
-        
+
         _logger.LogInformation("Solicitação para realizar pagamento - MatriculaId {MatriculaId}, Valor {Valor}", id, model.ValorCurso);
 
         if (model.MatriculaId == Guid.Empty)

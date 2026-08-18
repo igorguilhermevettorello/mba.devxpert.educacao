@@ -15,7 +15,7 @@ namespace PlataformaEducacional.Auth.Api.Configurations
                            .EnableDetailedErrors()
                            .EnableSensitiveDataLogging();
                 });
-            }       
+            }
             else
             {
                 builder.Services.AddDbContext<ApplicationDbContext>(options =>
