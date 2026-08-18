@@ -1,7 +1,7 @@
 name: Continuous Integration
 
 on:
-  workflow_dispatch: # Permite disparar manualmente em qualquer branch pela interface do GitHub
+  workflow_dispatch: 
   push:
     branches:
       - master
@@ -49,10 +49,6 @@ jobs:
           cache: true
           cache-dependency-path: '**/*.csproj'
 
-      # ==========================================
-      # ETAPAS DO SONARCLOUD (DESATIVADAS TEMPORARIAMENTE)
-      # Para reativar quando configurar os segredos no GitHub:
-      # ==========================================
       - name: Setup Java 17 (Prerequisito SonarCloud)
         uses: actions/setup-java@v4
         with:
@@ -81,7 +77,6 @@ jobs:
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" \
             /d:sonar.cs.vstest.reportsPaths="TestResults/*.trx"
-      # ==========================================
 
       - name: Restore Dependencies
         run: dotnet restore PlataformaEducacional.sln
